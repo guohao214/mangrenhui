@@ -1,0 +1,88 @@
+<?php
+
+/**
+ * Created by PhpStorm.
+ * User: GuoHao
+ * Date: 15-12-13
+ * Time: 下午1:01
+ */
+class FrontendController extends BaseController
+{
+  public $pageTitle = '盲人荟';
+  public $cacheTime = 600;
+
+  public function __construct()
+  {
+    parent::__construct();
+
+    // 微信
+    $weChat = new WeixinUtil();
+    $openId = $weChat->getOpenId();
+
+    if (!$openId) {
+      if (RequestUtil::isAjax())
+        ResponseUtil::failure('未微信授权');
+      else
+        $weChat->authorize(RequestUtil::currentUrl());
+    }
+  }
+
+  /**
+   * 获得分享js
+   * @param $currentUrl
+   */
+  public function wechatShare()
+  {
+    $scheme = $_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http';
+    $scheme .= '://';
+
+    $httpHost = $_SERVER['HTTP_HOST']
+      ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']
+        ? $_SERVER['SERVER_NAME'] : 'www.xinyameirong.com';
+
+    $currentUrl = $scheme . $httpHost . $_SERVER['REQUEST_URI'];
+
+    $shareJsParams = (new WxShareUtil())->getShareParams($currentUrl);
+
+
+    $shareTitle = '这是一个靠谱的美容店， 想更漂亮的快点进去！';
+    $shareDesc = '不期而遇美容欢迎您';
+    $shareUrl = ShareUtil::getShareUrl();
+
+    // 获得头像
+    $this->load->view('frontend/wechatShare',
+      array('shareJsParams' => $shareJsParams, 'shareTitle' => $shareTitle,
+        'shareDesc' => $shareDesc, 'shareUrl' => $shareUrl));
+  }
+
+  public function noContent($message)
+  {
+    $this->load->view('frontend/noContent', array('message' => $message));
+  }
+
+  /**
+   * 用于前台 layout布局的view操作
+   * @param $view
+   * @param array $vars
+   */
+  public function view($view, $vars = array())
+  {
+    parent::see('frontend', $view, $vars);
+  }
+
+  /**
+   * 页面缓存
+   * @param string $cacheTime
+   * @return bool
+   */
+  public function outputCache($cacheTime = '')
+  {
+    return true;
+
+    if (!$cacheTime)
+      $cacheTime = $this->cacheTime;
+
+    $this->output->cache($cacheTime);
+  }
+
+}

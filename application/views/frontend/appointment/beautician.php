@@ -1,0 +1,101 @@
+<?php $this->load->view('frontend/header'); ?>
+<link rel="stylesheet"
+      href="<?php echo get_instance()->config->base_url(); ?>static/frontend/css/beautician.css?v=20170423">
+<script type="text/javascript"
+        src="<?php echo get_instance()->config->base_url(); ?>static/frontend/js/iscroll.js"></script>
+<script type="text/javascript"
+        src="<?php echo get_instance()->config->base_url(); ?>static/frontend/js/appointment.js?v=201602251"></script>
+<header>
+  <h2>预约美容(提示：左右滑动可选择美容师)</h2>
+</header>
+
+<input type="hidden" name="project_time" value="<?php echo $project['use_time']; ?>">
+<input type="hidden" name="shop_id" value="<?php echo $shopId; ?>">
+
+<section class="section" id="choose-beautician-section">
+  <div class="beautician" id="beautician">
+    <ul>
+      <?php foreach ($beauticians as $beautician): ?>
+        <?php //for($i = 0; $i<10; $i++): ?>
+        <li class="beautician-avatar">
+          <img src="<?php echo UploadUtil::buildUploadDocPath($beautician['avatar'], '200x200'); ?>"
+               data-val="<?php echo $beautician['beautician_id']; ?>">
+          <p><?php echo $beautician['name']; ?></p>
+        </li>
+        <?php //endfor; ?>
+      <?php endforeach; ?>
+    </ul>
+  </div>
+</section>
+
+<section class="section-appointment-day">
+  <label class="label-appointment-day">预约日期：</label>
+  <select class="select" name="appointment-day">
+    <?php foreach ($days as $k => $day): ?>
+      <option value="<?php echo $k; ?>">
+        <?php echo $day; ?>
+      </option>
+    <?php endforeach; ?>
+  </select>
+</section>
+
+<section class="section-two appointment-times"></section>
+
+
+<div id="divMsg">
+  <div class="pay">
+    <strong>
+      <a id="aClose" href="javascript:; " onclick="document.body.id = ''; "></a>
+      <span class="F16">请输入联系信息</span>
+    </strong>
+    <ul>
+      <li>
+        <samp>联系人：</samp>
+        <span><input type="text" name="user_name" class="order-text"
+                     value="<?php echo $lastOrder['user_name']; ?>"> </span>
+      </li>
+      <li>
+        <a href="#">
+          <samp>手机号：</samp>
+          <span><input type="tel" name="phone_number" class="order-text" maxlength="11"
+                       value="<?php echo $lastOrder['phone_number']; ?>"></span>
+        </a>
+      </li>
+    </ul>
+
+    <?php if ($project['can_use_coupon_code']): ?>
+      <strong>
+        <span class="F16">使用优惠码</span>
+      </strong>
+      <ul>
+        <li>
+          <samp>优惠码：</samp>
+          <span><input type="text" name="coupon_code" class="order-text"></span>
+        </li>
+      </ul>
+    <?php endif; ?>
+
+    <?php if ($coupons): ?>
+      <strong>
+        <span class="F16">使用优惠券</span>
+      </strong>
+      <ul>
+        <?php foreach ($coupons as $coupon): ?>
+          <li class="use-coupon">
+            <input type="radio" name="coupon" value="<?php echo $coupon['customer_coupon_id']; ?>">
+            <?php echo $coupon['coupon_name']; ?>
+          </li>
+        <?php endforeach; ?>
+      </ul>
+    <?php endif; ?>
+
+    <a class="confirm-appointment payment colorW F16">确定预约</a>
+  </div>
+</div>
+
+<footer>
+  <a class="project_footer F18" onclick="document.body.id = 'msgBody'; ">确定预约</a>
+</footer>
+
+</body>
+</htmL>
