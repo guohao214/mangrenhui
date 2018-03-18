@@ -20,7 +20,7 @@
       <yd-preview-item>
         <div slot="left">预约日期</div>
         <div slot="right">{{order.appointment_day}}
-          {{order.appointment_start_time}}~{{order.appointment_end_time}}
+          {{order.appointment_start_time}}~{{order.appointment_end_time|realDay(order.appointment_day)}}
         </div>
       </yd-preview-item>
     </yd-preview>
@@ -33,6 +33,20 @@
 
     vm = new Vue({
       el: '#order',
+      filters: {
+        realDay: function (value, day) {
+          try {
+            var date = (new Date(day + ' ' + value)).getTime() + 30 * 60 * 1000
+            var date = (new Date(date))
+            var minute = date.getMinutes()
+            if (minute.toString().length == 1)
+              minute += '0'
+            return date.getHours() + ':' + minute + ':00'
+          } catch (e) {
+            return value
+          }
+        }
+      },
       data: {
         orders: [],
         mbtns: [

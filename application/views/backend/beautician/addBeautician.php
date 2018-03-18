@@ -5,8 +5,8 @@
   <div class="crumb-list"><i class="icon-font"></i>
     <a href="<?php echo UrlUtil::createBackendUrl('project/index') ?>">首页</a>
     <span class="crumb-step">&gt;</span>
-    <a class="crumb-name" href="<?php echo UrlUtil::createBackendUrl('beautician/index') ?>">美容师管理</a>
-    <span class="crumb-step">&gt;</span><span>新增美容师</span></div>
+    <a class="crumb-name" href="<?php echo UrlUtil::createBackendUrl('beautician/index') ?>">技师管理</a>
+    <span class="crumb-step">&gt;</span><span>新增技师</span></div>
 </div>
 <div class="result-wrap">
   <div class="result-content">

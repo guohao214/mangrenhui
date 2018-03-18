@@ -308,7 +308,7 @@
 
   <div class="footer" id="footer">
     <yd-button-group>
-      <yd-button size="large" type="warning" @click.native="appointment">预约</yd-button>
+      <yd-button size="large" type="warning" @click.native="appointment">发送预约</yd-button>
     </yd-button-group>
   </div>
 

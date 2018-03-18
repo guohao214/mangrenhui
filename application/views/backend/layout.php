@@ -47,8 +47,8 @@
                   &#xe005;</i>订单管理</a></li>
 
             <li><a href="<?php echo UrlUtil::createBackendUrl('user/index') ?>"><i class="icon-font">
-                  &#xe014;</i>用户管理</a></li>
-            <li><a href="<?php echo UrlUtil::createBackendUrl('customer/index') ?>"><i class="icon-font">&#xe060;</i>客户管理</a>
+                  &#xe014;</i>账号管理</a></li>
+            <li><a href="<?php echo UrlUtil::createBackendUrl('customer/index') ?>"><i class="icon-font">&#xe060;</i>顾客管理</a>
             </li>
             <li><a href="<?php echo UrlUtil::createBackendUrl('shop/index') ?>"><i
                   class="icon-font">&#xe031;</i>门店管理</a>

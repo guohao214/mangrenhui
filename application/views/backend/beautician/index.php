@@ -1,7 +1,7 @@
 <div class="crumb-wrap">
   <div class="crumb-list"><i class="icon-font"></i>
     <a href="<?php echo UrlUtil::createBackendUrl('project/index'); ?>">首页</a><span
-      class="crumb-step">&gt;</span><span class="crumb-name">美容师管理</span></div>
+      class="crumb-step">&gt;</span><span class="crumb-name">技师管理</span></div>
 </div>
 <div class="search-wrap">
   <div class="search-content">
@@ -22,7 +22,7 @@
   <div class="result-title">
     <div class="result-list">
       <a href="<?php echo UrlUtil::createBackendUrl('beautician/addBeautician') ?>">
-        <i class="icon-font"></i>新增美容师</a>
+        <i class="icon-font"></i>新增技师</a>
       <!--<a id="batchDel" href="javascript:void(0)"><i class="icon-font"></i>批量删除</a>
       <a id="updateOrd" href="javascript:void(0)"><i class="icon-font"></i>更新排序</a>-->
     </div>
@@ -81,7 +81,7 @@
       </table>
     </div>
   <?php else: ?>
-    <div class="error">请添加美容师</div>
+    <div class="error">请添加技师</div>
   <?php endif; ?>
 </div>
 
@@ -92,7 +92,7 @@
 
       var $that = $(this);
 
-      if (confirm('确定删除美容师: ' + $that.parents('tr').children('td').eq(2).html())) {
+      if (confirm('确定删除技师: ' + $that.parents('tr').children('td').eq(2).html())) {
         window.location.href = $that.attr('href');
       }
     })

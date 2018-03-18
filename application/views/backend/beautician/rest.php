@@ -1,7 +1,7 @@
 <div class="crumb-wrap">
   <div class="crumb-list"><i class="icon-font"></i>
     <a href="<?php echo UrlUtil::createBackendUrl('project/index'); ?>">首页</a><span
-      class="crumb-step">&gt;</span><span class="crumb-name">美容师管理</span></div>
+      class="crumb-step">&gt;</span><span class="crumb-name">技师管理</span></div>
 </div>
 <div class="result-wrap">
   <div class="result-title">

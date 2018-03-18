@@ -33,7 +33,7 @@
       </tr>
 
       <tr>
-        <th width="120">美容师：</th>
+        <th width="120">技师：</th>
         <td>
           <?php echo $order['beautician_name']; ?>
         </td>

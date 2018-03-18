@@ -5,7 +5,7 @@
   <div class="crumb-list"><i class="icon-font"></i>
     <a href="<?php echo UrlUtil::createBackendUrl('project/index') ?>">首页</a>
     <span class="crumb-step">&gt;</span>
-    <a class="crumb-name" href="<?php echo UrlUtil::createBackendUrl('beautician/index') ?>">美容师管理</a>
+    <a class="crumb-name" href="<?php echo UrlUtil::createBackendUrl('beautician/index') ?>">技师管理</a>
     <span class="crumb-step">&gt;</span><span>修改工作时间</span></div>
 </div>
 <div class="result-wrap">

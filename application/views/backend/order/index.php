@@ -41,7 +41,7 @@
               </option>
             </select>
           </td>
-          <td>美容师：</td>
+          <td>技师：</td>
           <td>
             <select name="beautician_id" class="select">
               <option value="">所有</option>
@@ -80,7 +80,7 @@
           <th>订单ID</th>
           <th width="220">订单号</th>
           <th>预约日期</th>
-          <th>美容师</th>
+          <th>技师</th>
           <th>联系信息</th>
           <th>订单状态</th>
           <th>订单金额</th>
