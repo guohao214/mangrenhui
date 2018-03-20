@@ -236,6 +236,63 @@ class WeixinUtil
 
 
   /**
+   * @param int $type
+   * @param $orderNo
+   * @param $appointmentDay
+   * @param $shop
+   * @param $beautician
+   * @param $projectName
+   * @param $openId
+   * @param $accessToken
+   * @return mixed|string
+   */
+  public function sendNotice($type =1, $phone, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken)
+  {
+    $first = $type === 1 ? '您好，您已成功预约' : '有新的预约';
+
+    $message = array(
+      "touser" => $openId,
+      "template_id" => "pXuq842AmgF2-qVTmCBT4b8xKzmKoR5ws7L3pArxSZM",
+      "url" => UrlUtil::createUrl('center/index'),
+      "topcolor" => "#FF0000",
+      "data" => array(
+        "first" => array( //描述
+          "value" => $first,
+          "color" => "#FF8CB3"
+        ),
+
+        "examuser" => array(
+          "value" => $phone,
+          "color" => "#173177"
+        ),
+
+        "regdate" => array(
+          "value" => $appointmentDay,
+          'color' => "#173177"
+        ),
+
+        "address" => array(
+          "value" => $shop,
+          'color' => "#173177"
+        ),
+
+        "hosptel" => array(
+          "value" => $beautician,
+          'color' => "#173177"
+        ),
+
+        "remark" => array( //备注
+          "value" => "预约项目为：{$projectName}, 预约技师为: { $beautician}",
+          "color" => "#c9151b"
+        )
+      )
+    );
+
+    return $this->templateMessage($message, $accessToken);
+  }
+
+
+  /**
    * 授权
    * @param $returnUrl
    * @return bool

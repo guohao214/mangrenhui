@@ -5,7 +5,7 @@ class Center extends FrontendController
   public function index()
   {
     $openId = (new WeixinUtil())->getOpenId();
-    $customer = (new CustomerModel())->readOne($openId);
+    $customer = (new CustomerModel())->readOne($openId, CustomerModel::IS_CUSTOMER);
     $this->view('center/index', array('customer' => $customer));
   }
 

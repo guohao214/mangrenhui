@@ -77,6 +77,8 @@ class Cart extends FrontendController
     $orderNo = StringUtil::generateOrderNo();
     $orderModel = new OrderModel();
 
+    $customer = (new CustomerModel())->readOne($openId, CustomerModel::IS_CUSTOMER);
+
     // 订单数据
     $orderData = array(
       'order_no' => $orderNo,
@@ -87,7 +89,7 @@ class Cart extends FrontendController
       'appointment_day' => $appointmentDay,
       'appointment_start_time' => $startTime,
       'appointment_end_time' => $endTime,
-      'phone_number' => '135',
+      'phone_number' => $customer['phone'],
       'total_fee' => $project['price']
     );
 
@@ -117,6 +119,9 @@ class Cart extends FrontendController
     } else {
       $this->db->trans_commit();
       ResponseUtil::executeSuccess('提交订单成功', $orderNo);
+
+      // 推送消息
+
     }
   }
 }
