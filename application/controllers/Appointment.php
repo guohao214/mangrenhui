@@ -10,7 +10,7 @@ class Appointment extends FrontendController
     // 绑定账号
     $openId = (new WeixinUtil())->getOpenId();
     $customer = (new CustomerModel())->readOne($openId, CustomerModel::IS_CUSTOMER);
-    if (!$customer)
+    if (!$customer || !$customer['phone'])
       ResponseUtil::redirect(UrlUtil::createUrl('bind/index'));
 
     $this->view('appointment/index');

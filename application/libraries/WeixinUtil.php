@@ -263,7 +263,7 @@ class WeixinUtil
         ),
 
         "examuser" => array(
-          "value" => $nickName,
+          "value" => $nickName ? $nickName : $phone,
           "color" => "#173177"
         ),
 
