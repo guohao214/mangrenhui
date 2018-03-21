@@ -128,11 +128,12 @@ class WeixinUtil
 
     // 判断是否已经获取了微信用户信息
     $customerModel = new CustomerModel();
-    $customer = $customerModel->readOne($this->getOpenId());
+    $customer = $customerModel->readOne($this->getOpenId(), CustomerModel::IS_CUSTOMER);
     if (!$customer) {
       $userInfo = $this->getWeixinUserInfo($this->getToken(), $this->getOpenId());
-      $customerModel->insert($this->getOpenId(), 0, $userInfo['nickname'],
-        $userInfo['headimgurl'], $userInfo['city'], $userInfo['province'], $userInfo['sex']);
+      if ($userInfo)
+        $customerModel->insert($this->getOpenId(), 0, $userInfo['nickname'],
+          $userInfo['headimgurl'], $userInfo['city'], $userInfo['province'], $userInfo['sex']);
     }
 
     return true;
