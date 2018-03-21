@@ -47,6 +47,7 @@ class BeauticianModel extends BaseModel
   {
     $validate = new ValidateUtil();
     $validate->required('name');
+    $validate->required('phone');
     $validate->required('join_date');
     $validate->required('shop_id');
 
@@ -58,6 +59,10 @@ class BeauticianModel extends BaseModel
   public function readOne($beauticianId)
   {
     return (new CurdUtil($this))->readOne(array('beautician_id' => $beauticianId, 'disabled' => 0));
+  }
+
+  public function readByPhone($phone) {
+    return (new CurdUtil($this))->readOne(array('phone' => $phone, 'disabled' => 0));
   }
 
   /**

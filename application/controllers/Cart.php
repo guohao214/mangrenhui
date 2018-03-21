@@ -21,7 +21,8 @@ class Cart extends FrontendController
     $appointmentDay = $params['appointment_day'];
     $appointmentTime = $params['appointment_time'];
 
-    $openId = (new WeixinUtil())->getOpenId();
+    $weixinUtil = new WeixinUtil();
+    $openId = $weixinUtil->getOpenId();
 
 
     //$openId = (new WeixinUtil())->getOpenId();
@@ -29,7 +30,7 @@ class Cart extends FrontendController
 //      ResponseUtil::failure('错误的授权');
 
     if (!(new ShopModel())->isValidShopId($shopId))
-       ResponseUtil::failure('门店信息错误，请检查！');
+      ResponseUtil::failure('门店信息错误，请检查！');
 
     // 检查技师
     if (!(new BeauticianModel())->isValidBeautician($beauticianId))
@@ -77,7 +78,8 @@ class Cart extends FrontendController
     $orderNo = StringUtil::generateOrderNo();
     $orderModel = new OrderModel();
 
-    $customer = (new CustomerModel())->readOne($openId, CustomerModel::IS_CUSTOMER);
+    $customerModel = (new CustomerModel());
+    $customer = $customerModel->readOne($openId, CustomerModel::IS_CUSTOMER);
 
     // 订单数据
     $orderData = array(
@@ -118,6 +120,40 @@ class Cart extends FrontendController
       ResponseUtil::failure('提交订单失败，请重试!');
     } else {
       $this->db->trans_commit();
+
+      $toBeautician = $customerModel->getBeautician($beauticianId);
+      $toFront = $customerModel->getFront();
+      // 发送到自己
+      $accessToken = $weixinUtil->getToken();
+      $realEndTime = date('H:i', strtotime($appointmentDay . ' ' . $endTime) + 30 * 60);
+      $appointmentDate = $appointmentDay . ' ' . $startTime . '~' . $realEndTime;
+
+      $shops = (new ShopModel())->getAllShopAddress();
+      $shop = $shops[$shopId];
+      $beautician = (new BeauticianModel())->readOne($beauticianId);
+      $beautician = $beautician['name'];
+      $projectName = $project['project_name'];
+
+      // 发送给客户
+      $weixinUtil->sendNotice(CustomerModel::IS_CUSTOMER,
+        $customer['nick_name'], $customer['phone'], $appointmentDate,
+        $shop, $beautician, $projectName, $openId, $accessToken);
+
+      // 发送给技师
+      if ($toBeautician)
+        $weixinUtil->sendNotice(CustomerModel::IS_BEAUTICIAN,
+          $customer['nick_name'], $customer['phone'], $appointmentDate,
+          $shop, $beautician, $projectName, $toBeautician['open_id'], $accessToken);
+
+      // 发送给前台
+      if ($toFront && count($toFront) > 0) {
+        foreach ($toFront as $front) {
+          $weixinUtil->sendNotice(CustomerModel::IS_FRONTEND,
+            $customer['nick_name'], $customer['phone'], $appointmentDate,
+            $shop, $beautician, $projectName, $front['open_id'], $accessToken);
+        }
+      }
+
       ResponseUtil::executeSuccess('提交订单成功', $orderNo);
 
       // 推送消息

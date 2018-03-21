@@ -246,7 +246,7 @@ class WeixinUtil
    * @param $accessToken
    * @return mixed|string
    */
-  public function sendNotice($type =1, $phone, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken)
+  public function sendNotice($type =1, $nickName, $phone, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken)
   {
     $first = $type === 1 ? '您好，您已成功预约' : '有新的预约';
 
@@ -262,7 +262,7 @@ class WeixinUtil
         ),
 
         "examuser" => array(
-          "value" => $phone,
+          "value" => $nickName,
           "color" => "#173177"
         ),
 
@@ -277,12 +277,12 @@ class WeixinUtil
         ),
 
         "hosptel" => array(
-          "value" => $beautician,
+          "value" => $phone,
           'color' => "#173177"
         ),
 
         "remark" => array( //备注
-          "value" => "预约项目为：{$projectName}, 预约技师为: { $beautician}",
+          "value" => "预约项目为：{$projectName}, 预约技师为: $beautician",
           "color" => "#c9151b"
         )
       )
@@ -328,7 +328,7 @@ class WeixinUtil
   }
 
   /**
-   * 获得微信用户信息
+   * 获得微信用户信息‚
    * @param $accessToken
    * @param $openId
    */

@@ -24,6 +24,13 @@
         </td>
       </tr>
       <tr>
+        <th><i class="require-red">*</i>手机号：</th>
+        <td>
+          <input class="common-text required" name="phone" size="30"
+                 value="<?php echo set_value('phone'); ?>" type="text">
+        </td>
+      </tr>
+      <tr>
         <th><i class="require-red">*</i>性别：</th>
         <td>
           <select class="select" name="sex">

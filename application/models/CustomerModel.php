@@ -45,6 +45,24 @@ class CustomerModel extends BaseModel
   }
 
   /**
+   * @param $beauticianId
+   * @return mixed
+   */
+  public function getBeautician($beauticianId)
+  {
+    return (new CurdUtil($this))->readOne(
+      array('type' => CustomerModel::IS_BEAUTICIAN, 'beautician_id' => $beauticianId), 'customer_id desc');
+  }
+
+  /**
+   * 获取前台通知
+   */
+  public function getFront()
+  {
+    return (new CurdUtil($this))->readAll('customer_id desc', array('type' => CustomerModel::IS_FRONTEND));
+  }
+
+  /**
    * 读取记录
    * @param $openId
    * @return mixed

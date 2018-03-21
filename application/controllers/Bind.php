@@ -37,6 +37,8 @@ class Bind extends FrontendController
     // 绑定
     $status = (new CurdUtil($customerModel))->update(array('open_id' => $openId),
       array('phone' => $phone, 'type' => CustomerModel::IS_CUSTOMER));
+
+    //echo $this->db->last_query();
     $status ? ResponseUtil::executeSuccess() : ResponseUtil::failure();
 
   }
@@ -52,6 +54,7 @@ class Bind extends FrontendController
       $params = RequestUtil::postParams();
       $type = $params['type'] + 0;
       $phone = $params['phone'];
+      $beauticianId = 0;
 
       if (!$type || !$phone)
         ResponseUtil::failure();
@@ -62,8 +65,17 @@ class Bind extends FrontendController
       if ($customer['phone'])
         ResponseUtil::failure('此手机号已绑定');
 
+      // 如果是技师， 则查询手机号， 然后与open_id 绑定
+      if ($type == CustomerModel::IS_BEAUTICIAN) {
+          $beautician = (new BeauticianModel())->readByPhone($phone);
+          if (!$beautician)
+            ResponseUtil::failure('绑定的技师不存在');
+
+          $beauticianId = $beautician['beautician_id'];
+      }
+
       $status = (new CurdUtil(new CustomerModel()))->create(array('open_id' => $openId,'credits' => 0,
-        'phone' => $phone, 'type' => $type));
+        'phone' => $phone, 'type' => $type, 'beautician_id' => $beauticianId));
       $status ? ResponseUtil::executeSuccess() : ResponseUtil::failure();
 
     }
