@@ -23,6 +23,7 @@ class Customer extends BackendController
     $customers = (new CurdUtil($this->customerModel))->readLimit($where, $limit, 'customer_id desc');
 
 //    var_dump($this->db->last_query());exit;
+    $this->db->where('type', CustomerModel::IS_CUSTOMER);
     $customersCount = (new CurdUtil($this->customerModel))->count($where);
     $pages = (new PaginationUtil($customersCount))->pagination();
 
