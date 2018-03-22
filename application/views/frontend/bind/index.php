@@ -1,5 +1,5 @@
 <style> #app .group {
-    padding-top: 1rem
+    padding-top: 1.5rem
   }
 
   #app .little {
@@ -9,16 +9,29 @@
     align-items: center;
     flex-direction: column
   }
+
+  .logo {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .logo img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 </style>
 <div class="cell" id="bind">
   <div class="little">
-    <yd-icon name="weixin"></yd-icon>
-    <div>绑定手机号</div>
+    <div class="logo">
+      <img src="<?php echo $baseUrl?>/static/frontend/images/WechatIMG177.jpeg" alt="">
+    </div>
+    <div>请用手机号码登录</div>
   </div>
   <div class="group">
     <yd-cell-group>
       <yd-cell-item>
-        <yd-icon slot="icon" name="phone3" size=".45rem"></yd-icon>
+        <yd-icon slot="icon" name="phone3" size=".45rem" color="#ffb400"></yd-icon>
         <input type="text" slot="right" placeholder="请输入手机号码" v-model="phone"/>
 
         <yd-sendcode slot="right"

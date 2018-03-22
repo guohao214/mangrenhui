@@ -13,10 +13,23 @@
   .yd-cell:after {
     border: none;
   }
+
+  .logo {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .logo img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 </style>
 <div class="cell" id="bind">
   <div class="little">
-    <yd-icon name="weixin"></yd-icon>
+    <div class="logo">
+      <img src="<?php echo $baseUrl?>/static/frontend/images/WechatIMG177.jpeg" alt="">
+    </div>
     <div>绑定手机号</div>
   </div>
 

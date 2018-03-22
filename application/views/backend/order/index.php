@@ -103,9 +103,12 @@
               <a class="link-del btn btn-danger"
                  href="<?php echo UrlUtil::createBackendUrl('order/deleteOrder/' . $order['order_id']); ?>">删除</a>
 
-              <?php if ($order['order_sign'] == OrderModel::ORDER_APPOINTMENT): ?><br>
-                <a class="link-complete btn btn-warning"
+              <?php if ($order['order_status'] == OrderModel::ORDER_APPOINTMENT): ?><br>
+                <a class="link-cancel btn btn-warning"
                    href="<?php echo UrlUtil::createBackendUrl('order/CancelOrder/' . $order['order_id']); ?>">取消</a>
+
+                <a class="link-complete btn btn-success"
+                   href="<?php echo UrlUtil::createBackendUrl('order/orderComplete/' . $order['order_id']); ?>">已完成</a>
               <?php endif; ?>
             </td>
           </tr>
@@ -129,10 +132,18 @@
       }
     })
 
-    $('.link-complete').on('click', function (e) {
+    $('.link-cancel').on('click', function (e) {
       e.preventDefault();
 
       if (confirm('确定取消此订单？')) {
+        window.location.href = $(this).attr('href');
+      }
+    })
+
+    $('.link-complete').on('click', function (e) {
+      e.preventDefault();
+
+      if (confirm('确定此订单已完成？')) {
         window.location.href = $(this).attr('href');
       }
     })

@@ -80,15 +80,40 @@ class Order extends BackendController
     if (!$order)
       ResponseUtil::failure('取消订单失败!');
 
-    // 获得积分ID
-    $couponId = $order['use_coupon_id'];
-    if ($couponId)
-      (new CustomerCouponModel())->refundCoupon($couponId, $order['open_id']);
+//    // 获得积分ID
+//    $couponId = $order['use_coupon_id'];
+//    if ($couponId)
+//      (new CustomerCouponModel())->refundCoupon($couponId, $order['open_id']);
 
     if ((new CurdUtil($this->orderModel))->update(array('order_id' => $order_id),
       array('order_status' => OrderModel::ORDER_CANCEL, 'complete_time' => DateUtil::now()))
     )
       $this->message('订单已取消！');
+    else
+      $this->message('处理失败！');
+  }
+
+
+ public function orderComplete($order_id = '')
+  {
+    if (!$order_id)
+      $this->message('订单ID不能为空！');
+
+    $orderModel = new OrderModel();
+    // 获得订单
+    $order = $orderModel->readOne($order_id);
+    if (!$order)
+      ResponseUtil::failure('取消订单失败!');
+
+//    // 获得积分ID
+//    $couponId = $order['use_coupon_id'];
+//    if ($couponId)
+//      (new CustomerCouponModel())->refundCoupon($couponId, $order['open_id']);
+
+    if ((new CurdUtil($this->orderModel))->update(array('order_id' => $order_id),
+      array('order_status' => OrderModel::ORDER_COMPLETE, 'complete_time' => DateUtil::now()))
+    )
+      $this->message('订单已完成！');
     else
       $this->message('处理失败！');
   }

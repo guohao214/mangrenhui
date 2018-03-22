@@ -1,29 +1,45 @@
 <style> #order .item {
     margin: .2rem 0
-  }</style>
+  }
+  .notice {
+    display: flex;
+    height: 5rem;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+</style>
 <div id="order">
-  <div class="item" v-for="order in orders">
-    <yd-preview :buttons="order.order_status == 1 ? btns : mbtns" :data-id="order.order_id">
-      <yd-preview-header>
-        <div slot="left">付款金额</div>
-        <div slot="right">¥{{ order.total_fee}}</div>
-      </yd-preview-header>
+  <div v-if="orders.length > 0">
+    <div class="item" v-for="order in orders">
+      <yd-preview :buttons="order.order_status == 1 ? btns : (order.order_status == 100) ? doneBtns : mbtns" :data-id="order.order_id">
+        <yd-preview-header>
+          <div slot="left">付款金额</div>
+          <div slot="right">¥{{ order.total_fee}}</div>
+        </yd-preview-header>
 
-      <yd-preview-item>
-        <div slot="left">项目</div>
-        <div slot="right">{{ order.project_name}}({{order.use_time}}分钟)</div>
-      </yd-preview-item>
-      <yd-preview-item>
-        <div slot="left">技师</div>
-        <div slot="right">{{ order.beautician_name}}</div>
-      </yd-preview-item>
-      <yd-preview-item>
-        <div slot="left">预约日期</div>
-        <div slot="right">{{order.appointment_day}}
-          {{order.appointment_start_time}}~{{order.appointment_end_time|realDay(order.appointment_day)}}
-        </div>
-      </yd-preview-item>
-    </yd-preview>
+        <yd-preview-item>
+          <div slot="left">项目</div>
+          <div slot="right">{{ order.project_name}}({{order.use_time}}分钟)</div>
+        </yd-preview-item>
+        <yd-preview-item>
+          <div slot="left">技师</div>
+          <div slot="right">{{ order.beautician_name}}</div>
+        </yd-preview-item>
+        <yd-preview-item>
+          <div slot="left">预约日期</div>
+          <div slot="right">{{order.appointment_day}}
+            {{order.appointment_start_time}}~{{order.appointment_end_time|realDay(order.appointment_day)}}
+          </div>
+        </yd-preview-item>
+      </yd-preview>
+    </div>
+  </div>
+  <div v-else>
+    <div class="notice">
+      <yd-icon name="warn" color="#ffb400" size="1rem"></yd-icon>
+      <span>暂无订单</span>
+    </div>
   </div>
 </div>
 
@@ -36,7 +52,9 @@
       filters: {
         realDay: function (value, day) {
           try {
-            var date = (new Date(day + ' ' + value)).getTime() + 30 * 60 * 1000
+            var _day = day + ' ' + value
+            _day = _day.replace(/-/g, '/')
+            var date = (new Date(_day)).getTime() + 30 * 60 * 1000
             var date = (new Date(date))
             var minute = date.getMinutes()
             if (minute.toString().length == 1)
@@ -49,6 +67,11 @@
       },
       data: {
         orders: [],
+        doneBtns: [
+          {
+            text: '订单已完成',
+          },
+        ],
         mbtns: [
           {
             text: '订单已取消',

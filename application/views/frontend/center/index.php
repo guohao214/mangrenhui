@@ -1,17 +1,32 @@
 <style>
+  #center {
+    padding-top:.5rem;
+  }
   #center .little { height: 2rem; display: flex; justify-content: center;align-items: center; flex-direction: column }
+  .logo {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .logo img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 </style>
 <div id="center">
   <div class="little">
-    <yd-icon name="ucenter"></yd-icon>
-    <div>个人中心</div>
+    <div class="logo">
+      <img src="<?php echo $customer['avatar'];?>" alt="">
+    </div>
+    <div><?php echo $customer['nick_name'];?></div>
   </div>
   <yd-cell-group>
     <yd-cell-item arrow type="a" href="<?php echo UrlUtil::createUrl('center/order'); ?>">
       <span slot="left">我的订单</span>
     </yd-cell-item>
-    <yd-cell-item type="a" href="tel:88889999">
-      <span slot="left">联系我们: 8899999</span>
+    <yd-cell-item type="a" href="tel:18616755873">
+      <span slot="left">联系我们: 186-1675-5873</span>
     </yd-cell-item>
   </yd-cell-group>
 </div>
