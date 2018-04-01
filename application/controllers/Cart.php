@@ -87,6 +87,7 @@ class Cart extends FrontendController
       'shop_id' => $shopId,
       'created_time' => DateUtil::now(),
       'open_id' => $openId,
+      'nick_name' => $customer['nick_name'],
       'beautician_id' => $beauticianId,
       'appointment_day' => $appointmentDay,
       'appointment_start_time' => $startTime,

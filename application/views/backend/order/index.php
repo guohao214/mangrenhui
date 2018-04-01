@@ -105,7 +105,7 @@
             <td><?php echo DateUtil::buildDateTime($order['appointment_day'], $order['appointment_start_time']); ?></td>
             <td width="170"><?php echo $shops[$order['shop_id']]; ?></td>
             <td width="80"><?php echo $beauticians[$order['beautician_id']]; ?></td>
-            <td><?php echo $order['phone_number']; ?></td>
+            <td><?php echo $order['nick_name']; ?> <br> <?php echo $order['phone_number']; ?></td>
             <td><?php echo $orderStatus[$order['order_status']]; ?></td>
             <td>￥<?php echo $order['total_fee']; ?></td>
             <td><?php echo $order['created_time']; ?></td>
