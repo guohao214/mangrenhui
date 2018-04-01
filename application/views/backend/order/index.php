@@ -43,7 +43,7 @@
           </td>
           <td>门店：</td>
           <td>
-            <select name="shop_id" class="select">
+            <select name="shop_id" class="select" id="shop_id">
               <option value="">所有</option>
               <?php foreach ($shops as $key => $shop): ?>
                 <option
@@ -53,12 +53,12 @@
           </td>
           <td>技师：</td>
           <td>
-            <select name="beautician_id" class="select">
+            <select name="beautician_id" class="select" id="beautician_id">
               <option value="">所有</option>
-              <?php foreach ($beauticians as $key => $beautician): ?>
-                <option
-                  value="<?php echo $key; ?>" <?php echo ($params['beautician_id'] == $key) ? ' selected' : ''; ?>><?php echo $beautician; ?></option>
-              <?php endforeach; ?>
+<!--              --><?php //foreach ($beauticians as $key => $beautician): ?>
+<!--                <option-->
+<!--                  value="--><?php //echo $key; ?><!--" --><?php //echo ($params['beautician_id'] == $key) ? ' selected' : ''; ?><!-->--><?php //echo $beautician; ?><!--</option>-->
+<!--              --><?php //endforeach; ?>
             </select>
           </td>
         </tr>
@@ -136,6 +136,47 @@
 
 <script>
   $(document).ready(function () {
+
+    var $beauticianId = $('#beautician_id')
+    var $shopId = $('#shop_id')
+
+    getBeauticians()
+
+
+    function getQueryString (name) {
+      name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+      var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+
+      return results == null ? "" : decodeURIComponent(results[1]);
+    }
+
+    function getBeauticians() {
+      if (!$shopId.val())
+        return
+
+      $.ajax({
+        url: '/backend/Beautician/getBeauticians',
+        data: { shop_id : $shopId.val()}
+      }).done(function (data) {
+        var content = data.data.content
+        var beauticianId = getQueryString('beautician_id')
+        content.forEach(function (item) {
+          var checked= item.beautician_id == beauticianId ? ' selected' : ''
+          console.log(checked)
+          $beauticianId.append('<option value="' + item.beautician_id + '"' + checked + '>' + item.name + '</option>')
+        })
+      }).fail(function (err) {
+        alert('获取店铺技师失败')
+      })
+    }
+
+    $shopId.on('change', function () {
+      $beauticianId.find('option').not(':first').remove()
+      getBeauticians()
+    })
+
+
     $('.link-del').on('click', function (e) {
       e.preventDefault();
 

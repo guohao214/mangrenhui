@@ -22,6 +22,17 @@ class Beautician extends BackendController
     $this->load->model('BeauticianModel', 'beauticianModel');
   }
 
+  public function getBeauticians() {
+    $params = RequestUtil::getParams();
+    $shopId = $params['shop_id'];
+
+    $beauticians = (new CurdUtil((new BeauticianModel())))
+      ->readAll('beautician_id asc', ['disabled' => 0, 'shop_id' => $shopId]);
+
+    ResponseUtil::QuerySuccess($beauticians);
+  }
+
+
   /**
    * 美容师列表 没有使用分页
    */
