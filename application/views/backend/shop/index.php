@@ -1,6 +1,6 @@
 <div class="crumb-wrap">
   <div class="crumb-list"><i class="icon-font"></i><a href="<?php echo UrlUtil::createBackendUrl('project/index'); ?>">首页</a><span
-      class="crumb-step">&gt;</span><span class="crumb-name">项目管理</span></div>
+      class="crumb-step">&gt;</span><span class="crumb-name">门店管理</span></div>
 </div>
 <div class="search-wrap">
   <div class="search-content">
@@ -50,6 +50,12 @@
                  href="<?php echo UrlUtil::createBackendUrl('shop/updateShop/' . $shop['shop_id']); ?>">修改</a>
               <a class="link-del btn btn-danger"
                  href="<?php echo UrlUtil::createBackendUrl('shop/deleteShop/' . $shop['shop_id']); ?>">删除</a>
+
+              <a class="link-update btn btn-success"
+                 href="<?php echo UrlUtil::createBackendUrl('shop/bind/?type=3&shop_id=' . $shop['shop_id'] ); ?>">绑定技师</a>
+
+              <a class="link-update btn btn-success"
+                 href="<?php echo UrlUtil::createBackendUrl('shop/bind/?type=2&shop_id=' . $shop['shop_id']); ?>">绑定前台</a>
             </td>
           </tr>
         <?php endforeach; ?>

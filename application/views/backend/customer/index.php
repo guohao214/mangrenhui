@@ -25,10 +25,12 @@
         <tr>
           <th width="110">头像</th>
           <th>昵称</th>
+          <th>手机号</th>
           <th>城市</th>
           <th width="100">省份</th>
           <th width="100">性别</th>
           <th width="150">积分</th>
+          <th width="150">操作</th>
         </tr>
         <?php foreach ($customers as $customer): ?>
           <tr>
@@ -36,10 +38,15 @@
               <img class="cover" src="<?php echo $customer['avatar']; ?>">
             </td>
             <td><?php echo $customer['nick_name']; ?></td>
+            <td><?php echo $customer['phone']; ?></td>
             <td><?php echo $customer['city']; ?></td>
             <td><?php echo $customer['province']; ?></td>
             <td><?php echo $sex[$customer['sex']]; ?></td>
             <td><?php echo $customer['credits']; ?></td>
+            <td>
+              <a class="link-view btn btn-success"
+                 href="<?php echo UrlUtil::createBackendUrl('order/index/?phone_number=' . $customer['phone']); ?>">查看订单</a>
+            </td>
           </tr>
         <?php endforeach; ?>
       </table>

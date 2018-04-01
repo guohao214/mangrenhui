@@ -8,7 +8,7 @@
  */
 class LogUtil
 {
-  public static $weinxi = 'weixin_log';
+  public static $weinxi = 'wechat_';
 
   public static function log($mainTitle, $message, $file = 'log')
   {

@@ -1,5 +1,5 @@
 <style> #app .group {
-    padding-top: 1rem
+    padding: 1rem .25rem 0 .25rem
   }
 
   #app .little {
@@ -61,11 +61,12 @@
         bind: function () {
           var self = this
           var type = this.$tool.getQueryString('type')
+          var shopId = this.$tool.getQueryString('shop_id')
 
           if (!type)
             return
 
-          this.$request.post('bind/other', {phone: this.phone, type: type})
+          this.$request.post('bind/other', {phone: this.phone, type: type, shopId: shopId})
             .then(function (data) {
               self.$dialog.toast({
                 mes: '手机号与微信绑定成功',

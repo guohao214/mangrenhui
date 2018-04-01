@@ -51,8 +51,8 @@
             <td><?php echo $shops[$beautician['shop_id']]; ?></td>
             <td>
               <a
-                href="<?php echo UrlUtil::createBackendUrl('order/index?order_status=2&beautician_id=' . $beautician_id); ?>">
-                <?php echo $beauticianOrderCounts[$beautician_id]; ?>
+                href="<?php echo UrlUtil::createBackendUrl('order/index?order_status=100&beautician_id=' . $beautician_id); ?>">
+                <?php echo $beauticianOrderCounts[$beautician_id] ? $beauticianOrderCounts[$beautician_id] : 0; ?>
               </a>
             </td>
             <td><?php echo $beautician['sex']; ?></td>

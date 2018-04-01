@@ -30,6 +30,7 @@ class Order extends BackendController
     $shops = (new ShopModel())->getAllShops();
     $beauticians = (new BeauticianModel())->getAllFormatBeauticians();
     $this->view('order/index', array('orders' => $orders, 'pages' => $pages, 'beauticians' => $beauticians,
+      'orderCount' => $ordersCount,
       'params' => RequestUtil::getParams(), 'shops' => $shops, 'limit' => $limit, 'orderStatus' => $orderStatus));
   }
 

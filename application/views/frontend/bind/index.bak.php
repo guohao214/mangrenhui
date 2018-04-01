@@ -1,6 +1,5 @@
 <style> #app .group {
-    /*padding-top: 1rem*/
-    padding: 1rem .25rem 0 .25rem
+    padding-top: 1.5rem
   }
 
   #app .little {
@@ -21,40 +20,34 @@
     height: 100%;
     display: block;
   }
-
-  .yd-cell:after {
-    border: none;
-  }
 </style>
 <div class="cell" id="bind">
   <div class="little">
     <div class="logo">
-      <img src="<?php echo $baseUrl ?>/static/frontend/images/WechatIMG177.jpeg" alt="">
+      <img src="<?php echo $baseUrl?>/static/frontend/images/WechatIMG177.jpeg" alt="">
     </div>
     <div>请用手机号码登录</div>
   </div>
   <div class="group">
     <yd-cell-group>
       <yd-cell-item>
-        <span slot="left">手机号：</span>
-        <yd-input slot="right" placeholder="请输入手机号码" regex="^1\d{10}$"  max="11" v-model="phone"></yd-input>
+        <yd-icon slot="icon" name="phone3" size=".45rem" color="#ffb400"></yd-icon>
+        <input type="text" slot="right" placeholder="请输入手机号码" v-model="phone"/>
 
-      </yd-cell-item>
-
-      <yd-cell-item>
-        <span slot="left">验证码：</span>
-        <yd-input slot="right" placeholder="请输入验证码"  regex="^\d{6}$"  v-model="smsCode"  max="6"></yd-input>
         <yd-sendcode slot="right"
                      v-model="start"
                      @click.native="sendCode"
                      type="warning"/>
-      </yd-cell-item>
 
-      <yd-button-group>
-        <yd-button size="large" type="warning" @click.native="done">登录</yd-button>
-      </yd-button-group>
+      </yd-cell-item>
     </yd-cell-group>
 
+    <yd-keyboard v-model="showKeyboard"
+                 title=""
+                 input-text="输入验证码"
+                 :trigger-close="false"
+                 cancel-text="取消"
+                 :callback="done" ref="keybord"/>
   </div>
 
 </div>
@@ -66,33 +59,21 @@
       data: {
         phone: '',
         start: false,
-        smsCode: '',
+        showKeyboard: false
       },
       mounted: function () {
       },
       methods: {
-        done: function () {
-          if (!this.smsCode || !/^\d{6}$/.test(this.smsCode)) {
-            this.$dialog.toast({
-              mes: '验证码错误',
-              timeout: 1500
-            });
-
-            return
-          }
-
+        done: function (value) {
           var self = this
-          this.$request.get('bind/bindMe', {code: this.smsCode, phone: this.phone})
+          this.$request.get('bind/bindMe', {code: value, phone: this.phone})
             .then(function (data) {
               setTimeout(function () {
                 window.location.href = document_root + 'appointment/index'
               }, 2000)
             })
             .catch(function (err) {
-              self.$dialog.toast({
-                mes: err.detail || '登录失败，请重试',
-                timeout: 1500
-              });
+              self.$refs.keybord.$emit('ydui.keyboard.error', err.detail || '对不起，验证码不正确，请重新输入。');
             })
         },
         sendCode: function () {
@@ -116,6 +97,7 @@
                 timeout: 1500
               });
 
+              self.showKeyboard = true
               self.start = true;
 
             })

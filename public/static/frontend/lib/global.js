@@ -28,7 +28,7 @@ $(document).ready(function () {
   $request.request = function (url, method, data) {
     return new Promise(function (res, rej) {
       $.ajax({
-        url: '/' + url,
+        url: '/' + url + '?_t=' +(+(new Date())),
         method: method,
         data: data || {},
         dataType: 'json',

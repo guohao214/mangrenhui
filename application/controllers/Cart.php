@@ -121,37 +121,47 @@ class Cart extends FrontendController
     } else {
       $this->db->trans_commit();
 
-      $toBeautician = $customerModel->getBeautician($beauticianId);
-      $toFront = $customerModel->getFront();
-      // 发送到自己
-      $accessToken = $weixinUtil->getToken();
-      $realEndTime = date('H:i', strtotime($appointmentDay . ' ' . $endTime) + 30 * 60);
-      $appointmentDate = $appointmentDay . ' ' . $startTime . '~' . $realEndTime;
+      try {
 
-      $shops = (new ShopModel())->getAllShopAddress();
-      $shop = $shops[$shopId];
-      $beautician = (new BeauticianModel())->readOne($beauticianId);
-      $beautician = $beautician['name'];
-      $projectName = $project['project_name'];
+        $toBeautician = $customerModel->getBeautician($beauticianId);
+        $toFront = $customerModel->getFront();
+        // 发送到自己
+        $accessToken = $weixinUtil->getToken();
+        $realEndTime = date('H:i', strtotime($appointmentDay . ' ' . $endTime) + 30 * 60);
+        $appointmentDate = $appointmentDay . ' ' . $startTime . '~' . $realEndTime;
 
-      // 发送给客户
-      $weixinUtil->sendNotice(CustomerModel::IS_CUSTOMER,
-        $customer['nick_name'], $customer['phone'], $appointmentDate,
-        $shop, $beautician, $projectName, $openId, $accessToken);
+        $shops = (new ShopModel())->getAllShopAddress();
+        $shop = $shops[$shopId];
+        $beautician = (new BeauticianModel())->readOne($beauticianId);
+        $beautician = $beautician['name'];
+        $projectName = $project['project_name'];
 
-      // 发送给技师
-      if ($toBeautician)
-        $weixinUtil->sendNotice(CustomerModel::IS_BEAUTICIAN,
+        // 发送给客户
+        $weixinUtil->sendNotice(CustomerModel::IS_CUSTOMER,
           $customer['nick_name'], $customer['phone'], $appointmentDate,
-          $shop, $beautician, $projectName, $toBeautician['open_id'], $accessToken);
+          $shop, $beautician, $projectName, $openId, $accessToken);
 
-      // 发送给前台
-      if ($toFront && count($toFront) > 0) {
-        foreach ($toFront as $front) {
-          $weixinUtil->sendNotice(CustomerModel::IS_FRONTEND,
-            $customer['nick_name'], $customer['phone'], $appointmentDate,
-            $shop, $beautician, $projectName, $front['open_id'], $accessToken);
+
+        // 测试环境不发送给技师 和 前台
+        if ($_SERVER['CI_ENV'] === 'production') {
+
+          // 发送给技师
+          if ($toBeautician)
+            $weixinUtil->sendNotice(CustomerModel::IS_BEAUTICIAN,
+              $customer['nick_name'], $customer['phone'], $appointmentDate,
+              $shop, $beautician, $projectName, $toBeautician['open_id'], $accessToken);
+
+          // 发送给前台
+          if ($toFront && count($toFront) > 0) {
+            foreach ($toFront as $front) {
+              $weixinUtil->sendNotice(CustomerModel::IS_FRONTEND,
+                $customer['nick_name'], $customer['phone'], $appointmentDate,
+                $shop, $beautician, $projectName, $front['open_id'], $accessToken);
+            }
+          }
         }
+      } catch (Exception $exception) {
+        LogUtil::weixinLog('发送通知', '通知发送失败' . $exception->getMessage());
       }
 
       ResponseUtil::executeSuccess('提交订单成功', $orderNo);

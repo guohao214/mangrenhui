@@ -19,6 +19,12 @@
 <!--          src="--><?php //echo $baseUrl; ?><!--static/frontend/lib/iscroll.js"></script>-->
   <script type="text/javascript"
           src="<?php echo $baseUrl; ?>static/frontend/lib/global.js?v=000"></script>
+  <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <style>
+    .yd-cell-item:after {
+      margin-left: 0rem !important;
+    }
+  </style>
 </head>
 <script>
   document_root = "<?php echo $baseUrl; ?>";

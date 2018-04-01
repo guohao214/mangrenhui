@@ -54,6 +54,7 @@ class Bind extends FrontendController
       $params = RequestUtil::postParams();
       $type = $params['type'] + 0;
       $phone = $params['phone'];
+      $shopId = $params['shopId'] + 0;
       $beauticianId = 0;
 
       if (!$type || !$phone)
@@ -63,19 +64,24 @@ class Bind extends FrontendController
       // 是否已绑定
       $customer = $customerModel->readOne($openId, $type);
       if ($customer['phone'])
-        ResponseUtil::failure('此手机号已绑定');
+        ResponseUtil::failure('微信与手机号已绑定');
 
       // 如果是技师， 则查询手机号， 然后与open_id 绑定
       if ($type == CustomerModel::IS_BEAUTICIAN) {
-          $beautician = (new BeauticianModel())->readByPhone($phone);
-          if (!$beautician)
-            ResponseUtil::failure('绑定的技师不存在');
+        $beautician = (new BeauticianModel())->readByPhone($phone);
+        if (!$beautician)
+          ResponseUtil::failure('绑定的技师不存在');
 
-          $beauticianId = $beautician['beautician_id'];
+        $beauticianId = $beautician['beautician_id'];
       }
 
-      $status = (new CurdUtil(new CustomerModel()))->create(array('open_id' => $openId,'credits' => 0,
-        'phone' => $phone, 'type' => $type, 'beautician_id' => $beauticianId));
+      // 检查店铺是否存在
+      $shops = (new ShopModel())->getAllShops();
+      if (!isset($shops[$shopId]))
+        ResponseUtil::failure('店铺不存在');
+
+      $status = (new CurdUtil(new CustomerModel()))->create(array('open_id' => $openId, 'credits' => 0,
+        'phone' => $phone, 'type' => $type, 'beautician_id' => $beauticianId, 'shop_id' => $shopId));
       $status ? ResponseUtil::executeSuccess() : ResponseUtil::failure();
 
     }

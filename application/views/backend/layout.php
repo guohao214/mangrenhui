@@ -8,6 +8,7 @@
   <link rel="stylesheet" type="text/css"
         href="<?php echo get_instance()->config->base_url(); ?>static/backend/css/main.css?v=2015010302"/>
   <script src="<?php echo get_instance()->config->base_url(); ?>static/jquery.min.js"></script>
+  <script src="<?php echo get_instance()->config->base_url(); ?>static/qrcode.js"></script>
 </head>
 <body>
 <div class="topbar-wrap white">
@@ -39,25 +40,25 @@
         <li>
           <a href="#"><i class="icon-font">&#xe003;</i>常用操作</a>
           <ul class="sub-menu">
+            <li><a href="<?php echo UrlUtil::createBackendUrl('shop/index') ?>"><i
+                  class="icon-font">&#xe031;</i>门店管理</a>
+            </li>
               <li><a href="<?php echo UrlUtil::createBackendUrl('project/index') ?>"><i class="icon-font">
                     &#xe008;</i>项目管理</a></li>
             <li><a href="<?php echo UrlUtil::createBackendUrl('beautician/index') ?>"><i class="icon-font">
                   &#xe007;</i>技师管理</a></li>
             <li><a href="<?php echo UrlUtil::createBackendUrl('order/index') ?>"><i class="icon-font">
                   &#xe005;</i>订单管理</a></li>
-
-            <li><a href="<?php echo UrlUtil::createBackendUrl('user/index') ?>"><i class="icon-font">
-                  &#xe014;</i>账号管理</a></li>
             <li><a href="<?php echo UrlUtil::createBackendUrl('customer/index') ?>"><i class="icon-font">&#xe060;</i>顾客管理</a>
             </li>
-            <li><a href="<?php echo UrlUtil::createBackendUrl('shop/index') ?>"><i
-                  class="icon-font">&#xe031;</i>门店管理</a>
-            </li>
+
           </ul>
         </li>
         <li>
           <a href="#"><i class="icon-font">&#xe018;</i>系统管理</a>
           <ul class="sub-menu">
+            <li><a href="<?php echo UrlUtil::createBackendUrl('user/index') ?>"><i class="icon-font">
+                  &#xe014;</i>账号管理</a></li>
             <li><a href="<?php echo UrlUtil::createBackendUrl('workTime/index') ?>"><i class="icon-font">&#xe017;</i>工作时间设置</a>
             </li>
           </ul>

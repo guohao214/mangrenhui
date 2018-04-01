@@ -67,6 +67,7 @@ class JSSDK
       $url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token=$accessToken";
 
       $res = $this->httpGet($url);
+      LogUtil::weixinLog('获得jssdk ticket', $res);
       $ticket = $res['ticket'];
 
       if ($ticket) {
@@ -75,6 +76,7 @@ class JSSDK
         $this->set_php_file($saveFileName, $data);
       }
     } else {
+
       $ticket = $data['jsapi_ticket'];
     }
 
@@ -90,6 +92,7 @@ class JSSDK
       $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=$this->appId&secret=$this->appSecret";
 
       $res = $this->httpGet($url);
+      LogUtil::weixinLog('获得jssdk accesstoken', $res);
       $access_token = $res['access_token'];
       if ($access_token) {
         $data['expire_time'] = time() + 7000;

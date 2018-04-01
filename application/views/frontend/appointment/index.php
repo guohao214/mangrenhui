@@ -221,6 +221,10 @@
   div[v-show] {
     display: none;
   }
+
+  .yd-cell-item {
+    padding: .2rem .1rem;
+  }
 </style>
 <div class="appointment" id="appointment">
   <div class="group" id="shop">
@@ -237,10 +241,24 @@
           <div class="shop-name"> {{ currentItem.shop_name }}</div>
           <div class="address">地址:&ensp;{{ currentItem.address }}</div>
         </div>
-        <!-- <div class="check yd-cell-arrow"></div>-->
+        <div class="check yd-cell-arrow" @click="showShopList=true"></div>
       </div>
     </div>
+
+    <yd-popup v-model="showShopList" position="right" width="90%">
+      <yd-search v-model="searchKeywords" :on-submit="submitSearch" :on-cancel="cancelSearch"></yd-search>
+      <yd-cell-group>
+        <yd-cell-item v-for="(w, k) in cpItems" @click.native="choose(w)">
+          <span slot="left">
+            <div style="font-size: .25rem"> {{ w.shop_name }}</div>
+            <div style="font-size: .1rem;"> {{ w.address }}</div>
+          </span>
+        </yd-cell-item>
+      </yd-cell-group>
+
+    </yd-popup>
   </div>
+
 
   <div class="group" id="project">
     <div class="head">
@@ -338,16 +356,61 @@
         })
     })
 
+
+    // 获得物理位置信息
+    Bus.$request.get('appointment/getJsTicket', {url: encodeURIComponent(location.href)}).then(function (data) {
+      var config = $.extend({
+        debug: false,
+        jsApiList: ['getLocation']
+      }, data.content)
+
+      wx.config(config);
+
+      wx.error(function (res) {
+        console.log(res)
+      })
+
+      wx.ready(function () {
+        wx.getLocation({
+          type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+          success: function (res) {
+            var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+            var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+            var speed = res.speed; // 速度，以米/每秒计
+            var accuracy = res.accuracy; // 位置精度
+
+            shop.getShop(latitude, longitude)
+          }
+        });
+      })
+    })
+      .catch(function (error) {
+        Bus.$dialog.toast({
+          mes: error.detail || '获取微信参数失败',
+          timeout: 1500
+        });
+      })
+
     shop = new Vue({
       el: '#shop',
       data: {
         currentItem: {},
         shop_id: '',
-        items: []
+        items: [],
+        showShopList: false,
+        searchKeywords: '',
+        cpItems: []
       },
       watch: {
         items: function (value) {
           this.currentItem = value[0]
+          this.cpItems = value
+          this.searchKeywords = ''
+        },
+        searchKeywords: function (value) {
+          this.cpItems = this.items.filter(function (item) {
+            return item.shop_name.match(new RegExp(value))
+          })
         },
         currentItem: function (newValue, oldValue) {
           if (newValue['shop_id'] === oldValue['shop_id'])
@@ -358,17 +421,32 @@
         }
       },
       mounted: function () {
-        var self = this
-        this.$request.get('shop/getList').then(function (data) {
-          self.items = data.content
-        })
-          .catch(function (error) {
-            self.$dialog.toast({
-              mes: error.detail || '获取店铺失败',
-              timeout: 1500
-            });
-          })
       },
+      methods: {
+        choose: function (item) {
+          this.currentItem = item
+          this.showShopList = false
+          project.choose(0)
+        },
+        submitSearch: function () {
+
+        },
+        cancelSearch: function () {
+          this.searchKeywords = ''
+        },
+        getShop: function (latitude, longitude) {
+          var self = this
+          this.$request.get('shop/getList', {latitude: latitude, longitude: longitude}).then(function (data) {
+            self.items = data.content
+          })
+            .catch(function (error) {
+              self.$dialog.toast({
+                mes: error.detail || '获取店铺失败',
+                timeout: 1500
+              });
+            })
+        }
+      }
     })
 
     project = new Vue({
@@ -384,7 +462,11 @@
       },
       methods: {
         choose: function (index) {
-          this.currentItem = this.items[index]
+          this.currentItem = this.items[index] || []
+          appointmentDay.appointment_time = []
+          appointmentDay.times.forEach(function (item) {
+            item.checked = false
+          })
         }
       }
     })
@@ -392,7 +474,7 @@
     worker = new Vue({
       el: '#worker',
       data: {
-        currentItem: '',
+        currentItem: [],
         items: []
       },
       watch: {
@@ -440,7 +522,9 @@
       methods: {
         fetch: function () {
           var self = this
-          var beautician_id = worker.currentItem['beautician_id']
+
+          var beautician_id = (worker.currentItem && typeof worker.currentItem['beautician_id'] !== 'undefined')
+            ? worker.currentItem['beautician_id'] : ''
           if (!beautician_id || !self.appointment_day)
             return
 

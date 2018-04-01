@@ -93,4 +93,9 @@ class Shop extends BackendController
 
     $this->view('shop/addShop');
   }
+
+  public function bind() {
+    $params = RequestUtil::getParams();
+    $this->view('shop/bind', array('params' => $params));
+  }
 } 

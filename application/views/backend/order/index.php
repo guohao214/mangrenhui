@@ -5,7 +5,7 @@
 <div class="crumb-wrap">
   <div class="crumb-list"><i class="icon-font"></i><a
       href="<?php echo UrlUtil::createBackendUrl('project/index'); ?>">首页</a><span
-      class="crumb-step">&gt;</span><span class="crumb-name">项目管理</span></div>
+      class="crumb-step">&gt;</span><span class="crumb-name">订单管理</span></div>
 </div>
 <div class="search-wrap">
   <div class="search-content">
@@ -41,6 +41,16 @@
               </option>
             </select>
           </td>
+          <td>门店：</td>
+          <td>
+            <select name="shop_id" class="select">
+              <option value="">所有</option>
+              <?php foreach ($shops as $key => $shop): ?>
+                <option
+                  value="<?php echo $key; ?>" <?php echo ($params['shop_id'] == $key) ? ' selected' : ''; ?>><?php echo $shop; ?></option>
+              <?php endforeach; ?>
+            </select>
+          </td>
           <td>技师：</td>
           <td>
             <select name="beautician_id" class="select">
@@ -71,7 +81,7 @@
 </div>
 <div class="result-wrap">
   <div class="result-title">
-    <div class="result-list"></div>
+    <div class="result-list"> 订单总数：<h1 style="display: inline-block; font-size: 20px;"><?php echo $orderCount ? $orderCount : 0 ?></h1></div>
   </div>
   <div class="result-content">
     <?php if ($orders): ?>
@@ -80,6 +90,7 @@
           <th>订单ID</th>
           <th width="220">订单号</th>
           <th>预约日期</th>
+          <th>门店</th>
           <th>技师</th>
           <th>联系信息</th>
           <th>订单状态</th>
@@ -92,6 +103,7 @@
             <td><?php echo $order['order_id']; ?></td>
             <td><?php echo $order['order_no']; ?></td>
             <td><?php echo DateUtil::buildDateTime($order['appointment_day'], $order['appointment_start_time']); ?></td>
+            <td width="170"><?php echo $shops[$order['shop_id']]; ?></td>
             <td width="80"><?php echo $beauticians[$order['beautician_id']]; ?></td>
             <td><?php echo $order['phone_number']; ?></td>
             <td><?php echo $orderStatus[$order['order_status']]; ?></td>

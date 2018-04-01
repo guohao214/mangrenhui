@@ -31,28 +31,22 @@ class FrontendController extends BaseController
    * 获得分享js
    * @param $currentUrl
    */
-  public function wechatShare()
+  public function getJsTicket()
   {
-    $scheme = $_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http';
-    $scheme .= '://';
+//    $scheme = $_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http';
+//    $scheme .= '://';
+//
+//    $httpHost = $_SERVER['HTTP_HOST']
+//      ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']
+//        ? $_SERVER['SERVER_NAME'] : 'www.xinyameirong.com';
+//
+//    $currentUrl = $scheme . $httpHost . $_SERVER['REQUEST_URI'];
 
-    $httpHost = $_SERVER['HTTP_HOST']
-      ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME']
-        ? $_SERVER['SERVER_NAME'] : 'www.xinyameirong.com';
-
-    $currentUrl = $scheme . $httpHost . $_SERVER['REQUEST_URI'];
+    $params = RequestUtil::getParams();
+    $currentUrl =urldecode($params['url']);
 
     $shareJsParams = (new WxShareUtil())->getShareParams($currentUrl);
-
-
-    $shareTitle = '这是一个靠谱的美容店， 想更漂亮的快点进去！';
-    $shareDesc = '不期而遇美容欢迎您';
-    $shareUrl = ShareUtil::getShareUrl();
-
-    // 获得头像
-    $this->load->view('frontend/wechatShare',
-      array('shareJsParams' => $shareJsParams, 'shareTitle' => $shareTitle,
-        'shareDesc' => $shareDesc, 'shareUrl' => $shareUrl));
+    ResponseUtil::QuerySuccess($shareJsParams);
   }
 
   public function noContent($message)
