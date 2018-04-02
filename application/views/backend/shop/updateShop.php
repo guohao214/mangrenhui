@@ -29,6 +29,22 @@
       </tr>
 
       <tr>
+        <td></td>
+        <td><a href="http://www.gpsspg.com/maps.htm" target="_blank"> 经纬度获取（选择腾讯高德)</a></td>
+      </tr>
+      <tr>
+        <th>经度：</th>
+        <td><input class="common-text" value="<?php echo $shop['longitude']; ?>"
+                   name="longitude" size="50" type="text"></td>
+      </tr>
+
+      <tr>
+        <th>纬度：</th>
+        <td><input class="common-text" value="<?php echo $shop['latitude']; ?>"
+                   name="latitude" size="50" type="text"></td>
+      </tr>
+
+      <tr>
         <th><i class="require-red">*</i>店铺图片：</th>
         <td>
           <img class="project_cover"

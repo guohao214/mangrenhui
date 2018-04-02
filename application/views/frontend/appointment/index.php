@@ -251,7 +251,7 @@
         <yd-cell-item v-for="(w, k) in cpItems" @click.native="choose(w)">
           <span slot="left">
             <div style="font-size: .3rem"> {{ w.shop_name }}</div>
-            <div style="font-size: .25rem;"> {{ w.address }}</div>
+            <div style="font-size: .25rem;"> {{ w.address }} ({{w.distance}})</div>
           </span>
         </yd-cell-item>
       </yd-cell-group>

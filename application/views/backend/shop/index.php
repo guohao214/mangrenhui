@@ -21,7 +21,7 @@
   <div class="result-title">
     <div class="result-list">
       <a href="<?php echo UrlUtil::createBackendUrl('shop/addShop') ?>">
-        <i class="icon-font"></i>新增项目</a>
+        <i class="icon-font"></i>新增门店</a>
     </div>
   </div>
   <div class="result-content">
