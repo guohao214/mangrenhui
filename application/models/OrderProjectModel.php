@@ -28,4 +28,10 @@ class OrderProjectModel extends BaseModel
     return $query->result_array();
   }
 
+  public function readOneByOrderId($orderId)
+  {
+    return (new CurdUtil($this))->
+    readOne(array('order_id' => $orderId));
+  }
+
 } 

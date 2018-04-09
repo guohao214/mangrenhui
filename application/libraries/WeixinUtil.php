@@ -169,7 +169,7 @@ class WeixinUtil
     $templateUrl = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=' . $accessToken;
 
     $response = RequestUtil::post($templateUrl, $message);
-    LogUtil::weixinLog('通过微信发送订单信息给客户：', $response);
+    LogUtil::weixinLog('发送模版消息：', $response);
 
     return $response;
   }
@@ -247,7 +247,7 @@ class WeixinUtil
    * @param $accessToken
    * @return mixed|string
    */
-  public function sendNotice($type =1, $nickName, $phone, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken)
+  public function order($type =1, $nickName, $phone, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken)
   {
     $first = $type === 1 ? '您好，您已成功预约' : '有新的预约';
 
@@ -284,6 +284,59 @@ class WeixinUtil
 
         "remark" => array( //备注
           "value" => "预约项目为：{$projectName}, 预约技师为: $beautician",
+          "color" => "#c9151b"
+        )
+      )
+    );
+
+    return $this->templateMessage($message, $accessToken);
+  }
+
+  /**
+   * 取消订单
+   * @param $cancelOrderTime
+   * @param $appointmentDay
+   * @param $shop
+   * @param $beautician
+   * @param $projectName
+   * @param $openId
+   * @param $accessToken
+   * @return mixed|string
+   */
+  public function cancelOrder($to, $cancelOrderTime, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken) {
+    $message = array(
+      "touser" => $openId,
+      "template_id" => "LRnmSBh-MU2YGwBVQtP1ce2-nIsIdIBSaEDw4Xtg4Gc",
+      "url" => UrlUtil::createUrl('center/index'),
+      "topcolor" => "#FF0000",
+      "data" => array(
+        "first" => array( //描述
+          "value" => $to . '预约的项目【' . $projectName . '】已取消',
+          "color" => "#FF8CB3"
+        ),
+
+        "keyword1" => array(
+          "value" => $shop,
+          'color' => "#173177"
+        ),
+
+        "keyword2" => array(
+          "value" => $beautician,
+          'color' => "#173177"
+        ),
+
+        "keyword3" => array(
+          "value" => $appointmentDay,
+          'color' => "#173177"
+        ),
+
+        "keyword4" => array(
+          "value" => $cancelOrderTime,
+          'color' => "#173177"
+        ),
+
+        "remark" => array( //备注
+          "value" => "欢迎下次光临",
           "color" => "#c9151b"
         )
       )

@@ -51,7 +51,7 @@ class CustomerModel extends BaseModel
   public function getBeautician($beauticianId)
   {
     return (new CurdUtil($this))->readOne(
-      array('type' => CustomerModel::IS_BEAUTICIAN, 'beautician_id' => $beauticianId), 'customer_id desc');
+      array('type' => CustomerModel::IS_BEAUTICIAN, 'beautician_id' => $beauticianId, 'disabled' => 1), 'customer_id desc');
   }
 
   /**
@@ -59,7 +59,7 @@ class CustomerModel extends BaseModel
    */
   public function getFront()
   {
-    return (new CurdUtil($this))->readAll('customer_id desc', array('type' => CustomerModel::IS_FRONTEND));
+    return (new CurdUtil($this))->readAll('customer_id desc', array('type' => CustomerModel::IS_FRONTEND, 'disabled' => 1));
   }
 
   /**

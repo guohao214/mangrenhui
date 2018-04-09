@@ -138,7 +138,7 @@ class Cart extends FrontendController
         $projectName = $project['project_name'];
 
         // 发送给客户
-        $weixinUtil->sendNotice(CustomerModel::IS_CUSTOMER,
+        $weixinUtil->order(CustomerModel::IS_CUSTOMER,
           $customer['nick_name'], $customer['phone'], $appointmentDate,
           $shop, $beautician, $projectName, $openId, $accessToken);
 
@@ -148,14 +148,14 @@ class Cart extends FrontendController
 
           // 发送给技师
           if ($toBeautician)
-            $weixinUtil->sendNotice(CustomerModel::IS_BEAUTICIAN,
+            $weixinUtil->order(CustomerModel::IS_BEAUTICIAN,
               $customer['nick_name'], $customer['phone'], $appointmentDate,
               $shop, $beautician, $projectName, $toBeautician['open_id'], $accessToken);
 
           // 发送给前台
           if ($toFront && count($toFront) > 0) {
             foreach ($toFront as $front) {
-              $weixinUtil->sendNotice(CustomerModel::IS_FRONTEND,
+              $weixinUtil->order(CustomerModel::IS_FRONTEND,
                 $customer['nick_name'], $customer['phone'], $appointmentDate,
                 $shop, $beautician, $projectName, $front['open_id'], $accessToken);
             }
