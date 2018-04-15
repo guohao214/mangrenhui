@@ -29,12 +29,12 @@ class WechatUtil
     return $this->wechat->getToken();
   }
 
-  public function order($type, $nickName, $phone, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken) {
-    return $this->wechat->order($type, $nickName, $phone, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken);
+  public function order($type, $nickName, $phone, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken, $formId = '') {
+    return $this->wechat->order($type, $nickName, $phone, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken, $formId);
   }
 
-  public function cancelOrder($to, $cancelOrderTime, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken) {
-    return $this->wechat->cancelOrder($to, $cancelOrderTime, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken);
+  public function cancelOrder($to, $cancelOrderTime, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken, $formId = '') {
+    return $this->wechat->cancelOrder($to, $cancelOrderTime, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken, $formId);
   }
 
   public function authorize($url) {

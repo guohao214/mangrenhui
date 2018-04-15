@@ -79,7 +79,7 @@ class WxXcxUtil
   public function templateMessage(array $message, $accessToken)
   {
     $message = json_encode($message);
-    $templateUrl = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=' . $accessToken;
+    $templateUrl = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' . $accessToken;
 
     $response = RequestUtil::post($templateUrl, $message);
     LogUtil::xcx('发送模版消息：', $response);
@@ -87,14 +87,15 @@ class WxXcxUtil
     return $response;
   }
 
-  public function order($type =1, $nickName, $phone, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken)
+  public function order($type =1, $nickName, $phone, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken, $formId)
   {
     $first = $type === 1 ? '您好，您已成功预约' : '有新的预约';
 
     $message = array(
       "touser" => $openId,
       "template_id" => "ejkMGLYkX05WQiaEz5sed3HdJsBA5O22H9Ddaie1bNw",
-      "url" => UrlUtil::createUrl('xcx/center/index'),
+      "page" => "order",
+      'form_id' => $formId,
       "topcolor" => "#FF0000",
       "data" => array(
         "keyword1" => array( //描述
@@ -129,14 +130,16 @@ class WxXcxUtil
       )
     );
 
+    LogUtil::xcx('模版数据', $message);
     return $this->templateMessage($message, $accessToken);
   }
 
-  public function cancelOrder($to, $cancelOrderTime, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken) {
+  public function cancelOrder($to, $cancelOrderTime, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken, $formId = '') {
     $message = array(
       "touser" => $openId,
       "template_id" => "eV7IlG_cRgnslGvag656xDG1qwEa_vkIUq8YpYdqqs4",
-      "url" => UrlUtil::createUrl('xcx/center/index'),
+      "page" => 'order',
+      'form_id' => $formId,
       "topcolor" => "#FF0000",
       "data" => array(
         "keyword1" => array(
@@ -175,6 +178,8 @@ class WxXcxUtil
         )
       )
     );
+
+    LogUtil::xcx('取消订单模版数据:', $message);
 
     return $this->templateMessage($message, $accessToken);
   }

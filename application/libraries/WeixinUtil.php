@@ -319,7 +319,7 @@ class WeixinUtil
    * @param $accessToken
    * @return mixed|string
    */
-  public function cancelOrder($to, $cancelOrderTime, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken) {
+  public function cancelOrder($to, $cancelOrderTime, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken, $fromId = '') {
     $message = array(
       "touser" => $openId,
       "template_id" => "LRnmSBh-MU2YGwBVQtP1ce2-nIsIdIBSaEDw4Xtg4Gc",

@@ -74,6 +74,9 @@ class Center extends FrontendController
     $openId = $wechat->getOpenId();
     $unionId = $wechat->getUnionId();
 
+    $params = RequestUtil::getParams();
+    $formId = $params['formId'];
+
     if (!$openId)
       ResponseUtil::failure('未授权访问！');
 
@@ -119,22 +122,27 @@ class Center extends FrontendController
 
       $now = DateUtil::now();
       // 发送给客户
-      $wechat->cancelOrder('您', $now, $appointmentDate, $shop, $beautician, $projectName, $openId, $accessToken);
+      $wechat->cancelOrder($customer['nick_name'], $now, $appointmentDate, $shop, $beautician, $projectName, $openId, $accessToken, $formId);
 
 
       // 测试环境不发送给技师 和 前台
       if ($_SERVER['CI_ENV'] === 'production') {
 
         // 发送给技师
-        if ($toBeautician)
-          $wechat->order($customer['nick_name'], $now, $appointmentDate, $shop, $beautician,
-            $projectName, $toBeautician['open_id'], $accessToken);
+        if ($toBeautician) {
+          $toOpenId = RequestUtil::isXcx() ? $toBeautician['xcx_open_id'] : $toBeautician['open_id'];
+          if ($toOpenId)
+            $wechat->cancelOrder($customer['nick_name'], $now, $appointmentDate, $shop, $beautician,
+              $projectName, $toOpenId, $accessToken, $formId);
+        }
 
         // 发送给前台
         if ($toFront && count($toFront) > 0) {
           foreach ($toFront as $front) {
-            $wechat->cancelOrder($customer['nick_name'], $now, $appointmentDate, $shop, $beautician,
-              $projectName, $front['open_id'], $accessToken);
+            $toOpenId = RequestUtil::isXcx() ? $front['xcx_open_id'] : $front['open_id'];
+            if ($toOpenId)
+              $wechat->cancelOrder($customer['nick_name'], $now, $appointmentDate, $shop, $beautician,
+                $projectName, $front['open_id'], $accessToken, $formId);
           }
         }
       }

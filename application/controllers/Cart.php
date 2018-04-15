@@ -21,6 +21,9 @@ class Cart extends FrontendController
     $appointmentDay = $params['appointment_day'];
     $appointmentTime = $params['appointment_time'];
 
+    $params = RequestUtil::getParams();
+    $formId = $params['formId'];
+
     $from = $params['from'];
     if (!$from)
       $from = 'gzh';
@@ -28,6 +31,8 @@ class Cart extends FrontendController
     $weixinUtil = new WechatUtil();
     $openId = $weixinUtil->getOpenId();
     $unionId = $weixinUtil->getUnionId();
+
+
 
     //$openId = (new WeixinUtil())->getOpenId();
 //    if (!$openId)
@@ -150,24 +155,29 @@ class Cart extends FrontendController
         // 发送给客户
         $weixinUtil->order(CustomerModel::IS_CUSTOMER,
           $customer['nick_name'], $customer['phone'], $appointmentDate,
-          $shop, $beautician, $projectName, $openId, $accessToken);
+          $shop, $beautician, $projectName, $openId, $accessToken, $formId);
 
 
         // 测试环境不发送给技师 和 前台
         if ($_SERVER['CI_ENV'] === 'production') {
 
           // 发送给技师
-          if ($toBeautician)
-            $weixinUtil->order(CustomerModel::IS_BEAUTICIAN,
-              $customer['nick_name'], $customer['phone'], $appointmentDate,
-              $shop, $beautician, $projectName, $toBeautician['open_id'], $accessToken);
+          if ($toBeautician) {
+            $toOpenId = RequestUtil::isXcx() ? $toBeautician['xcx_open_id'] : $toBeautician['open_id'];
+            if ($toOpenId)
+              $weixinUtil->order(CustomerModel::IS_BEAUTICIAN,
+                $customer['nick_name'], $customer['phone'], $appointmentDate,
+                $shop, $beautician, $projectName, $toOpenId, $accessToken, $formId);
+          }
 
           // 发送给前台
           if ($toFront && count($toFront) > 0) {
             foreach ($toFront as $front) {
-              $weixinUtil->order(CustomerModel::IS_FRONTEND,
-                $customer['nick_name'], $customer['phone'], $appointmentDate,
-                $shop, $beautician, $projectName, $front['open_id'], $accessToken);
+              $toOpenId = RequestUtil::isXcx() ? $front['xcx_open_id'] : $front['open_id'];
+              if ($toOpenId)
+                $weixinUtil->order(CustomerModel::IS_FRONTEND,
+                  $customer['nick_name'], $customer['phone'], $appointmentDate,
+                  $shop, $beautician, $projectName, $front['open_id'], $accessToken, $formId);
             }
           }
         }
