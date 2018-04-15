@@ -79,18 +79,18 @@ class OrderModel extends BaseModel
    * @param int $offset
    * @return mixed
    */
-  public function getOrders($openId)
+  public function getOrders($openId, $unionId)
   {
     $paginationConfig = ConfigUtil::loadConfig('user_center');
     //$rows = $paginationConfig['per_page'];
 
-    $sql = "select a.*, b.*, c.name as beautician_name, a.order_status+0 as order_sign from `order` as a"
+    $sql = "select a.*, b.*, d.shop_name, c.name as beautician_name, a.order_status+0 as order_sign from `order` as a"
       . " left join order_project as b on a.order_id=b.order_id"
-      . " left join beautician as c on a.beautician_id=c.beautician_id ";
+      . " left join beautician as c on a.beautician_id=c.beautician_id left join shop as d on a.shop_id = d.shop_id ";
 
     $orderStatusWhere = '';
 
-    $sql .= " where a.disabled=0 and a.open_id='{$openId}'{$orderStatusWhere}"
+    $sql .= " where a.disabled=0 and a.open_id='{$openId}' or union_id='{$unionId}'{$orderStatusWhere}"
       . " order by a.order_id desc";
 
     return (new CurdUtil($this))->query($sql);
@@ -196,6 +196,27 @@ class OrderModel extends BaseModel
     else
       return 0;
 
+  }
+
+  /**
+   * 判断时间是否已经被预约
+   * @param $shopId
+   * @param $beauticianId
+   * @param $appointmentDay
+   * @param $appointmentTime
+   */
+  public function isAppointment($shopId, $beauticianId, $appointmentDay, $appointmentStartTime, $appointmentEndTime) {
+    $where = [
+      'shop_id' => $shopId,
+      'beautician_id' => $beauticianId,
+      'appointment_day' => $appointmentDay,
+      'appointment_start_time' => $appointmentStartTime,
+      'appointment_end_time' => $appointmentEndTime,
+      'order_status' => self::ORDER_APPOINTMENT,
+      'disabled' => 0
+    ];
+
+    return (new CurdUtil($this))->readOne($where);
   }
 
 }

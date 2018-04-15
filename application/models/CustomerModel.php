@@ -72,6 +72,12 @@ class CustomerModel extends BaseModel
     return (new CurdUtil($this))->readOne(array('open_id' => $openId, 'type' => $type));
   }
 
+
+  public function readOneByUnionId($unionId, $type)
+  {
+    return (new CurdUtil($this))->readOne(array('union_id' => $unionId, 'type' => $type));
+  }
+
   /**
    * 增加记录
    * @param $openId
@@ -83,9 +89,23 @@ class CustomerModel extends BaseModel
     return (new CurdUtil($this))->create(array('open_id' => $openId, 'credits' => $credits));
   }
 
-  public function insert($openId, $credits = 0, $nickName, $avatar, $city, $province, $sex)
+  public function insertXcx($unionId, $openId='', $credits = 0)
   {
     $data = array(
+      'union_id' => $unionId,
+      'xcx_open_id' => $openId,
+      'open_id' => '',
+      'credits' => $credits,
+      'updated_time' => DateUtil::now()
+    );
+
+    return (new CurdUtil($this))->create($data);
+  }
+
+  public function insert($unionId, $openId, $credits = 0, $nickName, $avatar, $city, $province, $sex)
+  {
+    $data = array(
+      'union_id' => $unionId,
       'open_id' => $openId,
       'credits' => $credits,
       'nick_name' => $nickName,
@@ -99,7 +119,7 @@ class CustomerModel extends BaseModel
     return (new CurdUtil($this))->create($data);
   }
 
-  public function update($openId, $nickName, $avatar, $city, $province, $sex)
+  public function update($openId, $nickName, $avatar, $city, $province, $sex, $unionId = '')
   {
     $data = array(
       'nick_name' => $nickName,
@@ -110,7 +130,25 @@ class CustomerModel extends BaseModel
       'updated_time' => DateUtil::now()
     );
 
+    if ($unionId)
+      $data['union_id'] = $unionId;
+
     return (new CurdUtil($this))->update(array('open_id' => $openId), $data);
+  }
+
+  public function updateXcx($unionId, $openId, $nickName = '', $avatar = '', $city = '', $province = '', $sex = 1)
+  {
+    $data = array(
+      'nick_name' => $nickName,
+      'xcx_open_id' => $openId,
+      'avatar' => $avatar,
+      'city' => $city,
+      'province' => $province,
+      'sex' => $sex,
+      'updated_time' => DateUtil::now()
+    );
+
+    return (new CurdUtil($this))->update(array('union_id' => $unionId), $data);
   }
 
   /**

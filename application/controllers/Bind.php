@@ -16,7 +16,7 @@ class Bind extends FrontendController
    */
   public function bindMe()
   {
-    $openId = (new WeixinUtil())->getOpenId();
+    $unionId = (new WeixinUtil())->getUnionId();
     $params = RequestUtil::getParams();
     $code = $params['code'];
     $phone = $params['phone'];
@@ -25,7 +25,7 @@ class Bind extends FrontendController
 
     $customerModel = new CustomerModel();
     // 是否已绑定
-    $customer = $customerModel->readOne($openId, CustomerModel::IS_CUSTOMER);
+    $customer = $customerModel->readOneByUnionId($unionId, CustomerModel::IS_CUSTOMER);
     if ($customer['phone'])
       ResponseUtil::failure('此手机号已绑定');
 
@@ -35,8 +35,8 @@ class Bind extends FrontendController
       ResponseUtil::failure('手机验证码错误');
 
     // 绑定
-    $status = (new CurdUtil($customerModel))->update(array('open_id' => $openId),
-      array('phone' => $phone, 'type' => CustomerModel::IS_CUSTOMER));
+    $status = (new CurdUtil($customerModel))->update(array('union_id' => $unionId, 'type' => CustomerModel::IS_CUSTOMER),
+      array('phone' => $phone));
 
     //echo $this->db->last_query();
     $status ? ResponseUtil::executeSuccess() : ResponseUtil::failure();
@@ -49,6 +49,7 @@ class Bind extends FrontendController
   public function other()
   {
     if (RequestUtil::isPost() && RequestUtil::isAjax()) {
+      $unionId = (new WeixinUtil())->getUnionId();
       $openId = (new WeixinUtil())->getOpenId();
 
       $params = RequestUtil::postParams();
@@ -62,7 +63,7 @@ class Bind extends FrontendController
 
       $customerModel = new CustomerModel();
       // 是否已绑定
-      $customer = $customerModel->readOne($openId, $type);
+      $customer = $customerModel->readOneByUnionId($unionId, $type);
       if ($customer['phone'])
         ResponseUtil::failure('微信与手机号已绑定');
 
@@ -80,7 +81,7 @@ class Bind extends FrontendController
       if (!isset($shops[$shopId]))
         ResponseUtil::failure('店铺不存在');
 
-      $status = (new CurdUtil(new CustomerModel()))->create(array('open_id' => $openId, 'credits' => 0,
+      $status = (new CurdUtil(new CustomerModel()))->create(array('open_id' => $openId, 'union_id' => $unionId, 'credits' => 0,
         'phone' => $phone, 'type' => $type, 'beautician_id' => $beauticianId, 'shop_id' => $shopId));
       $status ? ResponseUtil::executeSuccess() : ResponseUtil::failure();
 

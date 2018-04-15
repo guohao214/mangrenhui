@@ -26,6 +26,13 @@ class RequestUtil
       && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"]) === "xmlhttprequest");
   }
 
+
+  public static function isXcx()
+  {
+    return (isset($_SERVER["HTTP_X_XCX"])
+      && strtolower($_SERVER["HTTP_X_XCX"]) === "xcx");
+  }
+
   public static function isPost()
   {
     return strtolower($_SERVER['REQUEST_METHOD']) === 'post';

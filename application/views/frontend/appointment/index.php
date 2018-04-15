@@ -629,7 +629,8 @@
             beautician_id: worker.currentItem['beautician_id'],
             project_id: project.currentItem['project_id'],
             appointment_day: appointmentDay.appointment_day,
-            appointment_time: times.join(',')
+            appointment_time: times.join(','),
+            from: 'gzh'
           }
           this.$request.post('cart/appointment', data)
             .then(function () {

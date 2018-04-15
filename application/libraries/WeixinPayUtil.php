@@ -14,7 +14,7 @@ class WeixinPayUtil
   public $apiKey;
   public $noticeUrl;
 
-  public function __construct($config = 'weixin')
+  public function __construct($config = 'wxxcx')
   {
     $weixinConfig = ConfigUtil::loadConfig($config);
 
@@ -77,7 +77,7 @@ class WeixinPayUtil
 
     $notify->saveData($xml);
 
-    LogUtil::weixinLog('异步回调参数：', $notify->data);
+    LogUtil::xcx('异步回调参数：', $notify->data);
 
     if ($notify->checkSign() == FALSE) {
       $notify->setReturnParameter("return_code", "FAIL"); //返回状态码

@@ -49,6 +49,17 @@ class WeixinUtil
       return '';
   }
 
+  /**
+   * @return mixed|string
+   */
+  public function getUnionId() {
+    $accessToken = $this->getAuthorize();
+    if (isset($accessToken['unionid']))
+      return $accessToken['unionid'];
+    else
+      return '';
+  }
+
   public function getRefreshToken()
   {
     $accessToken = $this->getAuthorize();
@@ -128,12 +139,17 @@ class WeixinUtil
 
     // 判断是否已经获取了微信用户信息
     $customerModel = new CustomerModel();
-    $customer = $customerModel->readOne($this->getOpenId(), CustomerModel::IS_CUSTOMER);
+    $customer = $customerModel->readOneByUnionId($this->getUnionId(), CustomerModel::IS_CUSTOMER);
     if (!$customer) {
       $userInfo = $this->getWeixinUserInfo($this->getToken(), $this->getOpenId());
       if ($userInfo)
-        $customerModel->insert($this->getOpenId(), 0, $userInfo['nickname'],
-          $userInfo['headimgurl'], $userInfo['city'], $userInfo['province'], $userInfo['sex']);
+        $openIdCustomer = $customerModel->readOne($this->getOpenId(), CustomerModel::IS_CUSTOMER);
+        if (!$openIdCustomer)
+          $customerModel->insert($this->getUnionId(), $this->getOpenId(), 0, $userInfo['nickname'],
+            $userInfo['headimgurl'], $userInfo['city'], $userInfo['province'], $userInfo['sex']);
+        else
+          $customerModel->update($this->getOpenId(), $userInfo['nickname'],
+            $userInfo['headimgurl'], $userInfo['city'], $userInfo['province'], $userInfo['sex'], $this->getUnionId());
     }
 
     return true;

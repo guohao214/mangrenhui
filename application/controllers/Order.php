@@ -9,52 +9,49 @@ class Order extends FrontendController
   public function pay($orderNo)
   {
     // 是否授权
-    $openId = (new WeixinUtil())->getOpenId();
+    $openId = (new WechatUtil())->getOpenId();
     if (!$openId)
-      $this->message('错误的授权!');
+      ResponseUtil::failure('小程序未授权');
 
     // 获得订单信息
     $where = array('order_no' => $orderNo, 'open_id' => $openId);
-    $orders = (new OrderModel())->getOrder($where, OrderModel::ORDER_NOT_PAY);
+    $orders = (new OrderModel())->getOrder($where, OrderModel::ORDER_APPOINTMENT);
 
     if (!$orders)
-      $this->message('订单不存在！');
+      ResponseUtil::failure('订单不存在！');
 
-    if (!isset($orders[0])) {
-      $this->message('订单不存在！');
-    }
+    if (!isset($orders[0]))
+      ResponseUtil::failure('订单不存在！');
 
     // 如果有多条， 获得第一条的订单记录
     $order = array_shift($orders);
-    if ($order['order_status'] == OrderModel::ORDER_PAYED)
-      $this->message('订单已经支付！');
+    if ($order['order_status'] == OrderModel::ORDER_COMPLETE)
+      ResponseUtil::failure('订单已经支付！');
 
     // 订单时间, 2个小时过期
-    if (!DateUtil::orderIsValidDate($order['create_time']))
-      $this->message('订单已经过期!');
+    // if (!DateUtil::orderIsValidDate($order['create_time']))
+    //   $this->message('订单已经过期!');
 
     // 判断相同的时间是否已经被预约
     $findHasPayedAppointTimeWhere = array('appointment_day' => $order['appointment_day'],
-      'appointment_start_time' => $order['appointment_start_time'], 'order_status' => OrderModel::ORDER_PAYED, 'beautician_id' => $order['beautician_id']);
+      'appointment_start_time' => $order['appointment_start_time'],
+      'order_status' => OrderModel::ORDER_COMPLETE, 'beautician_id' => $order['beautician_id']);
     $findOrder = (new CurdUtil(new OrderModel()))->readOne($findHasPayedAppointTimeWhere);
     if ($findOrder)
-      $this->message('由于您未能及时付款，此时间段已被预约!');
+      ResponseUtil::failure('由于您未能及时付款，此时间段已被预约!');
 
     // 获得预付款ID
     $weixinPay = new WeixinPayUtil();
-    $prePayId = $weixinPay->fetchPrepayId($openId, '购买不期而遇美容产品', $orderNo, $order['total_fee']);
-    LogUtil::weixinLog('预付款ID：', $prePayId);
+    $prePayId = $weixinPay->fetchPrepayId($openId, '盲人荟按摩', $orderNo, $order['total_fee']);
+    LogUtil::xcx('预付款ID：', $prePayId);
     if (!$prePayId)
-      $this->message('获得微信预付款ID失败，请重试！');
+      ResponseUtil::failure('获得微信预付款ID失败，请重试！');
 
     //生成支付参数
     $payParams = $weixinPay->getParameters($prePayId);
-    LogUtil::weixinLog('支付参数：', $payParams);
+    LogUtil::xcx('支付参数：', $payParams);
 
-    $shops = (new ShopModel())->getAllShops();
-    $shop = $shops[$order['shop_id']];
-    $this->view('order/pay', array('order' => $order, 'payParams' => $payParams, 'shop' => $shop));
-
+    ResponseUtil::QuerySuccess($payParams);
   }
 
   /**

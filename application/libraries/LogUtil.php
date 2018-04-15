@@ -26,4 +26,10 @@ class LogUtil
     self::log($mainTitle, $message, self::$weinxi);
   }
 
+
+  public static function xcx($mainTitle, $message)
+  {
+    self::log('小程序：' . $mainTitle, $message, self::$weinxi);
+  }
+
 }

@@ -1,6 +1,7 @@
 <?php
 
 include_once("SDKRuntimeException.php");
+include_once ("WxPayConfig.php");
 
 /**
  * 所有接口的基类
@@ -169,10 +170,10 @@ class Common_util_pub
     //使用证书：cert 与 key 分别属于两个.pem文件
     //默认格式为PEM，可以注释
     curl_setopt($ch, CURLOPT_SSLCERTTYPE, 'PEM');
-    curl_setopt($ch, CURLOPT_SSLCERT, WxPayConf_pub::SSLCERT_PATH);
+    curl_setopt($ch, CURLOPT_SSLCERT, WxPayConfig::SSLCERT_PATH);
     //默认格式为PEM，可以注释
     curl_setopt($ch, CURLOPT_SSLKEYTYPE, 'PEM');
-    curl_setopt($ch, CURLOPT_SSLKEY, WxPayConf_pub::SSLKEY_PATH);
+    curl_setopt($ch, CURLOPT_SSLKEY, WxPayConfig::SSLKEY_PATH);
     //post提交方式
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
@@ -183,7 +184,7 @@ class Common_util_pub
       return $data;
     } else {
       $error = curl_errno($ch);
-      echo "curl出错，错误码:$error" . "<br>";
+      LogUtil::xcx('发送curl请求:' . $url . ', 返回:', $error);
       curl_close($ch);
       return false;
     }
@@ -228,7 +229,7 @@ abstract class Wxpay_client_pub extends Common_util_pub
   function postXml()
   {
     $xml = $this->createXml();
-    $this->response = $this->postXmlCurl($xml, $this->url, $this->curl_timeout);
+    $this->response = $this->postXmlSSLCurl($xml, $this->url, $this->curl_timeout);
     return $this->response;
   }
 
@@ -260,14 +261,14 @@ abstract class Wxpay_client_pub extends Common_util_pub
 class UnifiedOrder_pub extends Wxpay_client_pub
 {
 
-  function __construct($weixin)
+  function __construct($wx)
   {
     //设置接口链接
     $this->url = "https://api.mch.weixin.qq.com/pay/unifiedorder";
     //设置curl超时时间
     $this->curl_timeout = 15;
 
-    parent::__construct($weixin);
+    parent::__construct($wx);
   }
 
   /**

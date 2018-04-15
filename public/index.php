@@ -5,6 +5,14 @@ ini_set('session.cookie_httponly', 1);
 ini_set('session.gc_maxlifetime', ini_get('session.cookie_lifetime') - 1440);
 date_default_timezone_set('Asia/shanghai');
 set_time_limit(60);
+
+if ((isset($_SERVER["HTTP_X_XCX"])
+  && strtolower($_SERVER["HTTP_X_XCX"]) === "xcx")) {
+  $token = $_SERVER['HTTP_TOKEN'];
+  if ($token)
+    session_id($token);
+}
+
 session_start();
 
 define('DOCUMENT_ROOT', __DIR__ . DIRECTORY_SEPARATOR);

@@ -15,11 +15,10 @@ class FrontendController extends BaseController
   {
     parent::__construct();
 
-    // 微信
-    $weChat = new WeixinUtil();
-    $openId = $weChat->getOpenId();
+    $weChat = new WechatUtil();
+    $unionId = $weChat->getUnionId();
 
-    if (!$openId) {
+    if (!$unionId) {
       if (RequestUtil::isAjax())
         ResponseUtil::failure('未微信授权');
       else

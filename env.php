@@ -1,2 +1,2 @@
 <?php
-return 'testing';
+return 'testing'; // development

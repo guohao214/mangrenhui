@@ -21,9 +21,13 @@ class Cart extends FrontendController
     $appointmentDay = $params['appointment_day'];
     $appointmentTime = $params['appointment_time'];
 
-    $weixinUtil = new WeixinUtil();
-    $openId = $weixinUtil->getOpenId();
+    $from = $params['from'];
+    if (!$from)
+      $from = 'gzh';
 
+    $weixinUtil = new WechatUtil();
+    $openId = $weixinUtil->getOpenId();
+    $unionId = $weixinUtil->getUnionId();
 
     //$openId = (new WeixinUtil())->getOpenId();
 //    if (!$openId)
@@ -42,7 +46,7 @@ class Cart extends FrontendController
       ResponseUtil::failure('错误的预约日期！');
 
     // 检查时间
-    $appointmentTime = explode(',', urldecode($appointmentTime));
+    $appointmentTime = array_filter(explode(',', urldecode($appointmentTime)));
     if (!$appointmentTime || count($appointmentTime) < 1)
       ResponseUtil::failure('错误的预约时间！');
 
@@ -70,16 +74,20 @@ class Cart extends FrontendController
 
 
     // 判断是否已经有下单的
+    $orderModel = new OrderModel();
+    $order = $orderModel->isAppointment($shopId, $beauticianId, $appointmentDay, $startTime, $endTime);
+    if ($order)
+      ResponseUtil::failure('此时间段已被预约！');
 
     $orderProjectModel = new OrderProjectModel();
     // 获得购物车的项目
     $project = (new ProjectModel())->readOne($projectId);
     // 生成订单号
     $orderNo = StringUtil::generateOrderNo();
-    $orderModel = new OrderModel();
+
 
     $customerModel = (new CustomerModel());
-    $customer = $customerModel->readOne($openId, CustomerModel::IS_CUSTOMER);
+    $customer = $customerModel->readOneByUnionId($unionId, CustomerModel::IS_CUSTOMER);
 
     // 订单数据
     $orderData = array(
@@ -87,6 +95,8 @@ class Cart extends FrontendController
       'shop_id' => $shopId,
       'created_time' => DateUtil::now(),
       'open_id' => $openId,
+      'from' => $from,
+      'union_id' => $unionId,
       'nick_name' => $customer['nick_name'],
       'beautician_id' => $beauticianId,
       'appointment_day' => $appointmentDay,

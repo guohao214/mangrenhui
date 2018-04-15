@@ -4,17 +4,61 @@ class Center extends FrontendController
 {
   public function index()
   {
-    $openId = (new WeixinUtil())->getOpenId();
-    $customer = (new CustomerModel())->readOne($openId, CustomerModel::IS_CUSTOMER);
+    $unionId = (new WechatUtil())->getUnionId();
+    $customer = (new CustomerModel())->readOneByUnionId($unionId, CustomerModel::IS_CUSTOMER);
     $this->view('center/index', array('customer' => $customer));
+  }
+
+  /**
+   * @param $orderId
+   */
+  public function completeOrder($orderId)
+  {
+    $types = ['cash', 'scan', 'group'];
+
+    $params = RequestUtil::postParams();
+    $type = $params['type'];
+    if (!in_array($type, $types))
+      ResponseUtil::failure('支付类型不存在');
+
+    $beauticianCode = $params['beautician_code'];
+    $couponCode = $params['coupon_code'];
+    $payContent = '';
+
+    if ($type === 'cash') {
+      if (!$beauticianCode)
+        ResponseUtil::failure('请输入技师工号');
+      else
+        $payContent = $beauticianCode;
+    }
+
+    if ($type === 'group') {
+      if (!$couponCode)
+        ResponseUtil::failure('请输入券号');
+      else
+        $payContent = $couponCode;
+    }
+
+    $now = DateUtil::now();
+    $where = ['order_id' => $orderId, 'disabled' => 0, 'order_status' => OrderModel::ORDER_APPOINTMENT];
+    $data = ['pay_time' => $now, 'pay_type' => $type, 'pay_content' => $payContent, 'order_status' => OrderModel::ORDER_COMPLETE];
+
+    $status = (new CurdUtil(new OrderModel()))->update($where, $data);
+
+    //var_dump($this->db->last_query());
+    $status ? ResponseUtil::executeSuccess() : ResponseUtil::failure();
+
   }
 
   public function order()
   {
-    $openId = (new WeixinUtil())->getOpenId();
+    $wechat = new WechatUtil();
+    $openId = $wechat->getOpenId();
+    $unionId = $wechat->getUnionId();
+
     if (RequestUtil::isAjax()) {
       $orderModel = new OrderModel();
-      $orders = $orderModel->getOrders($openId);
+      $orders = $orderModel->getOrders($openId, $unionId);
       ResponseUtil::QuerySuccess($orders);
     }
     $this->view('center/order');
@@ -26,8 +70,9 @@ class Center extends FrontendController
    */
   public function cancelOrder($orderId)
   {
-    $weixinUtil = new WeixinUtil();
-    $openId = $weixinUtil->getOpenId();
+    $wechat = new WechatUtil();
+    $openId = $wechat->getOpenId();
+    $unionId = $wechat->getUnionId();
 
     if (!$openId)
       ResponseUtil::failure('未授权访问！');
@@ -44,7 +89,7 @@ class Center extends FrontendController
       ResponseUtil::failure('取消订单失败!');
 
     //取消订单
-    $status = (new CurdUtil(new OrderModel()))->update(array('order_id' => $orderId, 'open_id' => $openId),
+    $status = (new CurdUtil(new OrderModel()))->update(array('order_id' => $orderId, 'union_id' => $unionId),
       array('order_status' => OrderModel::ORDER_CANCEL));
 
     $appointmentDay = $order['appointment_day'];
@@ -62,7 +107,7 @@ class Center extends FrontendController
       $toBeautician = $customerModel->getBeautician($beauticianId);
       $toFront = $customerModel->getFront();
       // 发送到自己
-      $accessToken = $weixinUtil->getToken();
+      $accessToken = $wechat->getToken();
       $realEndTime = date('H:i', strtotime($appointmentDay . ' ' . $endTime) + 30 * 60);
       $appointmentDate = $appointmentDay . ' ' . $startTime . '~' . $realEndTime;
 
@@ -74,7 +119,7 @@ class Center extends FrontendController
 
       $now = DateUtil::now();
       // 发送给客户
-      $weixinUtil->cancelOrder('您', $now, $appointmentDate, $shop, $beautician, $projectName, $openId, $accessToken);
+      $wechat->cancelOrder('您', $now, $appointmentDate, $shop, $beautician, $projectName, $openId, $accessToken);
 
 
       // 测试环境不发送给技师 和 前台
@@ -82,13 +127,13 @@ class Center extends FrontendController
 
         // 发送给技师
         if ($toBeautician)
-          $weixinUtil->order($customer['nick_name'], $now, $appointmentDate, $shop, $beautician,
+          $wechat->order($customer['nick_name'], $now, $appointmentDate, $shop, $beautician,
             $projectName, $toBeautician['open_id'], $accessToken);
 
         // 发送给前台
         if ($toFront && count($toFront) > 0) {
           foreach ($toFront as $front) {
-            $weixinUtil->cancelOrder($customer['nick_name'], $now, $appointmentDate, $shop, $beautician,
+            $wechat->cancelOrder($customer['nick_name'], $now, $appointmentDate, $shop, $beautician,
               $projectName, $front['open_id'], $accessToken);
           }
         }

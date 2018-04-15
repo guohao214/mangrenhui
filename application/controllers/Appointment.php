@@ -8,8 +8,8 @@ class Appointment extends FrontendController
   public function index()
   {
     // 绑定账号
-    $openId = (new WeixinUtil())->getOpenId();
-    $customer = (new CustomerModel())->readOne($openId, CustomerModel::IS_CUSTOMER);
+    $unionId = (new WechatUtil())->getUnionId();
+    $customer = (new CustomerModel())->readOneByUnionId($unionId, CustomerModel::IS_CUSTOMER);
     if (!$customer || !$customer['phone'])
       ResponseUtil::redirect(UrlUtil::createUrl('bind/index'));
 
