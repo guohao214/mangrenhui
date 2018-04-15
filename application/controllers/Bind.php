@@ -16,7 +16,7 @@ class Bind extends FrontendController
    */
   public function bindMe()
   {
-    $unionId = (new WeixinUtil())->getUnionId();
+    $unionId = (new WechatUtil())->getUnionId();
     $params = RequestUtil::getParams();
     $code = $params['code'];
     $phone = $params['phone'];
@@ -49,8 +49,8 @@ class Bind extends FrontendController
   public function other()
   {
     if (RequestUtil::isPost() && RequestUtil::isAjax()) {
-      $unionId = (new WeixinUtil())->getUnionId();
-      $openId = (new WeixinUtil())->getOpenId();
+      $unionId = (new WechatUtil())->getUnionId();
+      $openId = (new WechatUtil())->getOpenId();
 
       $params = RequestUtil::postParams();
       $type = $params['type'] + 0;
