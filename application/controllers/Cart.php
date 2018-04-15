@@ -172,13 +172,13 @@ class Cart extends FrontendController
           }
         }
       } catch (Exception $exception) {
-        LogUtil::weixinLog('发送通知', '通知发送失败' . $exception->getMessage());
+        if (RequestUtil::isXcx())
+          LogUtil::xcx('发送通知', '通知发送失败' . $exception->getMessage());
+        else
+          LogUtil::weixinLog('发送通知', '通知发送失败' . $exception->getMessage());
       }
 
       ResponseUtil::executeSuccess('提交订单成功', $orderNo);
-
-      // 推送消息
-
     }
   }
 }

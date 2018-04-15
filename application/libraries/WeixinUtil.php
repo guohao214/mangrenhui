@@ -299,7 +299,7 @@ class WeixinUtil
         ),
 
         "remark" => array( //备注
-          "value" => "预约项目为：{$projectName}, 预约技师为: $beautician",
+          "value" => "预约项目为：{$projectName}, 预约技师为:{ $beautician }",
           "color" => "#c9151b"
         )
       )

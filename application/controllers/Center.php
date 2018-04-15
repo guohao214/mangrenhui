@@ -139,7 +139,10 @@ class Center extends FrontendController
         }
       }
     } catch (Exception $exception) {
-      LogUtil::weixinLog('发送通知', '通知发送失败' . $exception->getMessage());
+      if (RequestUtil::isXcx())
+        LogUtil::xcx('发送通知', '通知发送失败' . $exception->getMessage());
+      else
+        LogUtil::weixinLog('发送通知', '通知发送失败' . $exception->getMessage());
     }
 
     $status ? ResponseUtil::executeSuccess('订单取消成功！') : ResponseUtil::failure('取消订单失败!');

@@ -52,16 +52,131 @@ class WxXcxUtil
     return SessionUtil::getUnionId();
   }
 
-  public function getToken() {
-    return '';
+  /**
+   * 获取token信息， 不同于登录验证返回的token
+   * @return mixed
+   */
+  public function getToken()
+  {
+    $tokenUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="
+      . $this->appId . "&secret=" . $this->appSecret;
+
+    $token = RequestUtil::get($tokenUrl);
+    LogUtil::xcx('获取普通access token：', $token);
+
+    $access_token = '';
+    if (isset($token['access_token']))
+      $access_token = $token['access_token'];
+
+    return $access_token;
   }
 
-  public function order() {
+  /**
+   * 发送模板消息
+   * @param array $message
+   * @param $accessToken
+   */
+  public function templateMessage(array $message, $accessToken)
+  {
+    $message = json_encode($message);
+    $templateUrl = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=' . $accessToken;
 
+    $response = RequestUtil::post($templateUrl, $message);
+    LogUtil::xcx('发送模版消息：', $response);
+
+    return $response;
   }
 
-  public function cancelOrder() {
+  public function order($type =1, $nickName, $phone, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken)
+  {
+    $first = $type === 1 ? '您好，您已成功预约' : '有新的预约';
 
+    $message = array(
+      "touser" => $openId,
+      "template_id" => "ejkMGLYkX05WQiaEz5sed3HdJsBA5O22H9Ddaie1bNw",
+      "url" => UrlUtil::createUrl('xcx/center/index'),
+      "topcolor" => "#FF0000",
+      "data" => array(
+        "keyword1" => array( //描述
+          "value" => $nickName ? $nickName : $phone,
+          "color" => "#FF8CB3"
+        ),
+
+        "keyword2" => array(
+          "value" => $appointmentDay,
+          "color" => "#173177"
+        ),
+
+        "keyword3" => array(
+          "value" => $shop,
+          'color' => "#173177"
+        ),
+
+        "keyword4" => array(
+          "value" => $projectName,
+          'color' => "#173177"
+        ),
+
+        "keyword5" => array(
+          "value" => "{$first}, 预约技师为: {$beautician}",
+          'color' => "#173177"
+        ),
+
+        "keyword6" => array(
+          "value" => $phone,
+          'color' => "#173177"
+        ),
+      )
+    );
+
+    return $this->templateMessage($message, $accessToken);
+  }
+
+  public function cancelOrder($to, $cancelOrderTime, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken) {
+    $message = array(
+      "touser" => $openId,
+      "template_id" => "eV7IlG_cRgnslGvag656xDG1qwEa_vkIUq8YpYdqqs4",
+      "url" => UrlUtil::createUrl('xcx/center/index'),
+      "topcolor" => "#FF0000",
+      "data" => array(
+        "keyword1" => array(
+          "value" => $to,
+          'color' => "#173177"
+        ),
+
+        "keyword2" => array(
+          "value" => $shop,
+          'color' => "#173177"
+        ),
+
+        "keyword3" => array(
+          "value" => $projectName,
+          'color' => "#173177"
+        ),
+
+        "keyword4" => array(
+          "value" => $appointmentDay,
+          'color' => "#173177"
+        ),
+
+        "keyword5" => array(
+          "value" => $cancelOrderTime,
+          'color' => "#173177"
+        ),
+
+        "keyword6" => array(
+          "value" => $beautician,
+          'color' => "#173177"
+        ),
+
+        "keyword7" => array( //备注
+          "value" => "欢迎下次光临",
+          "color" => "#c9151b"
+        )
+      )
+    );
+
+    return $this->templateMessage($message, $accessToken);
   }
 
   public function authorize($url) {
