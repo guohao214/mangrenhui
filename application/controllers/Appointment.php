@@ -2,21 +2,33 @@
 
 class Appointment extends FrontendController
 {
+  public function _checkBind()
+  {
+    $unionId = (new WechatUtil())->getUnionId();
+    $customer = (new CustomerModel())->readOneByUnionId($unionId, CustomerModel::IS_CUSTOMER);
+    if (!$customer || !$customer['phone'])
+      if (!RequestUtil::isAjax())
+        ResponseUtil::redirect(UrlUtil::createUrl('bind/index'));
+      else
+        ResponseUtil::failure('未绑定手机号', -999);
+  }
+
   /**
    * 预约界面
    */
   public function index()
   {
     // 绑定账号
-    $unionId = (new WechatUtil())->getUnionId();
-    $customer = (new CustomerModel())->readOneByUnionId($unionId, CustomerModel::IS_CUSTOMER);
-    if (!$customer || !$customer['phone'])
-      ResponseUtil::redirect(UrlUtil::createUrl('bind/index'));
+    $this->_checkBind();
 
     $this->view('appointment/index');
   }
 
-  public function getBeauticianAndProject($shop_id) {
+  public function getBeauticianAndProject($shop_id)
+  {
+
+    $this->_checkBind();
+
     $shop_id = $shop_id + 0;
 
     try {
@@ -30,7 +42,7 @@ class Appointment extends FrontendController
         $project['project_cover'] = UploadUtil::buildUploadDocPath($project['project_cover'], '200x200');
       }
 
-      ResponseUtil::QuerySuccess(array('projects' => $projects, 'beauticians' => $beauticians, 'days' => $days ));
+      ResponseUtil::QuerySuccess(array('projects' => $projects, 'beauticians' => $beauticians, 'days' => $days));
     } catch (Exception $e) {
       ResponseUtil::failure();
     }

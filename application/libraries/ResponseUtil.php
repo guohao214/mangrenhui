@@ -68,11 +68,11 @@ class ResponseUtil
   public static $ResponseStructure = array('detail' => '', 'status' => '',
     'data' => array('content' => array(), 'totalSize' => 0));
 
-  public static function failure($detail = '操作失败')
+  public static function failure($detail = '操作失败', $status = '0')
   {
     self::setData();
     self::setDetail($detail);
-    self::$ResponseStructure['status'] = '0';
+    self::$ResponseStructure['status'] = $status;
     self::json(self::$ResponseStructure);
   }
 
