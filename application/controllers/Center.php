@@ -61,7 +61,7 @@ class Center extends FrontendController
       $orders = $orderModel->getOrders($openId, $unionId);
       ResponseUtil::QuerySuccess($orders);
     }
-    $this->view('center/order');
+
   }
 
   /**

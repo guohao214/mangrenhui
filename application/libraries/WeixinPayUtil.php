@@ -42,6 +42,8 @@ class WeixinPayUtil
     $unifiedOrder->setParameter("notify_url", $this->noticeUrl); //通知地址
     $unifiedOrder->setParameter("trade_type", "JSAPI"); //交易类型
 
+    LogUtil::xcx('获得预付款id参数', $unifiedOrder->parameters);
+
     $prepay_id = $unifiedOrder->getPrepayId();
 
     return $prepay_id;
@@ -74,10 +76,11 @@ class WeixinPayUtil
     $notify = new Notify_pub($this);
 
     $xml = $GLOBALS['HTTP_RAW_POST_DATA'];
+    LogUtil::xcx('支付异步回调原始数据：', $xml);
 
     $notify->saveData($xml);
 
-    LogUtil::xcx('异步回调参数：', $notify->data);
+    LogUtil::xcx('支付异步回调数据：', $notify->data);
 
     if ($notify->checkSign() == FALSE) {
       $notify->setReturnParameter("return_code", "FAIL"); //返回状态码

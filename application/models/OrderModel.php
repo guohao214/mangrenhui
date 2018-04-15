@@ -35,7 +35,7 @@ class OrderModel extends BaseModel
 
     $updateData = array(
       'pay_time' => DateUtil::now(),
-      'order_status' => self::ORDER_PAYED,
+      'order_status' => self::ORDER_COMPLETE,
       'transaction_id' => $wxOrderNo,
     );
 
@@ -91,7 +91,7 @@ class OrderModel extends BaseModel
     $orderStatusWhere = '';
 
     $sql .= " where a.disabled=0 and a.open_id='{$openId}' or union_id='{$unionId}'{$orderStatusWhere}"
-      . " order by a.order_id desc";
+      . " order by a.order_status asc, a.order_id desc";
 
     return (new CurdUtil($this))->query($sql);
   }
