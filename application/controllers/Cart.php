@@ -20,8 +20,6 @@ class Cart extends FrontendController
     $beauticianId = $params['beautician_id'] + 0;
     $appointmentDay = $params['appointment_day'];
     $appointmentTime = $params['appointment_time'];
-
-    $params = RequestUtil::getParams();
     $formId = $params['formId'];
 
     $from = $params['from'];

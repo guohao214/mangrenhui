@@ -105,7 +105,7 @@ class Center extends FrontendController
 
     // 发送取消订单通知
     try {
-      $customer = $customerModel->readOne($openId, CustomerModel::IS_CUSTOMER);
+      $customer = $customerModel->readOneByUnionId($unionId, CustomerModel::IS_CUSTOMER);
       $project = $orderProjectModel->readOneByOrderId($orderId);
       $toBeautician = $customerModel->getBeautician($beauticianId);
       $toFront = $customerModel->getFront();
