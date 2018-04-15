@@ -62,7 +62,18 @@
             </select>
           </td>
         </tr>
+
         <tr>
+          <td>支付方式：</td>
+          <td>
+            <select name="pay_type" class="select" id="pay_type">
+              <option value="">所有</option>
+              <?php foreach ($payTypes as $key => $type): ?>
+                <option
+                  value="<?php echo $key; ?>" <?php echo ($params['pay_type'] == $key) ? ' selected' : ''; ?>><?php echo $type; ?></option>
+              <?php endforeach; ?>
+            </select>
+          </td>
           <th width="70">订单号:</th>
           <td><input class="common-text" placeholder="订单号" size="30"
                      name="order_no" value="<?php echo defaultValue($params['order_no']); ?>" type="text">
@@ -101,7 +112,19 @@
         <?php foreach ($orders as $order): ?>
           <tr>
             <td><?php echo $order['order_id']; ?></td>
-            <td><?php echo $order['order_no']; ?></td>
+            <td>
+              <?php echo $order['order_no']; ?>
+              <br>
+              <?php if ($order['pay_type'] === 'cash'): ?>
+                支付方式：店内现金， 技师工号: <?php echo $order['pay_content']; ?>
+              <?php elseif ($order['pay_type'] === 'scan'): ?>
+                支付方式：店内扫码
+              <?php elseif ($order['pay_type'] === 'group'): ?>
+                支付方式：团购， 券号: <?php echo $order['pay_content']; ?>
+              <?php elseif ($order['pay_type'] === 'online'): ?>
+                支付方式：线上支付， 支付时间： <?php echo $order['pay_time']; ?>
+              <?php endif; ?>
+            </td>
             <td><?php echo DateUtil::buildDateTime($order['appointment_day'], $order['appointment_start_time']); ?></td>
             <td width="170"><?php echo $shops[$order['shop_id']]; ?></td>
             <td width="80"><?php echo $beauticians[$order['beautician_id']]; ?></td>

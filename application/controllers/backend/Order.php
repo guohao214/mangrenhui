@@ -20,6 +20,7 @@ class Order extends BackendController
       OrderModel::ORDER_COMPLETE => '已完成',
       OrderModel::ORDER_CANCEL => '已取消');
 
+    $payTypes = ['scan' => '店内扫码', 'cash' => '店内现金', 'group' => '团购', 'online' => '在线支付'];
     // 获得查询参数， 查询参数都为like模糊查询
     $where = RequestUtil::buildLikeQueryParamsWithDisabled();
     $this->db->select('*');
@@ -30,7 +31,7 @@ class Order extends BackendController
     $shops = (new ShopModel())->getAllShops();
     $beauticians = (new BeauticianModel())->getAllFormatBeauticians();
     $this->view('order/index', array('orders' => $orders, 'pages' => $pages, 'beauticians' => $beauticians,
-      'orderCount' => $ordersCount,
+      'orderCount' => $ordersCount, 'payTypes' => $payTypes,
       'params' => RequestUtil::getParams(), 'shops' => $shops, 'limit' => $limit, 'orderStatus' => $orderStatus));
   }
 
