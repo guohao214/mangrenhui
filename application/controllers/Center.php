@@ -121,8 +121,11 @@ class Center extends FrontendController
       $projectName = $project['project_name'];
 
       $now = DateUtil::now();
+      $to = $customer['nick_name'];
+      if (!$to)
+        $to = $customer['phone'];
       // 发送给客户
-      $wechat->cancelOrder($customer['nick_name'], $now, $appointmentDate, $shop, $beautician, $projectName, $openId, $accessToken, $formId);
+      $wechat->cancelOrder($to, $now, $appointmentDate, $shop, $beautician, $projectName, $openId, $accessToken, $formId);
 
 
       // 测试环境不发送给技师 和 前台
@@ -132,7 +135,7 @@ class Center extends FrontendController
         if ($toBeautician) {
           $toOpenId = RequestUtil::isXcx() ? $toBeautician['xcx_open_id'] : $toBeautician['open_id'];
           if ($toOpenId)
-            $wechat->cancelOrder($customer['nick_name'], $now, $appointmentDate, $shop, $beautician,
+            $wechat->cancelOrder($to, $now, $appointmentDate, $shop, $beautician,
               $projectName, $toOpenId, $accessToken, $formId);
         }
 
@@ -141,7 +144,7 @@ class Center extends FrontendController
           foreach ($toFront as $front) {
             $toOpenId = RequestUtil::isXcx() ? $front['xcx_open_id'] : $front['open_id'];
             if ($toOpenId)
-              $wechat->cancelOrder($customer['nick_name'], $now, $appointmentDate, $shop, $beautician,
+              $wechat->cancelOrder($to, $now, $appointmentDate, $shop, $beautician,
                 $projectName, $front['open_id'], $accessToken, $formId);
           }
         }

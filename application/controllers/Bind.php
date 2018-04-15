@@ -20,6 +20,7 @@ class Bind extends FrontendController
     $params = RequestUtil::getParams();
     $code = $params['code'];
     $phone = $params['phone'];
+    $userInfo = $params['user_info'];
     if (!$code || !$phone)
       ResponseUtil::failure();
 
@@ -34,9 +35,16 @@ class Bind extends FrontendController
     if ($code !== $sms['code'])
       ResponseUtil::failure('手机验证码错误');
 
+    $userInfo = json_decode($userInfo, true);
+    $nickName = $userInfo['nickName'];
+    $sex = $userInfo['gender'];
+    $avatar = $userInfo['avatarUrl'];
+    $city = $userInfo['city'];
+    $province = $userInfo['province'];
+
     // 绑定
     $status = (new CurdUtil($customerModel))->update(array('union_id' => $unionId, 'type' => CustomerModel::IS_CUSTOMER),
-      array('phone' => $phone));
+      array('phone' => $phone, 'avatar' => $avatar, 'sex' => $sex, 'city' => $city, 'nick_name' => $nickName, 'province' => $province));
 
     //echo $this->db->last_query();
     $status ? ResponseUtil::executeSuccess() : ResponseUtil::failure();
