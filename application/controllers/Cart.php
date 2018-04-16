@@ -158,24 +158,24 @@ class Cart extends FrontendController
 
         // 测试环境不发送给技师 和 前台
         if ($_SERVER['CI_ENV'] === 'production') {
-
+          $wechat = new WeixinUtil();
           // 发送给技师
           if ($toBeautician) {
-            $toOpenId = RequestUtil::isXcx() ? $toBeautician['xcx_open_id'] : $toBeautician['open_id'];
+            $toOpenId = $toBeautician['open_id'];
             if ($toOpenId)
-              $weixinUtil->order(CustomerModel::IS_BEAUTICIAN,
+              $wechat->order(CustomerModel::IS_BEAUTICIAN,
                 $customer['nick_name'], $customer['phone'], $appointmentDate,
-                $shop, $beautician, $projectName, $toOpenId, $accessToken, $formId);
+                $shop, $beautician, $projectName, $toOpenId, $accessToken);
           }
 
           // 发送给前台
           if ($toFront && count($toFront) > 0) {
             foreach ($toFront as $front) {
-              $toOpenId = RequestUtil::isXcx() ? $front['xcx_open_id'] : $front['open_id'];
+              $toOpenId = $front['open_id'];
               if ($toOpenId)
-                $weixinUtil->order(CustomerModel::IS_FRONTEND,
+                $wechat->order(CustomerModel::IS_FRONTEND,
                   $customer['nick_name'], $customer['phone'], $appointmentDate,
-                  $shop, $beautician, $projectName, $front['open_id'], $accessToken, $formId);
+                  $shop, $beautician, $projectName, $front['open_id'], $accessToken);
             }
           }
         }

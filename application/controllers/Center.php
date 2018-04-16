@@ -133,22 +133,22 @@ class Center extends FrontendController
 
       // 测试环境不发送给技师 和 前台
       if ($_SERVER['CI_ENV'] === 'production') {
-
+        $weixinUtil = new WeixinUtil();
         // 发送给技师
         if ($toBeautician) {
-          $toOpenId = RequestUtil::isXcx() ? $toBeautician['xcx_open_id'] : $toBeautician['open_id'];
+          $toOpenId = $toBeautician['open_id'];
           if ($toOpenId)
-            $wechat->cancelOrder($to, $now, $appointmentDate, $shop, $beautician,
-              $projectName, $toOpenId, $accessToken, $formId);
+            $weixinUtil->cancelOrder($to, $now, $appointmentDate, $shop, $beautician,
+              $projectName, $toOpenId, $accessToken);
         }
 
         // 发送给前台
         if ($toFront && count($toFront) > 0) {
           foreach ($toFront as $front) {
-            $toOpenId = RequestUtil::isXcx() ? $front['xcx_open_id'] : $front['open_id'];
+            $toOpenId =$front['open_id'];
             if ($toOpenId)
-              $wechat->cancelOrder($to, $now, $appointmentDate, $shop, $beautician,
-                $projectName, $front['open_id'], $accessToken, $formId);
+              $weixinUtil->cancelOrder($to, $now, $appointmentDate, $shop, $beautician,
+                $projectName, $front['open_id'], $accessToken);
           }
         }
       }
