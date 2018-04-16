@@ -56,9 +56,12 @@ class Center extends FrontendController
     $openId = $wechat->getOpenId();
     $unionId = $wechat->getUnionId();
 
+    $params = RequestUtil::getParams();
+    $orderStatus = $params['order_status'];
+
     if (RequestUtil::isAjax()) {
       $orderModel = new OrderModel();
-      $orders = $orderModel->getOrders($openId, $unionId);
+      $orders = $orderModel->getOrders($openId, $unionId, $orderStatus);
       ResponseUtil::QuerySuccess($orders);
     }
 
@@ -157,5 +160,10 @@ class Center extends FrontendController
     }
 
     $status ? ResponseUtil::executeSuccess('订单取消成功！') : ResponseUtil::failure('取消订单失败!');
+  }
+
+  public function getPhone() {
+    $phone = ConfigUtil::loadConfig('phone');
+    ResponseUtil::QuerySuccess($phone);
   }
 }

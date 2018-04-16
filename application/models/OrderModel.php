@@ -80,7 +80,7 @@ class OrderModel extends BaseModel
    * @param int $offset
    * @return mixed
    */
-  public function getOrders($openId, $unionId)
+  public function getOrders($openId, $unionId, $orderStatus = '')
   {
     $paginationConfig = ConfigUtil::loadConfig('user_center');
     //$rows = $paginationConfig['per_page'];
@@ -89,9 +89,10 @@ class OrderModel extends BaseModel
       . " left join order_project as b on a.order_id=b.order_id"
       . " left join beautician as c on a.beautician_id=c.beautician_id left join shop as d on a.shop_id = d.shop_id ";
 
-    $orderStatusWhere = '';
+    if ($orderStatus)
+      $orderStatusWhere = " and a.order_status=${orderStatus}";
 
-    $sql .= " where a.disabled=0 and a.open_id='{$openId}' or union_id='{$unionId}'{$orderStatusWhere}"
+    $sql .= " where a.disabled=0 and (a.open_id='{$openId}' or union_id='{$unionId}') {$orderStatusWhere}"
       . " order by  a.order_id desc";
 
     return (new CurdUtil($this))->query($sql);
