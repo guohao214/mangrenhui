@@ -134,9 +134,11 @@ class Center extends FrontendController
       // 测试环境不发送给技师 和 前台
       if ($_SERVER['CI_ENV'] === 'production') {
         $weixinUtil = new WeixinUtil();
+        $accessToken = $weixinUtil->getToken();
         // 发送给技师
         if ($toBeautician) {
           $toOpenId = $toBeautician['open_id'];
+          LogUtil::weixinLog("给技师：${toOpenId}发通知 ", $accessToken);
           if ($toOpenId)
             $weixinUtil->cancelOrder($to, $now, $appointmentDate, $shop, $beautician,
               $projectName, $toOpenId, $accessToken);
@@ -146,6 +148,7 @@ class Center extends FrontendController
         if ($toFront && count($toFront) > 0) {
           foreach ($toFront as $front) {
             $toOpenId =$front['open_id'];
+            LogUtil::weixinLog("给前台：${toOpenId}发通知 ", $accessToken);
             if ($toOpenId)
               $weixinUtil->cancelOrder($to, $now, $appointmentDate, $shop, $beautician,
                 $projectName, $front['open_id'], $accessToken);

@@ -159,9 +159,11 @@ class Cart extends FrontendController
         // 测试环境不发送给技师 和 前台
         if ($_SERVER['CI_ENV'] === 'production') {
           $wechat = new WeixinUtil();
+          $accessToken = $wechat->getToken();
           // 发送给技师
           if ($toBeautician) {
             $toOpenId = $toBeautician['open_id'];
+            LogUtil::weixinLog("给技师：${toOpenId}发通知 ", $accessToken);
             if ($toOpenId)
               $wechat->order(CustomerModel::IS_BEAUTICIAN,
                 $customer['nick_name'], $customer['phone'], $appointmentDate,
@@ -172,6 +174,7 @@ class Cart extends FrontendController
           if ($toFront && count($toFront) > 0) {
             foreach ($toFront as $front) {
               $toOpenId = $front['open_id'];
+              LogUtil::weixinLog("给前台：${toOpenId}发通知 ", $accessToken);
               if ($toOpenId)
                 $wechat->order(CustomerModel::IS_FRONTEND,
                   $customer['nick_name'], $customer['phone'], $appointmentDate,

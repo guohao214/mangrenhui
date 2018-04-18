@@ -184,6 +184,7 @@ class WeixinUtil
     $message = json_encode($message);
     $templateUrl = 'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=' . $accessToken;
 
+    LogUtil::weixinLog('模版数据', ['message' => $message, 'accesstoken' => $accessToken]);
     $response = RequestUtil::post($templateUrl, $message);
     LogUtil::weixinLog('发送模版消息：', $response);
 

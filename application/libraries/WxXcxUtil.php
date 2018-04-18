@@ -81,6 +81,7 @@ class WxXcxUtil
     $message = json_encode($message);
     $templateUrl = 'https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=' . $accessToken;
 
+    LogUtil::xcx('模版数据', ['message' =>$message, 'accessToken' => $accessToken]);
     $response = RequestUtil::post($templateUrl, $message);
     LogUtil::xcx('发送模版消息：', $response);
 
@@ -130,7 +131,6 @@ class WxXcxUtil
       )
     );
 
-    LogUtil::xcx('模版数据', $message);
     return $this->templateMessage($message, $accessToken);
   }
 
@@ -178,8 +178,6 @@ class WxXcxUtil
         )
       )
     );
-
-    LogUtil::xcx('取消订单模版数据:', $message);
 
     return $this->templateMessage($message, $accessToken);
   }
