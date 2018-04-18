@@ -69,13 +69,13 @@ class CustomerModel extends BaseModel
    */
   public function readOne($openId, $type)
   {
-    return (new CurdUtil($this))->readOne(array('open_id' => $openId, 'type' => $type, 'disabled' => 1));
+    return (new CurdUtil($this))->readOne(array('open_id' => $openId, 'type' => $type, 'disabled' => 0));
   }
 
 
   public function readOneByUnionId($unionId, $type)
   {
-    return (new CurdUtil($this))->readOne(array('union_id' => $unionId, 'type' => $type, 'disabled' => 1));
+    return (new CurdUtil($this))->readOne(array('union_id' => $unionId, 'type' => $type, 'disabled' => 0));
   }
 
   /**
