@@ -69,13 +69,13 @@ class CustomerModel extends BaseModel
    */
   public function readOne($openId, $type)
   {
-    return (new CurdUtil($this))->readOne(array('open_id' => $openId, 'type' => $type));
+    return (new CurdUtil($this))->readOne(array('open_id' => $openId, 'type' => $type, 'disabled' => 1));
   }
 
 
   public function readOneByUnionId($unionId, $type)
   {
-    return (new CurdUtil($this))->readOne(array('union_id' => $unionId, 'type' => $type));
+    return (new CurdUtil($this))->readOne(array('union_id' => $unionId, 'type' => $type, 'disabled' => 1));
   }
 
   /**
@@ -164,5 +164,12 @@ class CustomerModel extends BaseModel
     $data = (new CurdUtil($this))->query($sql);
 
     return $data[0]['count_open_ids'];
+  }
+
+  public function getBindCustomer() {
+    $sql = "select a.*, b.shop_name from customer as a left join shop as b on a.shop_id=b.shop_id where type >1 and a.disabled=0";
+    $data = (new CurdUtil($this))->query($sql);
+
+    return $data;
   }
 }

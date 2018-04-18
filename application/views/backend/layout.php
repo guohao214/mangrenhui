@@ -61,6 +61,7 @@
                   &#xe014;</i>账号管理</a></li>
             <li><a href="<?php echo UrlUtil::createBackendUrl('workTime/index') ?>"><i class="icon-font">&#xe017;</i>工作时间设置</a>
             <li><a href="<?php echo UrlUtil::createBackendUrl('setting/contactPhone') ?>"><i class="icon-font">&#xe013;</i>联系方式</a>
+            <li><a href="<?php echo UrlUtil::createBackendUrl('unbind/index') ?>"><i class="icon-font">&#xe012;</i>管理技师与前台</a>
             </li>
           </ul>
         </li>
