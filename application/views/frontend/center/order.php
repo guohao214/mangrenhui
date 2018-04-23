@@ -2,9 +2,11 @@
   #order {
     margin-bottom: 2rem;
   }
+
   #order .item {
     margin: .2rem 0
   }
+
   .notice {
     display: flex;
     height: 5rem;
@@ -21,7 +23,8 @@
 <div id="order">
   <div v-if="orders.length > 0">
     <div class="item" v-for="order in orders">
-      <yd-preview :buttons="order.order_status == 1 ? btns : (order.order_status == 100) ? doneBtns : mbtns" :data-id="order.order_id">
+      <yd-preview :buttons="order.order_status == 1 ? btns : (order.order_status == 100) ? doneBtns : mbtns"
+                  :data-id="order.order_id">
         <yd-preview-header>
           <div slot="left">付款金额</div>
           <div slot="right">¥{{ order.total_fee}}</div>
@@ -93,6 +96,7 @@
             click: function () {
               var preview = event.target.parentNode.parentNode
               var id = preview.dataset.id
+              var self = this
               if (!id) {
                 vm.$dialog.toast({
                   mes: '订单取消失败',
@@ -100,23 +104,29 @@
                 })
                 return
               }
-              vm.$request.get('center/cancelOrder/' + id)
-                .then(function (data) {
-                  for (var i = 0; i < vm.orders.length; i++) {
-                    if (vm.orders[i].order_id == id) {
-                      vm.orders[i].order_status = 2
-                      return
-                    }
-                  }
-                })
-                .catch(function (error) {
-                  vm.$dialog.toast({
-                    mes: error.detail || '订单取消失败',
-                    timeout: 1500
-                  })
-                })
 
-            }.bind(this)
+              vm.$dialog.confirm({
+                mes: '确定取消此订单?',
+                opts: () => {
+                  vm.$request.get('center/cancelOrder/' + id)
+                    .then(function (data) {
+                      for (var i = 0; i < vm.orders.length; i++) {
+                        if (vm.orders[i].order_id == id) {
+                          vm.orders[i].order_status = 2
+                          return
+                        }
+                      }
+                    })
+                    .catch(function (error) {
+                      vm.$dialog.toast({
+                        mes: error.detail || '订单取消失败',
+                        timeout: 1500
+                      })
+                    })
+                }
+              });
+
+            }
           },
         ]
       },

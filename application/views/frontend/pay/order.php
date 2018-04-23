@@ -235,7 +235,8 @@
 
           this.$request.get('order/pay/' + this.lastOrderNo)
             .then(function (data) {
-              let result = data.data
+              let result = data.content
+
               WeixinJSBridge.invoke(
                 'getBrandWCPayRequest',
                 result,
