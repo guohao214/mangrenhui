@@ -6,7 +6,8 @@ class Center extends FrontendController
   {
     $unionId = (new WechatUtil())->getUnionId();
     $customer = (new CustomerModel())->readOneByUnionId($unionId, CustomerModel::IS_CUSTOMER);
-    $this->view('center/index', array('customer' => $customer));
+    $phone = ConfigUtil::loadConfig('phone');
+    $this->view('center/index', array('customer' => $customer, 'phone' => $phone['phone']));
   }
 
   /**

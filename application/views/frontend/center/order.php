@@ -1,6 +1,6 @@
 <style>
   #order {
-    margin-bottom: 3rem;
+    padding-bottom: 3rem;
   }
 
   #order .item {

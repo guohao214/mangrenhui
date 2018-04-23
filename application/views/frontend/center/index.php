@@ -25,8 +25,8 @@
     <yd-cell-item arrow type="a" href="<?php echo UrlUtil::createUrl('center/order'); ?>">
       <span slot="left">我的订单</span>
     </yd-cell-item>
-    <yd-cell-item type="a" href="tel:18616755873">
-      <span slot="left">联系我们: 186-1675-5873</span>
+    <yd-cell-item type="a" href="tel:<?php echo $phone; ?>">
+      <span slot="left">联系我们: <?php echo $phone; ?></span>
     </yd-cell-item>
   </yd-cell-group>
 </div>
