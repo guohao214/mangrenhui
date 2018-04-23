@@ -1,38 +1,20 @@
-<script type="text/javascript"
-        src="<?php echo get_instance()->config->base_url(); ?>static/frontend/js/move.js?v=201601031111003"></script>
-<header>
-  <h2><?php echo $article['title']; ?></h2>
-</header>
-
-<section>
-  <div class="result-wrap1">
-    <div class="result-content1">
-      <?php echo $article['content']; ?>
-    </div>
-  </div>
-</section>
-
 <style>
-
-  .result-wrap1 {
-    width: 100% !important;
-    padding: 20px 0px;
-  }
-
-  .result-content1 {
-    width: 80% !important;
-    margin: 0px auto !important;
-  }
-
-  .result-content1 img {
-    text-align: center;
+  .images {
+    padding: 20px;
     width: 100%;
-    border-radius: 6px;;
+    box-sizing: border-box;
+    padding-bottom: 100px;
+  }
+
+  .images img {
+    display: block;
+    width: 100%;
   }
 </style>
+<div class="images">
 
-<script>
-  $(document).ready(function () {
-    move('.result-content1').rotate(-360).end();
-  })
-</script>
+  <img mode="widthFix" class="" src="https://mlxiaowu.com/article/01.jpeg" />
+  <img mode="widthFix" class="" src="https://mlxiaowu.com/article/02.jpeg" />
+  <img mode="widthFix" class="" src="https://mlxiaowu.com/article/03.jpeg" />
+  <img mode="widthFix" class="" src="https://mlxiaowu.com/article/04.jpeg" />
+</div>

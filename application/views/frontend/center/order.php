@@ -1,4 +1,8 @@
-<style> #order .item {
+<style>
+  #order {
+    margin-bottom: 2rem;
+  }
+  #order .item {
     margin: .2rem 0
   }
   .notice {
@@ -7,6 +11,11 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
+  }
+
+  .notice .icon {
+    width: 1.5rem;
+    margin-bottom: .2rem;
   }
 </style>
 <div id="order">
@@ -37,8 +46,8 @@
   </div>
   <div v-else>
     <div class="notice">
-      <yd-icon name="warn" color="#ffb400" size="1rem"></yd-icon>
-      <span>暂无订单</span>
+      <img src="<?php echo $baseUrl; ?>/static/order.png" alt="" class="icon">
+      <span>您没有订单哦</span>
     </div>
   </div>
 </div>

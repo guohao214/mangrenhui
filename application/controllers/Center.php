@@ -65,6 +65,8 @@ class Center extends FrontendController
       ResponseUtil::QuerySuccess($orders);
     }
 
+    $this->view('center/order');
+
   }
 
   /**

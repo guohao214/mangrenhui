@@ -41,7 +41,8 @@ class Order extends FrontendController
       ResponseUtil::failure('由于您未能及时付款，此时间段已被预约!');
 
     // 获得预付款ID
-    $weixinPay = new WeixinPayUtil();
+    $config = RequestUtil::isXcx()  ? 'wxxcx' : 'weixin';
+    $weixinPay = new WeixinPayUtil($config);
     $prePayId = $weixinPay->fetchPrepayId($openId, '盲人荟按摩', $orderNo, $order['total_fee']);
     LogUtil::xcx('预付款ID：', $prePayId);
     if (!$prePayId)

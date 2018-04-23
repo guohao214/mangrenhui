@@ -95,7 +95,7 @@ class WxXcxUtil
     $message = array(
       "touser" => $openId,
       "template_id" => "ejkMGLYkX05WQiaEz5sed3HdJsBA5O22H9Ddaie1bNw",
-      "page" => "order/index",
+      "page" => "pages/pay/index",
       'form_id' => $formId,
       "topcolor" => "#FF0000",
       "data" => array(
@@ -138,7 +138,7 @@ class WxXcxUtil
     $message = array(
       "touser" => $openId,
       "template_id" => "eV7IlG_cRgnslGvag656xDG1qwEa_vkIUq8YpYdqqs4",
-      "page" => 'order/index',
+      "page" => 'pages/order/index',
       'form_id' => $formId,
       "topcolor" => "#FF0000",
       "data" => array(
