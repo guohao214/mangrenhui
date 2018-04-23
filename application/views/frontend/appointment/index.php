@@ -5,7 +5,7 @@
     position: relative;
   }
 
-  img {
+  .shop-icon {
     width: 100%;
     height: 100%;
     display: block;
@@ -235,7 +235,7 @@
     <div class="body">
       <div class="shop" v-show="items.length">
         <div class="shop-pic">
-          <img :src="currentItem.shop_logo" alt="">
+          <img :src="currentItem.shop_logo" alt="" class="shop-icon">
         </div>
         <div class="shop-info">
           <div class="shop-name"> {{ currentItem.shop_name }}</div>
@@ -632,6 +632,7 @@
             appointment_time: times.join(','),
             from: 'gzh'
           }
+          var shopId = shop.shop_id
           this.$request.post('cart/appointment', data)
             .then(function () {
               self.$dialog.toast({
@@ -640,7 +641,7 @@
               });
 
               setTimeout(function () {
-                window.location.href = document_root + 'center/order'
+                appointmentDay.fetch()
               }, 1500)
             })
             .catch(function (error) {

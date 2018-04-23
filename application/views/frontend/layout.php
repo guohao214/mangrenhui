@@ -73,7 +73,7 @@
     </a>
   </span>
   <span class="tab">
-    <a href="<?php echo $baseUrl; ?>pay/order">
+    <a href="<?php echo $baseUrl; ?>pay/order/">
         <span class="icon">
           <?php if ($class === 'pay'): ?>
             <img src="<?php echo $baseUrl; ?>static/tab/011.png" alt="">
