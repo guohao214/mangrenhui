@@ -19,6 +19,10 @@
     width: 1.5rem;
     margin-bottom: .2rem;
   }
+
+  div[v-if] {
+    display: none;
+  }
 </style>
 <div id="order">
   <div v-if="orders.length > 0">

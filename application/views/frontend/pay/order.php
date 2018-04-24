@@ -3,6 +3,11 @@
     padding-bottom: 3rem;
   }
 
+  .yd-cell-title {
+    padding: .2rem;
+    text-align: center;
+    color: #ffb400;
+  }
   #order .item {
     margin: .2rem 0
   }
@@ -27,28 +32,52 @@
   }
 
   .yd-preview:after {
-    border:none
+    border: none
   }
 
-   .yd-preview-footer:before,  .yd-preview-footer:after {
-     /* border:none */
-   }
+  .yd-preview-footer:before, .yd-preview-footer:after {
+    /* border:none */
+  }
 
   .yd-preview-footer a {
     border: 1px solid #ccc;
     border-radius: .1rem;
     height: .7rem;
     margin: 0 .2rem;
-    color:black;
+    color: black;
+    font-size: .2rem;
+    text-align: center;
+    position: relative;
+    pointer-events: auto;
+    border-radius: 3px;
+  }
+
+  .yd-preview-footer a:active{
+    background-color: #f7f7f7;
+  }
+
+  .yd-preview-footer a:last-child {
+    background-color: #ffb400;
+    color: black;
+    border-color: #EDEDED;
   }
 
   .yd-popup-content {
     padding: .2rem;
   }
+
+  div[v-if] {
+    display: none;
+  }
+
+  .yd-confirm-ft {
+    border-left: 1px solid #d9d9d9;
+    border-right: 1px solid #d9d9d9;
+  }
 </style>
 <div id="order">
 
-  <yd-popup v-model="showCash" position="center" width="6rem" height="3rem">
+  <yd-popup v-model="showCash" position="center" width="6rem" height="3.4rem">
     <yd-cell-group title="请输入代收技师工号">
       <yd-cell-item>
         <yd-input slot="right" v-model="beauticianCode" placeholder="请输入代收技师工号"></yd-input>
@@ -60,7 +89,7 @@
     </yd-cell-group>
   </yd-popup>
 
-  <yd-popup v-model="showGroup" position="center" width="6.5rem" height="3rem">
+  <yd-popup v-model="showGroup" position="center" width="6.5rem" height="3.4rem">
     <yd-cell-group title="请输入点评、美团或者口碑券号">
       <yd-cell-item>
         <yd-input slot="right" v-model="couponCode" placeholder="请输入券号"></yd-input>
@@ -242,8 +271,18 @@
             beautician_code: this.beauticianCode,
             coupon_code: this.couponCode
           }).then(function () {
-            self.getOrders()
+
+            self.$dialog.toast({
+              mes: '买单成功。',
+              timeout: 1500
+            })
+
             self.cancel()
+
+            setTimeout(function () {
+              self.getOrders()
+            }, 2000)
+
           })
             .catch(function (error) {
               self.$dialog.toast({

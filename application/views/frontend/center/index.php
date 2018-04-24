@@ -1,17 +1,21 @@
 <style>
   #center {
-    padding-top:.5rem;
+    padding-top:1rem;
   }
   #center .little { height: 2rem; display: flex; justify-content: center;align-items: center; flex-direction: column }
   .logo {
     width: 1.2rem;
     height: 1.2rem;
+    margin-bottom: .2rem;
   }
 
   .logo img {
     width: 100%;
     height: 100%;
     display: block;
+  }
+  .group {
+    margin-top: .5rem;
   }
 </style>
 <div id="center">
@@ -21,7 +25,7 @@
     </div>
     <div><?php echo $customer['nick_name'];?></div>
   </div>
-  <yd-cell-group>
+  <yd-cell-group class="group">
     <yd-cell-item arrow type="a" href="<?php echo UrlUtil::createUrl('center/order'); ?>">
       <span slot="left">我的订单</span>
     </yd-cell-item>

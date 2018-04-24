@@ -1,5 +1,12 @@
 <?php $this->load->view('frontend/header'); ?>
 <style>
+  [v-if] {
+    display: none;
+  }
+
+  [v-for] {
+    display: none;
+  }
   #appointment {
     background-color: #F7F7F7;
     position: relative;
@@ -232,8 +239,8 @@
       <yd-icon name="location" size="0.4rem"></yd-icon>
       选择店铺
     </div>
-    <div class="body">
-      <div class="shop" v-show="items.length">
+    <div class="body"  v-if="items.length">
+      <div class="shop">
         <div class="shop-pic">
           <img :src="currentItem.shop_logo" alt="" class="shop-icon">
         </div>
@@ -245,7 +252,7 @@
       </div>
     </div>
 
-    <yd-popup v-model="showShopList" position="right" width="90%">
+    <yd-popup v-model="showShopList" position="right" width="90%" v-if="cpItems.length">
       <yd-search v-model="searchKeywords" :on-submit="submitSearch" :on-cancel="cancelSearch"></yd-search>
       <yd-cell-group>
         <yd-cell-item v-for="(w, k) in cpItems" @click.native="choose(w)">
