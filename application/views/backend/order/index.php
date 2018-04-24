@@ -51,19 +51,20 @@
               <?php endforeach; ?>
             </select>
           </td>
+
+        </tr>
+
+        <tr>
           <td>技师：</td>
           <td>
             <select name="beautician_id" class="select" id="beautician_id">
               <option value="">所有</option>
-<!--              --><?php //foreach ($beauticians as $key => $beautician): ?>
-<!--                <option-->
-<!--                  value="--><?php //echo $key; ?><!--" --><?php //echo ($params['beautician_id'] == $key) ? ' selected' : ''; ?><!-->--><?php //echo $beautician; ?><!--</option>-->
-<!--              --><?php //endforeach; ?>
+              <!--              --><?php //foreach ($beauticians as $key => $beautician): ?>
+              <!--                <option-->
+              <!--                  value="--><?php //echo $key; ?><!--" --><?php //echo ($params['beautician_id'] == $key) ? ' selected' : ''; ?><!-->--><?php //echo $beautician; ?><!--</option>-->
+              <!--              --><?php //endforeach; ?>
             </select>
           </td>
-        </tr>
-
-        <tr>
           <td>支付方式：</td>
           <td>
             <select name="pay_type" class="select" id="pay_type">

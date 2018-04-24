@@ -38,6 +38,7 @@
           <th>项目标题</th>
 <!--          <th>所属分类</th>-->
           <th width="100">使用时间</th>
+          <th width="200">门店</th>
           <th width="100">价格</th>
           <th width="150">创建时间</th>
           <th width="140">操作</th>
@@ -51,6 +52,7 @@
             <td><?php echo $project['project_name']; ?></td>
 <!--            <td>--><?php //echo $categories[$project['category_id']]; ?><!--</td>-->
             <td><?php echo $project['use_time']; ?> 分钟</td>
+            <td><?php echo $shops[$project['shop_id']]; ?> </td>
             <td><?php echo $project['price']; ?> 元</td>
             <td><?php echo $project['created_time']; ?></td>
             <td>

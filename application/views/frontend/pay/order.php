@@ -80,7 +80,7 @@
   <yd-popup v-model="showCash" position="center" width="6rem" height="3.4rem">
     <yd-cell-group title="请输入代收技师工号">
       <yd-cell-item>
-        <yd-input slot="right" v-model="beauticianCode" placeholder="请输入代收技师工号"></yd-input>
+        <yd-input slot="right" v-model="beauticianCode" placeholder="请输入代收技师工号" ref="beauticianCode"></yd-input>
       </yd-cell-item>
 
       <div class="yd-confirm-ft">
@@ -92,7 +92,7 @@
   <yd-popup v-model="showGroup" position="center" width="6.5rem" height="3.4rem">
     <yd-cell-group title="请输入点评、美团或者口碑券号">
       <yd-cell-item>
-        <yd-input slot="right" v-model="couponCode" placeholder="请输入券号"></yd-input>
+        <yd-input slot="right" v-model="couponCode" placeholder="请输入券号" ref="couponCode"></yd-input>
       </yd-cell-item>
 
       <div class="yd-confirm-ft">
@@ -189,6 +189,8 @@
               vm.showCash = true
               var preview = event.target.parentNode.parentNode
               vm.lastOrderId = preview.dataset.id
+
+              vm.$refs.beauticianCode.$el.children[0].focus()
             }
           },
           {
@@ -213,6 +215,8 @@
               vm.showGroup = true
               var preview = event.target.parentNode.parentNode
               vm.lastOrderId = preview.dataset.id
+
+              vm.$refs.couponCode.$el.children[0].focus()
             }
           },
           {
