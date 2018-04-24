@@ -21,7 +21,25 @@
   }
 
   .yd-preview-footer {
-    height: .8rem;
+    height: 1.1rem;
+    border: none;
+    padding: .2rem;
+  }
+
+  .yd-preview:after {
+    border:none
+  }
+
+   .yd-preview-footer:before,  .yd-preview-footer:after {
+     /* border:none */
+   }
+
+  .yd-preview-footer a {
+    border: 1px solid #ccc;
+    border-radius: .1rem;
+    height: .7rem;
+    margin: 0 .2rem;
+    color:black;
   }
 
   .yd-popup-content {
@@ -30,7 +48,7 @@
 </style>
 <div id="order">
 
-  <yd-popup v-model="showCash" position="center" width="5rem" height="3rem">
+  <yd-popup v-model="showCash" position="center" width="6rem" height="3rem">
     <yd-cell-group title="请输入代收技师工号">
       <yd-cell-item>
         <yd-input slot="right" v-model="beauticianCode" placeholder="请输入代收技师工号"></yd-input>
@@ -42,7 +60,7 @@
     </yd-cell-group>
   </yd-popup>
 
-  <yd-popup v-model="showGroup" position="center" width="5.5rem" height="3rem">
+  <yd-popup v-model="showGroup" position="center" width="6.5rem" height="3rem">
     <yd-cell-group title="请输入点评、美团或者口碑券号">
       <yd-cell-item>
         <yd-input slot="right" v-model="couponCode" placeholder="请输入券号"></yd-input>
@@ -173,8 +191,19 @@
             click: function () {
               var preview = event.target.parentNode.parentNode
               vm.lastOrderNo = preview.dataset.no
+              var amount = 0
+              vm.orders.forEach(function (item) {
+                if (item.order_no === vm.lastOrderNo)
+                  amount = item.total_fee
+              })
 
-              vm.payOnline()
+
+              vm.$dialog.confirm({
+                mes: '确定支付 ¥' + amount,
+                opts: () => {
+                  vm.payOnline()
+                }
+              })
             }
           },
         ]
@@ -224,7 +253,7 @@
             })
         },
         payOnline: function () {
-          let self = this
+          var self = this
           if (!WeixinJSBridge || !WeixinJSBridge.invoke) {
             self.$dialog.toast({
               mes: '您的环境不支持微信支付，请在微信里打开',

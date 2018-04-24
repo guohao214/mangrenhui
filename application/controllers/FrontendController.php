@@ -8,7 +8,7 @@
  */
 class FrontendController extends BaseController
 {
-  public $pageTitle = '盲人荟';
+  public $pageTitle = '盲人荟按摩';
   public $cacheTime = 600;
 
   public function __construct()
