@@ -41,6 +41,11 @@
               </option>
             </select>
           </td>
+
+
+        </tr>
+
+        <tr>
           <td>门店：</td>
           <td>
             <select name="shop_id" class="select" id="shop_id">
@@ -51,17 +56,15 @@
               <?php endforeach; ?>
             </select>
           </td>
-
-        </tr>
-
-        <tr>
           <td>技师：</td>
           <td>
             <select name="beautician_id" class="select" id="beautician_id">
               <option value="">所有</option>
               <!--              --><?php //foreach ($beauticians as $key => $beautician): ?>
               <!--                <option-->
-              <!--                  value="--><?php //echo $key; ?><!--" --><?php //echo ($params['beautician_id'] == $key) ? ' selected' : ''; ?><!-->--><?php //echo $beautician; ?><!--</option>-->
+              <!--                  value="--><?php //echo $key; ?><!--" -->
+              <?php //echo ($params['beautician_id'] == $key) ? ' selected' : ''; ?><!-->-->
+              <?php //echo $beautician; ?><!--</option>-->
               <!--              --><?php //endforeach; ?>
             </select>
           </td>
@@ -75,6 +78,8 @@
               <?php endforeach; ?>
             </select>
           </td>
+        </tr>
+        <tr>
           <th width="70">订单号:</th>
           <td><input class="common-text" placeholder="订单号" size="30"
                      name="order_no" value="<?php echo defaultValue($params['order_no']); ?>" type="text">
@@ -93,7 +98,8 @@
 </div>
 <div class="result-wrap">
   <div class="result-title">
-    <div class="result-list"> 订单总数：<h1 style="display: inline-block; font-size: 20px;"><?php echo $orderCount ? $orderCount : 0 ?></h1></div>
+    <div class="result-list"> 订单总数：<h1
+        style="display: inline-block; font-size: 20px;"><?php echo $orderCount ? $orderCount : 0 ?></h1></div>
   </div>
   <div class="result-content">
     <?php if ($orders): ?>
@@ -167,7 +173,7 @@
     getBeauticians()
 
 
-    function getQueryString (name) {
+    function getQueryString(name) {
       name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
       var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
         results = regex.exec(location.search);
@@ -181,12 +187,12 @@
 
       $.ajax({
         url: '/backend/Beautician/getBeauticians',
-        data: { shop_id : $shopId.val()}
+        data: {shop_id: $shopId.val()}
       }).done(function (data) {
         var content = data.data.content
         var beauticianId = getQueryString('beautician_id')
         content.forEach(function (item) {
-          var checked= item.beautician_id == beauticianId ? ' selected' : ''
+          var checked = item.beautician_id == beauticianId ? ' selected' : ''
           console.log(checked)
           $beauticianId.append('<option value="' + item.beautician_id + '"' + checked + '>' + item.name + '</option>')
         })
