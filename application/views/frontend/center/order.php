@@ -45,7 +45,7 @@
 
         <yd-preview-item>
           <div slot="left">项目</div>
-          <div slot="right">{{ order.project_name}}({{order.use_time}}分钟)</div>
+          <div slot="right">{{ order.project_name}}</div>
         </yd-preview-item>
         <yd-preview-item>
           <div slot="left">技师</div>
