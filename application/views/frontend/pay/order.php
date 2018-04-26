@@ -70,6 +70,15 @@
     display: none;
   }
 
+  .yd-confirm-hd {
+    text-align: center;
+    font-size: .3rem;
+  }
+
+  .yd-confirm-bd {
+    text-align: center;
+  }
+
   .yd-confirm-ft {
     border-left: 1px solid #d9d9d9;
     border-right: 1px solid #d9d9d9;

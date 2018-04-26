@@ -52,7 +52,8 @@ class WeixinUtil
   /**
    * @return mixed|string
    */
-  public function getUnionId() {
+  public function getUnionId()
+  {
     $accessToken = $this->getAuthorize();
     if (isset($accessToken['unionid']))
       return $accessToken['unionid'];
@@ -129,9 +130,7 @@ class WeixinUtil
       "appid={$this->appId}&secret={$this->appSecret}&code={$code}&grant_type=authorization_code";
 
     $accessToken = RequestUtil::get($accessTokenUrl);
-
     LogUtil::weixinLog('授权登录：', $accessToken);
-
     if (!$accessToken || $accessToken['error'])
       return false;
 
@@ -140,9 +139,11 @@ class WeixinUtil
     // 判断是否已经获取了微信用户信息
     $customerModel = new CustomerModel();
     $customer = $customerModel->readOneByUnionId($this->getUnionId(), CustomerModel::IS_CUSTOMER);
+
+    // 没有保存客户信息
     if (!$customer) {
       $userInfo = $this->getWeixinUserInfo($this->getToken(), $this->getOpenId());
-      if ($userInfo)
+      if ($userInfo) {
         $openIdCustomer = $customerModel->readOne($this->getOpenId(), CustomerModel::IS_CUSTOMER);
         if (!$openIdCustomer)
           $customerModel->insert($this->getUnionId(), $this->getOpenId(), 0, $userInfo['nickname'],
@@ -150,6 +151,12 @@ class WeixinUtil
         else
           $customerModel->update($this->getOpenId(), $userInfo['nickname'],
             $userInfo['headimgurl'], $userInfo['city'], $userInfo['province'], $userInfo['sex'], $this->getUnionId());
+      }
+    } else if (!$customer['nick_name'] || !$customer['avatar']) {
+      $userInfo = $this->getWeixinUserInfo($this->getToken(), $this->getOpenId());
+      $customerModel->update($this->getOpenId(), $userInfo['nickname'],
+        $userInfo['headimgurl'], $userInfo['city'], $userInfo['province'], $userInfo['sex'], $this->getUnionId());
+    } else {
     }
 
     return true;
@@ -264,7 +271,7 @@ class WeixinUtil
    * @param $accessToken
    * @return mixed|string
    */
-  public function order($type =1, $nickName, $phone, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken)
+  public function order($type = 1, $nickName, $phone, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken)
   {
     $first = $type === 1 ? '您好，您已成功预约' : '有新的预约';
 
@@ -320,7 +327,8 @@ class WeixinUtil
    * @param $accessToken
    * @return mixed|string
    */
-  public function cancelOrder($to, $cancelOrderTime, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken, $fromId = '') {
+  public function cancelOrder($to, $cancelOrderTime, $appointmentDay, $shop, $beautician, $projectName, $openId, $accessToken, $fromId = '')
+  {
     $message = array(
       "touser" => $openId,
       "template_id" => "LRnmSBh-MU2YGwBVQtP1ce2-nIsIdIBSaEDw4Xtg4Gc",

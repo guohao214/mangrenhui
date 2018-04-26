@@ -20,6 +20,15 @@
     margin-bottom: .2rem;
   }
 
+  .yd-confirm-hd {
+    text-align: center;
+    font-size: .3rem;
+  }
+
+  .yd-confirm-bd {
+    text-align: center;
+  }
+
   div[v-if] {
     display: none;
   }
