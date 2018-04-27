@@ -9,12 +9,15 @@ class Order extends FrontendController
   public function pay($orderNo)
   {
     // 是否授权
-    $openId = (new WechatUtil())->getOpenId();
+    $wechatUtil = new WechatUtil();
+    $openId = $wechatUtil->getOpenId();
+    $unionId = $wechatUtil->getUnionId();
+
     if (!$openId)
       ResponseUtil::failure('小程序未授权');
 
     // 获得订单信息
-    $where = array('order_no' => $orderNo, 'open_id' => $openId);
+    $where = array('order_no' => $orderNo, 'union_id' => $unionId);
     $orders = (new OrderModel())->getOrder($where, OrderModel::ORDER_APPOINTMENT);
 
     if (!$orders)
