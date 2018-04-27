@@ -33,7 +33,7 @@ $(document).ready(function () {
         data: data || {},
         dataType: 'json',
       }).done(function (data) {
-        debugger
+        //debugger
         data.status == 0 ? rej(data) : res(data.data)
       }).fail(function (err) {
         console.log(err)

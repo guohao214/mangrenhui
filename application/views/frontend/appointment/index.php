@@ -325,7 +325,7 @@
     </div>
     <div class="time-select">
       <span v-for="(t, k) in times"
-            @click="check(k)"
+            @touchstart="check(k)"
             :class="{ checked: t.checked, invalid: !t.valid}">{{ t.time || '' }}</span>
     </div>
   </div>
@@ -362,6 +362,7 @@
           });
         })
     })
+
 
 
     // 获得物理位置信息
@@ -554,6 +555,7 @@
           this.appointment_day = day[2]
         },
         check: function (index) {
+          console.log(index)
           var time = this.times[index]
           if (!time.valid) {
             return
@@ -587,7 +589,7 @@
             for (var i = 0; i < num; i++) {
               var time = this.times[index + i]
               if (time.time && time.valid) {
-                time.checked = true
+                this.$set(time, 'checked', true)
                 k++
                 this.appointment_time.push(time)
               }
