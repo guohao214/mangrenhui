@@ -12,17 +12,34 @@
     <form action="<?php echo UrlUtil::createBackendUrl('order/index'); ?>?" method="get">
       <table class="search-tab">
         <tr>
-          <th width="70">预约日期:</th>
+          <th width="70">预约开始日期:</th>
           <td>
-            <input type="text" class="common-text" name="appointment_day"
-                   value="<?php echo $params['appointment_day']; ?>">
+            <input type="text" class="common-text" name="appointment_start_day"
+                   value="<?php echo $params['appointment_start_day']; ?>">
+          </td>
+          <th width="70">预约结束日期:</th>
+          <td>
+            <input type="text" class="common-text" name="appointment_end_day"
+                   value="<?php echo $params['appointment_end_day']; ?>">
+          </td>
+        </tr>
+        <tr>
+
+          <th width="70">下单开始日期:</th>
+          <td>
+            <input type="text" class="common-text" name="created_start_day"
+                   value="<?php echo $params['created_start_day']; ?>">
+          </td>
+          <th width="70">下单结束日期:</th>
+          <td>
+            <input type="text" class="common-text" name="created_end_day"
+                   value="<?php echo $params['created_end_day']; ?>">
           </td>
 
-          <th width="70">下单日期:</th>
-          <td>
-            <input type="text" class="common-text" name="created_time"
-                   value="<?php echo $params['created_time']; ?>">
-          </td>
+
+        </tr>
+
+        <tr>
           <th width="70">订单类型:</th>
           <td>
             <select name="order_status" class="select">
@@ -42,10 +59,6 @@
             </select>
           </td>
 
-
-        </tr>
-
-        <tr>
           <td>门店：</td>
           <td>
             <select name="shop_id" class="select" id="shop_id">
@@ -231,7 +244,7 @@
       }
     })
 
-    $('[name="appointment_day"], [name="created_time"]').datetimepicker({
+    $('[name="appointment_start_day"], [name="appointment_end_day"], [name="created_start_day"],  [name="created_end_day"]').datetimepicker({
       lang: 'ch',
       timepicker: false,
       format: 'Y-m-d',

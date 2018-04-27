@@ -639,6 +639,7 @@
             appointment_time: times.join(','),
             from: 'gzh'
           }
+
           var shopId = shop.shop_id
           this.$request.post('cart/appointment', data)
             .then(function () {

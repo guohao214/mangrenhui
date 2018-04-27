@@ -35,16 +35,22 @@ class Bind extends FrontendController
     if ($code !== $sms['code'])
       ResponseUtil::failure('手机验证码错误');
 
-    $userInfo = json_decode($userInfo, true);
-    $nickName = $userInfo['nickName'];
-    $sex = $userInfo['gender'];
-    $avatar = $userInfo['avatarUrl'];
-    $city = $userInfo['city'];
-    $province = $userInfo['province'];
+    $status = true;
 
-    // 绑定
-    $status = (new CurdUtil($customerModel))->update(array('union_id' => $unionId, 'type' => CustomerModel::IS_CUSTOMER),
-      array('phone' => $phone, 'avatar' => $avatar, 'sex' => $sex, 'city' => $city, 'nick_name' => $nickName, 'province' => $province));
+    if (RequestUtil::isXcx()) {
+      $userInfo = json_decode($userInfo, true);
+      if (is_array($userInfo) && count($userInfo) > 0) {
+        $nickName = $userInfo['nickName'];
+        $sex = $userInfo['gender'];
+        $avatar = $userInfo['avatarUrl'];
+        $city = $userInfo['city'];
+        $province = $userInfo['province'];
+
+        // 绑定
+        $status = (new CurdUtil($customerModel))->update(array('union_id' => $unionId, 'type' => CustomerModel::IS_CUSTOMER),
+          array('phone' => $phone, 'avatar' => $avatar, 'sex' => $sex, 'city' => $city, 'nick_name' => $nickName, 'province' => $province));
+      }
+    }
 
     //echo $this->db->last_query();
     $status ? ResponseUtil::executeSuccess() : ResponseUtil::failure();

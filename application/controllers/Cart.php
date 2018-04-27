@@ -31,7 +31,6 @@ class Cart extends FrontendController
     $unionId = $weixinUtil->getUnionId();
 
 
-
     //$openId = (new WeixinUtil())->getOpenId();
 //    if (!$openId)
 //      ResponseUtil::failure('错误的授权');
@@ -92,6 +91,9 @@ class Cart extends FrontendController
     $customerModel = (new CustomerModel());
     $customer = $customerModel->readOneByUnionId($unionId, CustomerModel::IS_CUSTOMER);
 
+    if (!$customer['nick_name'])
+      $customer['nick_name'] = '##';
+
     // 订单数据
     $orderData = array(
       'order_no' => $orderNo,
@@ -109,6 +111,8 @@ class Cart extends FrontendController
       'total_fee' => $project['price']
     );
 
+    $orderProjectData = [];
+
     // 事务开始
     $this->db->trans_start();
     $insertOrderNo = (new CurdUtil($orderModel))->create($orderData);
@@ -123,7 +127,10 @@ class Cart extends FrontendController
         'price' => $project['price']
       );
     } else {
+      LogUtil::weixinLog('提交数据失败-01, 订单数据', $orderData);
+      LogUtil::weixinLog('提交数据失败-02, 商品数据', $orderProjectData);
       ResponseUtil::failure('提交订单失败，请重试！');
+
     }
 
     (new CurdUtil($orderProjectModel))->create($orderProjectData);
@@ -131,6 +138,8 @@ class Cart extends FrontendController
 
     if ($this->db->trans_status() === FALSE) {
       $this->db->trans_rollback();
+      LogUtil::weixinLog('事务提交数据失败-01, 订单数据', $orderData);
+      LogUtil::weixinLog('事务提交数据失败-02, 商品数据', $orderProjectData);
       ResponseUtil::failure('提交订单失败，请重试!');
     } else {
       $this->db->trans_commit();

@@ -22,7 +22,51 @@ class Order extends BackendController
 
     $payTypes = ['scan' => '店内扫码', 'cash' => '店内现金', 'group' => '团购', 'online' => '在线支付'];
     // 获得查询参数， 查询参数都为like模糊查询
+    $params = RequestUtil::getParams();
+    $_params = $params;
+
+    $appointmentStartDay = $params['appointment_start_day'];
+    $appointmentEndDay = $params['appointment_end_day'];
+
+    $createdStartDay = $params['created_start_day'];
+    $createdEndDay = $params['created_end_day'];
+
+
+    unset($_GET['appointment_start_day'], $_GET['appointment_end_day']);
+
+    $appointmentDayQuery = ['1=1'];
+    if ($appointmentStartDay) {
+      array_push($appointmentDayQuery, "appointment_day >='" . $appointmentStartDay . "'");
+    }
+
+    if ($appointmentEndDay) {
+      array_push($appointmentDayQuery, "appointment_day <='" . $appointmentEndDay . "'");
+    }
+
+    $appointmentDayQuery = implode(' and ', $appointmentDayQuery);
+
+
+    //
+    $createdDayQuery = ['1=1'];
+
+    unset($_GET['created_start_day'], $_GET['created_end_day']);
+    if ($createdStartDay) {
+      array_push($createdDayQuery, "created_time >='" . $createdStartDay . "'");
+    }
+
+    if ($createdEndDay) {
+      array_push($createdDayQuery, "created_time <='" . $createdEndDay . "'");
+    }
+
+    $createdDayQuery = implode(' and ', $createdDayQuery);
+
     $where = RequestUtil::buildLikeQueryParamsWithDisabled();
+    $where = $where . ' and (' . $appointmentDayQuery . ')';
+    $where = $where . ' and (' . $createdDayQuery . ')';
+
+
+    $_GET = $_params;
+
     $this->db->select('*');
     //$this->db->select('order_status+0 as order_sign', false);
     $orders = (new CurdUtil($this->orderModel))->readLimit($where, $limit, 'order_id desc');
@@ -96,7 +140,7 @@ class Order extends BackendController
   }
 
 
- public function orderComplete($order_id = '')
+  public function orderComplete($order_id = '')
   {
     if (!$order_id)
       $this->message('订单ID不能为空！');
