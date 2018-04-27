@@ -50,6 +50,9 @@ class Bind extends FrontendController
         $status = (new CurdUtil($customerModel))->update(array('union_id' => $unionId, 'type' => CustomerModel::IS_CUSTOMER),
           array('phone' => $phone, 'avatar' => $avatar, 'sex' => $sex, 'city' => $city, 'nick_name' => $nickName, 'province' => $province));
       }
+    } else {
+      $status = (new CurdUtil($customerModel))->update(array('union_id' => $unionId, 'type' => CustomerModel::IS_CUSTOMER),
+        array('phone' => $phone));
     }
 
     //echo $this->db->last_query();

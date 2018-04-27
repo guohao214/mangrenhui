@@ -1,5 +1,5 @@
 <?php
-ini_set('session.name', 'mangrenhui-2018-session');
+ini_set('session.name', 'mangrenhui-20180102-session');
 ini_set('session.cookie_lifetime', 604800); //7天
 ini_set('session.cookie_httponly', 1);
 ini_set('session.gc_maxlifetime', ini_get('session.cookie_lifetime') - 1440);
