@@ -30,13 +30,19 @@ class Shop extends FrontendController
 
       $_shops = [];
       foreach ($shops as $key=>&$shop) {
-        $distance = CommonUtil::distance($longitude, $latitude, $shop['longitude'], $shop['latitude']);
-        $distance = round($distance);
-        $_distance = $distance;
-        if ($distance > 1000)
-          $distance = round(($distance / 1000)) . 'km';
-        else
-          $distance = $distance . 'm';
+        if ($longitude && $latitude) {
+          $distance = CommonUtil::distance($longitude, $latitude, $shop['longitude'], $shop['latitude']);
+          $distance = round($distance);
+          $_distance = $distance;
+          if ($distance > 1000)
+            $distance = round(($distance / 1000)) . 'km';
+          else
+            $distance = $distance . 'm';
+        } else {
+          $distance = '未知m';
+          $_distance = 0;
+        }
+
         $shop['distance'] = $distance;
         $shop['_distance'] = $_distance;
         $_shops[$key] = $_distance;

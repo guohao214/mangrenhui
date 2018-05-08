@@ -7,6 +7,7 @@
   [v-for] {
     display: none;
   }
+
   #appointment {
     background-color: #F7F7F7;
     position: relative;
@@ -239,7 +240,7 @@
       <yd-icon name="location" size="0.4rem"></yd-icon>
       选择店铺
     </div>
-    <div class="body"  v-if="items.length">
+    <div class="body" v-if="items.length">
       <div class="shop">
         <div class="shop-pic">
           <img :src="currentItem.shop_logo" alt="" class="shop-icon">
@@ -258,7 +259,7 @@
         <yd-cell-item v-for="(w, k) in cpItems" @click.native="choose(w)">
           <span slot="left">
             <div style="font-size: .3rem"> {{ w.shop_name }}</div>
-            <div style="font-size: .25rem;"> {{ w.address }} ({{w.distance}})</div>
+            <div style="font-size: .25rem; white-space: pre-wrap; word-wrap: break-word;"> {{ w.address }} ({{w.distance}})</div>
           </span>
         </yd-cell-item>
       </yd-cell-group>
@@ -364,7 +365,6 @@
     })
 
 
-
     // 获得物理位置信息
     Bus.$request.get('appointment/getJsTicket', {url: encodeURIComponent(location.href)}).then(function (data) {
       var config = $.extend({
@@ -388,6 +388,10 @@
             var accuracy = res.accuracy; // 位置精度
 
             shop.getShop(latitude, longitude)
+          },
+          error: function () {
+            alert(1)
+            shop.getShop(0, 0)
           }
         });
       })
@@ -663,6 +667,9 @@
         },
       }
     })
+
+
+    shop.getShop(0, 0)
   })
 
 </script>
