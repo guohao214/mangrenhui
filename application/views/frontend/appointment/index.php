@@ -274,7 +274,7 @@
       选择项目
     </div>
     <div class="body">
-      <div class="scroll worker">
+      <div class="scroll worker" ref="scrollWorker">
         <ul class="worker">
           <template v-show="items.length">
             <li v-for="(w,k) in items" @click="choose(k)"
@@ -355,6 +355,10 @@
           worker.items = content['beauticians']
           project.items = content['projects']
           appointmentDay.days = content['days']
+
+          Vue.nextTick(function () {
+            project.$refs.scrollWorker.style.width = project.items.length * 2 + 1 + 'rem'
+          })
         })
         .catch(function (error) {
           worker.$dialog.toast({
@@ -474,10 +478,12 @@
       },
       methods: {
         choose: function (index) {
+          var self = this
           this.currentItem = this.items[index] || []
           appointmentDay.appointment_time = []
           appointmentDay.times.forEach(function (item) {
-            item.checked = false
+            self.$set(item, 'checked', false)
+            //item.checked = false
           })
         }
       }
