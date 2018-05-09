@@ -15,14 +15,12 @@ class OrderProjectModel extends BaseModel
   public function getOrderProject($order_id)
   {
     $project = new ProjectModel();
-    $category = new CategoryModel();
+    //$category = new CategoryModel();
 
-    $sql = "select {$this->table}.*, {$project->table}.*,{$project->table}.category_id,
-                {$category->table}.category_name from {$this->table} left join {$project->table}
-                on {$this->table}.project_id={$project->table}.project_id left join {$category->table}
-                on {$project->table}.category_id={$category->table}.category_id
-                where {$this->table}.order_id={$order_id} and {$project->table}.disabled=0
-                and {$category->table}.disabled=0";
+    $sql = "select {$this->table}.*, {$project->table}.*,{$project->table}.category_id 
+                from {$this->table} left join {$project->table}
+                on {$this->table}.project_id={$project->table}.project_id
+                where {$this->table}.order_id={$order_id} and {$project->table}.disabled=0";
 
     $query = $this->db->query($sql);
     return $query->result_array();

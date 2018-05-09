@@ -33,13 +33,15 @@
       </tr>
 
       <tr>
-        <th width="120">技师：</th>
+        <th width="120">美容师：</th>
         <td>
           <?php echo $order['beautician_name']; ?>
         </td>
-<!--        <th width="120">微信订单号：</th>-->
+<!--        <th width="120">预约项目：</th>-->
 <!--        <td>-->
-<!--          --><?php //echo $order['transaction_id']; ?>
+<!--          --><?php //foreach ($orderProjects as $project): ?>
+<!--            <p>--><?php //echo $project['project_name']; ?><!--</p>-->
+<!--          --><?php //endforeach; ?>
 <!--        </td>-->
       </tr>
 
@@ -71,38 +73,19 @@
     <?php if ($orderProjects): ?>
       <h1 class="table-title">订单项目</h1>
       <?php foreach ($orderProjects as $orderProject): ?>
-        <table class="insert-tab" width="100%">
+        <table class="insert-tab" width="100%" style="margin: 10px 0">
           <tr>
-            <th width="120">项目封面：</th>
-            <td width="400"><img class="project_cover"
-                                 src="<?php echo UploadUtil::buildUploadDocPath($orderProject['project_cover'], '200x200'); ?>">
-            </td>
             <th width="120">项目名：</th>
             <td><?php echo $orderProject['project_name']; ?></td>
-          </tr>
-
-          <tr>
-            <th width="120">所属分类：</th>
-            <td width="400"><?php echo $orderProject['category_name']; ?></td>
             <th width="120">使用时间：</th>
-            <td><?php echo $orderProject['project_use_time']; ?> 分钟</td>
+            <td><?php echo $orderProject['use_time']; ?> 分钟</td>
           </tr>
 
           <tr>
             <th width="120">价格：</th>
-            <td width="400"><?php echo $orderProject['project_price']; ?> 元</td>
+            <td width="400"><?php echo $orderProject['price']; ?> 元</td>
             <th width="120">购买数量：</th>
-            <td colspan="3"><?php echo $orderProject['buy_counts']; ?></td>
-          </tr>
-
-          <tr>
-            <th width="120">使用皮肤：</th>
-            <td colspan="3"><?php echo $orderProject['suitable_skin']; ?></td>
-          </tr>
-
-          <tr>
-            <th width="120">功效：</th>
-            <td colspan="3"><?php echo $orderProject['effects']; ?></td>
+            <td colspan="3">1</td>
           </tr>
         </table>
       <?php endforeach; ?>

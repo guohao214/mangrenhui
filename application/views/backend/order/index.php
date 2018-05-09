@@ -12,12 +12,12 @@
     <form action="<?php echo UrlUtil::createBackendUrl('order/index'); ?>?" method="get">
       <table class="search-tab">
         <tr>
-          <th width="70">预约开始日期:</th>
+          <th width="90">预约开始日期:</th>
           <td>
             <input type="text" class="common-text" name="appointment_start_day"
                    value="<?php echo $params['appointment_start_day']; ?>">
           </td>
-          <th width="70">预约结束日期:</th>
+          <th width="90">预约结束日期:</th>
           <td>
             <input type="text" class="common-text" name="appointment_end_day"
                    value="<?php echo $params['appointment_end_day']; ?>">
@@ -25,12 +25,12 @@
         </tr>
         <tr>
 
-          <th width="70">下单开始日期:</th>
+          <th width="90">下单开始日期:</th>
           <td>
             <input type="text" class="common-text" name="created_start_day"
                    value="<?php echo $params['created_start_day']; ?>">
           </td>
-          <th width="70">下单结束日期:</th>
+          <th width="90">下单结束日期:</th>
           <td>
             <input type="text" class="common-text" name="created_end_day"
                    value="<?php echo $params['created_end_day']; ?>">
@@ -69,7 +69,7 @@
               <?php endforeach; ?>
             </select>
           </td>
-          <td>技师：</td>
+          <td>美容师：</td>
           <td>
             <select name="beautician_id" class="select" id="beautician_id">
               <option value="">所有</option>
@@ -118,16 +118,16 @@
     <?php if ($orders): ?>
       <table class="result-tab" width="100%">
         <tr>
-          <th>订单ID</th>
+          <th width="50">订单ID</th>
           <th width="220">订单号</th>
           <th>预约日期</th>
           <th>门店</th>
-          <th>技师</th>
+          <th>美容师</th>
           <th>联系信息</th>
           <th>订单状态</th>
           <th>订单金额</th>
           <th width="150">下单时间</th>
-          <th width="140">操作</th>
+          <th width="80">操作</th>
         </tr>
         <?php foreach ($orders as $order): ?>
           <tr>
@@ -136,7 +136,7 @@
               <?php echo $order['order_no']; ?>
               <br>
               <?php if ($order['pay_type'] === 'cash'): ?>
-                支付方式：店内现金， 技师工号: <?php echo $order['pay_content']; ?>
+                支付方式：店内现金， 美容师工号: <?php echo $order['pay_content']; ?>
               <?php elseif ($order['pay_type'] === 'scan'): ?>
                 支付方式：店内扫码
               <?php elseif ($order['pay_type'] === 'group'): ?>
@@ -155,13 +155,14 @@
             <td>
               <a class="link-view btn btn-success"
                  href="<?php echo UrlUtil::createBackendUrl('order/orderDetail/' . $order['order_no'] . "/{$limit}"); ?>">详情</a>
+              <br>
               <a class="link-del btn btn-danger"
                  href="<?php echo UrlUtil::createBackendUrl('order/deleteOrder/' . $order['order_id']); ?>">删除</a>
 
               <?php if ($order['order_status'] == OrderModel::ORDER_APPOINTMENT): ?><br>
                 <a class="link-cancel btn btn-warning"
                    href="<?php echo UrlUtil::createBackendUrl('order/CancelOrder/' . $order['order_id']); ?>">取消</a>
-
+                <br>
                 <a class="link-complete btn btn-success"
                    href="<?php echo UrlUtil::createBackendUrl('order/orderComplete/' . $order['order_id']); ?>">已完成</a>
               <?php endif; ?>
@@ -210,7 +211,7 @@
           $beauticianId.append('<option value="' + item.beautician_id + '"' + checked + '>' + item.name + '</option>')
         })
       }).fail(function (err) {
-        alert('获取店铺技师失败')
+        alert('获取店铺美容师失败')
       })
     }
 
