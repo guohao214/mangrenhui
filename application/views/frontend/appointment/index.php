@@ -314,7 +314,7 @@
       预约时间
     </div>
     <div class="body">
-      <div class="scroll days">
+      <div class="scroll days"  v-if="days.length">
         <ul class="days">
           <li v-for="d in days" @click="fetchTime(d)" :class="{active: d.match(new RegExp(appointment_day)) }">
             <span>{{ d | getDay }}</span>
@@ -324,7 +324,7 @@
       </div>
 
     </div>
-    <div class="time-select">
+    <div class="time-select" v-if="times.length">
       <span v-for="(t, k) in times"
             @touchstart="check(k)"
             :class="{ checked: t.checked, invalid: !t.valid}">{{ t.time || '' }}</span>
