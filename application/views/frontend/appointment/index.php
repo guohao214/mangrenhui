@@ -597,7 +597,7 @@
             var num = Math.ceil(t / this.every)
             var k = 0
             for (var i = 0; i < num; i++) {
-              var time = this.times[index + i]
+              var time = this.times[index + i] || {}
               if (time.time && time.valid) {
                 this.$set(time, 'checked', true)
                 k++
