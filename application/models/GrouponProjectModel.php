@@ -52,9 +52,11 @@ class GrouponProjectModel extends BaseModel
                 count(*) as created
             from
                 groupon_order as a
+            left join groupon_order_list as d on a.groupon_order_id=d.groupon_order_id
             where
                 a.groupon_project_code = '{$code}'
                 and a.disabled = 0
+                and d.disabled = 0
         ) as created
     from
         groupon_project as a
@@ -115,9 +117,11 @@ class GrouponProjectModel extends BaseModel
                 count(*)
             from
                 groupon_order as j
+            left join groupon_order_list as k on j.groupon_order_id = k.groupon_order_id
             where
                 j.groupon_project_code = a.groupon_project_code
                 and j.disabled = 0
+                and k.disabled=0
         ) as open_counts
     from
         groupon_project as a

@@ -129,6 +129,14 @@
   .f-3rem {
     font-size: .3rem
   }
+
+  .ps .yd-cell-left {
+    font-size: .22rem;
+  }
+
+  .red {
+    color: red;
+  }
 </style>
 
 <div id="app_body">
@@ -150,7 +158,6 @@
     </div>
   </div>
 
-
   <yd-cell-group class="sms">
     <yd-cell-item>
       <span slot="left">手机号：</span>
@@ -170,6 +177,15 @@
       <span slot="right" class="f-3rem">¥ <?php echo $grouponProject['groupon_price']; ?></span>
     </yd-cell-item>
   </yd-cell-group>
+
+  <yd-cell-group class="ps">
+    <yd-cell-item>
+      <span slot="left">
+        温馨提示：请在<span class="red">5分钟</span>内支付，超时系统会取消您的订单。
+      </span>
+    </yd-cell-item>
+  </yd-cell-group>
+
 
   <div class="footer" id="footer">
     <yd-button-group>

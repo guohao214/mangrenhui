@@ -329,7 +329,7 @@ class Groupon extends FrontendController
    * 异步通知
    */
   public function callMe() {
-    $weixin = new WeixinPayUtil();
+    $weixin = new WeixinPayUtil('groupon_weixin');
 
     //通知微信
     $notice = $weixin->notifyData();

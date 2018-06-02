@@ -119,7 +119,7 @@
   }
 
   .f_2 {
-    font-size: .2rem
+    font-size: .22rem
   }
 
   .groupon_comment .yd-cell-left {

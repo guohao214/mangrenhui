@@ -76,7 +76,7 @@
             <td><?php echo $project['pay_counts']; ?> </td>
             <td><?php echo $project['open_counts']; ?> </td>
             <td><?php echo $project['groupon_count'] - $project['open_counts']; ?></td>
-            <td>¥<?php echo number_format($project['open_counts'] * $project['groupon_price'], 2); ?></td>
+            <td>¥<?php echo number_format($project['pay_counts'] * $project['groupon_price'], 2); ?></td>
             <td><?php echo $project['start_time'] ?>~ <?php echo $project['end_time']; ?></td>
             <td>
             <a class="link-update btn btn-success"
