@@ -15,6 +15,9 @@ class Project extends BackendController
     $this->projectModel->deleteProjectsCache();
   }
 
+  /**
+   * 
+   */
   public function readAllProjectByCategory($categoryId)
   {
     $projects = (new CurdUtil($this->projectModel))
@@ -28,6 +31,21 @@ class Project extends BackendController
     ResponseUtil::json($html);
   }
 
+  /**
+   * 
+   */
+  public function readAllProjectByShopId($shopId)
+  {
+    $projects = (new CurdUtil($this->projectModel))
+      ->readAll('project_id desc', array('shop_id' => $shopId, 'disabled' => 0));
+
+    $html = '';
+    foreach ($projects as $project) {
+      $html .= "<option value={$project['project_id']}>{$project['project_name']}</option>";
+    }
+
+    ResponseUtil::json($html);
+  }
 
   public function index($limit = 0)
   {

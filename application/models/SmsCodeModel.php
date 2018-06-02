@@ -3,6 +3,7 @@
 class SmsCodeModel extends BaseModel
 {
   const BIND_WECHAT_TYPE = 1; //绑定微信
+  const GROUPON_ORDER = 2;
   const EXPIRED_TIME = 5 * 60;
 
   public function setTable()

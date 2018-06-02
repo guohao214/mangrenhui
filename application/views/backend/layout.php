@@ -50,6 +50,8 @@
             <li><a href="<?php echo UrlUtil::createBackendUrl('order/index') ?>"><i class="icon-font">
                   &#xe005;</i>订单管理</a></li>
             <li><a href="<?php echo UrlUtil::createBackendUrl('customer/index') ?>"><i class="icon-font">&#xe060;</i>顾客管理</a>
+            <li><a href="<?php echo UrlUtil::createBackendUrl('grouponProject/index') ?>"><i class="icon-font">
+                    &#xe008;</i>拼团项目管理</a></li>
             </li>
 
           </ul>
