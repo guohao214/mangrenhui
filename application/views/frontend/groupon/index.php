@@ -102,7 +102,7 @@
   }
 
   .shop {
-    padding-bottom: 1.5rem
+    padding-bottom: 2.5rem
   }
 
   .use_shop {
@@ -128,6 +128,10 @@
   }
   .yd-cell-item {
     /* padding: .2rem .1rem; */
+  }
+
+  .yd-btn-block {
+    margin-top: .1rem
   }
 </style>
 
@@ -223,7 +227,7 @@
 
   <div class="footer" id="footer">
     <yd-button-group>
-
+      <yd-button size="large" type="primary" @click.native="join(grouponOrderCode)" v-if="grouponOrderCode.length">参团 ¥{{ project.groupon_price}}</yd-button>
       <yd-button size="large" type="warning" @click.native="commit" v-if="project.__type==='ing'">我要开团 ¥{{ project.groupon_price}}</yd-button>
       <yd-button size="large"  disabled type="warning" @click.native="commit" v-else-if="project.__type==='wait'">未开始 ¥{{ project.groupon_price}}</yd-button>
       <yd-button size="large" disabled type="warning" @click.native="commit" v-else="project.__type==='end'">已结束 ¥{{ project.groupon_price}}</yd-button>
@@ -240,6 +244,7 @@
     new Vue({
       el: '#app_body',
       data: {
+        grouponOrderCode,
         project: {},
         ingProjects: []
       },
@@ -274,10 +279,21 @@
           this.$request.get('groupon/newGrouponOrder/' + grouponProjectCode)
             .then(function(data) {
               var orderNo = data.content[0]
-              // debugger
               window.location.href = '/groupon/pay/' + orderNo
             })
             .catch(function (err) {
+              if (err.status == -10) {
+                self.$dialog.toast({
+                  mes: '您的拼团订单未支付, 请支付.',
+                  timeout: 1000
+                })
+
+                setTimeout(function() {
+                  window.location.href = '/groupon/pay/' + err.detail
+                }, 1000);
+
+                return
+              }
                 self.$dialog.toast({
                   mes: err.detail || '开团失败，请重试.',
                   timeout: 1500

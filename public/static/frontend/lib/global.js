@@ -34,7 +34,7 @@ $(document).ready(function () {
         dataType: 'json',
       }).done(function (data) {
         //debugger
-        data.status == 0 ? rej(data) : res(data.data)
+        data.status != 1 ? rej(data) : res(data.data)
       }).fail(function (err) {
         console.log(err)
         rej({status: '0', 'detail': '请求失败:' + err.status})

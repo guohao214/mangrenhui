@@ -34,7 +34,7 @@ class Groupon extends FrontendController
     $grouponProjetModel = new GrouponProjectModel();
     $grouponProject = $grouponProjetModel->readOne($grouponProjectCode);
     if (!$grouponProject)
-      ResponseUtil::failureure('拼团项目不存在');
+      ResponseUtil::failure('拼团项目不存在');
     else {
       $grouponProject['project_cover'] = UploadUtil::buildUploadDocPath($grouponProject['project_cover'], '600x600');
       
@@ -159,7 +159,7 @@ class Groupon extends FrontendController
     // 判断是否有未支付的，在有效期内的订单
     $findOrder = $grouponOrder->getFirstOrderList($grouponProjectCode, $openId);
     if ($findOrder && $findOrder['order_status'] != 20)
-      ResponseUtil::failure('您还有未支付的拼团订单');
+      ResponseUtil::failure($findOrder['groupon_order_list_no'], -10);
 
     if ($findOrder && $findOrder['order_status'] == 20)
       ResponseUtil::failure('您已经参加了此团');
@@ -328,9 +328,9 @@ class Groupon extends FrontendController
   /**
    * 异步通知
    */
-  public function callMe() {
+  public function callme() {
     $weixin = new WeixinPayUtil('groupon_weixin');
-
+    LogUtil::weixinLog('开始接收微信的返回数据', '---');
     //通知微信
     $notice = $weixin->notifyData();
     LogUtil::weixinLog('拼团微信支付后的通知参数', $notice);

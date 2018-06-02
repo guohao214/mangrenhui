@@ -39,6 +39,9 @@ class GrouponProjectModel extends BaseModel
     return $validate;
   }
 
+  /**
+   * 查询拼团项目
+   */
   public function readOne($code)
   {
     $sql = "select

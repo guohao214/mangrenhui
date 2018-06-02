@@ -252,8 +252,12 @@ $(document).ready(function() {
                 if (res.err_msg == 'get_brand_wcpay_request:ok') {
                   self.$dialog.toast({
                     mes: '支付成功,等待数据确认，请稍等...',
-                    timeout: 1500
+                    timeout: 2000
                   })
+
+                  setTimeout(function(){
+                    window.location.href = '/groupon/success/' + listNo
+                  }, 2000);
                 } else if (res.err_msg == 'get_brand_wcpay_request:cancel') {
                   //alert('取消支付');
                   return false;

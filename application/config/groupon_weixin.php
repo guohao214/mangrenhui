@@ -4,5 +4,5 @@ return array(
   'appSecret' => 'd6497a13d37e25925616ffc8e95afb98',
   'mchId' => '1500110722', //商户ID
   'apiKey' => 'MANGrenhui9876543210987654321098',
-  'noticeUrl' => UrlUtil::createUrl('groupon/callMe')
+  'noticeUrl' => UrlUtil::createUrl('groupon/callme')
 );

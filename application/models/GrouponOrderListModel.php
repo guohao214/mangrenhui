@@ -36,7 +36,8 @@ class GrouponOrderListModel extends BaseModel
    * 清除过期的订单， 默认5分钟过期
    */
   public function getInvalidOrders($time = 300) {
-  echo  $sql = "select a.* from groupon_order_list as a where UNIX_TIMESTAMP(a.created_time) + {$time} < now() and a.disabled=0";
+    $sql = "select a.* from groupon_order_list as a where UNIX_TIMESTAMP(a.created_time) + {$time} < now() 
+      and a.disabled=0 and order_status != 20";
     return (new CurdUtil($this))->query($sql);
   }
 
