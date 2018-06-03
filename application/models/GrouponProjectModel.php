@@ -58,6 +58,7 @@ class GrouponProjectModel extends BaseModel
             left join groupon_order_list as d on a.groupon_order_id=d.groupon_order_id
             where
                 a.groupon_project_code = '{$code}'
+                and d.is_first=1
                 and a.disabled = 0
                 and d.disabled = 0
         ) as created

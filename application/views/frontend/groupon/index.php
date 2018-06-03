@@ -171,7 +171,7 @@
           </div>
           <div class="info">
             <div class="user">
-              大师我
+              {{ item.nick_name }}
             </div>
             <div class="remain_people">还差 {{ item.in_peoples - (item.in_counts || 0)}}人</div>
           </div>
@@ -214,7 +214,7 @@
               <div class="f_2">{{ project.address}}</div>
             </div>
             <div>
-              <a href="tel:{{project.contact_number}}">
+              <a :href="'tel://' + project.contact_number">
                 <yd-icon name="phone2" color="red"></yd-icon>
               </a>
               
@@ -304,9 +304,21 @@
           var self = this
           this.$request.get('groupon/join/' + grouponOrderCode)
             .then(function(data) {
-              
+              debugger
+              window.location.href = '/groupon/pay/' + data.content[0]
             })
             .catch(function (err) {
+              if (err.status == -10) {
+                self.$dialog.toast({
+                  mes: '您的拼团订单未支付, 请支付.',
+                  timeout: 1000
+                })
+
+                setTimeout(function() {
+                  window.location.href = '/groupon/pay/' + err.detail
+                }, 1000);
+                return;
+              }
                 self.$dialog.toast({
                   mes: err.detail || '参团失败，请重试.',
                   timeout: 1500

@@ -120,7 +120,11 @@ class GrouponOrderModel extends BaseModel
           c.avatar,
           d.in_peoples,
           d.start_time,
-          d.end_time
+          d.end_time,
+          (select count(*) from groupon_order as j left join groupon_order_list as k
+            on j.groupon_order_id = k.groupon_order_id where j.disabled = 0 and k.disabled = 0
+            and j.groupon_order_id = a.groupon_order_id
+          ) as in_counts
       from
           groupon_order as a
           left join groupon_order_list as b on a.groupon_order_id = b.groupon_order_id
@@ -129,6 +133,9 @@ class GrouponOrderModel extends BaseModel
       where
           d.groupon_project_code = '{$grouponProjectCode}'
           and c.type = 1
+          and a.disabled=0
+          and b.order_status=20
+          and b.disabled=0
           and d.start_time < now()
           and now() < d.end_time
           and b.open_id != '${openId}'

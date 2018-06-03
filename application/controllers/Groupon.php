@@ -68,7 +68,6 @@ class Groupon extends FrontendController
     } catch( Exception $e) {
       ResponseUtil::fail();
     }
-
   }
 
   /**
@@ -145,18 +144,11 @@ class Groupon extends FrontendController
     $openId = $wechat->getOpenId();
     $unionId = $wechat->getUnionId();
 
+    $grouponOrder = new GrouponOrderModel();
     $grouponProjetModel = new GrouponProjectModel();
     $grouponProject = $grouponProjetModel->readOne($grouponProjectCode);
 
-    // 判断
-    HelperUtil::verifyGrouponProject($grouponProject);
-    if ($grouponProject['groupon_count'] === $grouponProject['created'])
-      ResponseUtil::failure('团长总数已达到最大');
-
-
-    $grouponOrder = new GrouponOrderModel();
-
-    // 判断是否有未支付的，在有效期内的订单
+      // 判断是否有未支付的，在有效期内的订单
     $findOrder = $grouponOrder->getFirstOrderList($grouponProjectCode, $openId);
     if ($findOrder && $findOrder['order_status'] != 20)
       ResponseUtil::failure($findOrder['groupon_order_list_no'], -10);
@@ -164,6 +156,17 @@ class Groupon extends FrontendController
     if ($findOrder && $findOrder['order_status'] == 20)
       ResponseUtil::failure('您已经参加了此团');
     // 是否还有未拼团完成的
+
+    // 是否参加了别人开的团
+    $existsJoin = (new GrouponOrderListModel())->getOne($openId, $findGroupOrder['groupon_order_id']);
+    if ($existsJoin)
+      ResponseUtil::failure('您已经参加了此团');
+
+    // 判断
+    HelperUtil::verifyGrouponProject($grouponProject);
+    if ($grouponProject['groupon_count'] === $grouponProject['created'])
+      ResponseUtil::failure('团长总数已达到最大');
+   
 
     $params = RequestUtil::postParams();
 
@@ -230,7 +233,7 @@ class Groupon extends FrontendController
     // 判断是否已经参加了团
     $existsJoin = (new GrouponOrderListModel())->getOne($openId, $findGroupOrder['groupon_order_id']);
     if ($existsJoin)
-      ResponseUtil::failure('您已经参加了此团');
+      ResponseUtil::failure($existsJoin['groupon_order_list_no'], -10);
 
     // 判断团长是否支付了此订单
     $findOrder = $grouponOrder->getFirstOrderList($grouponProjectCode, '', $grouponOrderCode);
@@ -260,7 +263,7 @@ class Groupon extends FrontendController
         throw new Exception('');
       } else {
         $this->db->trans_commit();
-        ResponseUtil::executeSuccess($grouponOrderListNo);
+        ResponseUtil::QuerySuccess([$grouponOrderListNo]);
       }
     } catch (Exception $ex) {
       $this->db->trans_rollback();
