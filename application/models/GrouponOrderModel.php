@@ -132,6 +132,7 @@ class GrouponOrderModel extends BaseModel
           left join customer as c on b.open_id = c.open_id
       where
           d.groupon_project_code = '{$grouponProjectCode}'
+          and in_counts > 0
           and c.type = 1
           and a.disabled=0
           and b.order_status=20

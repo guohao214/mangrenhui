@@ -15,6 +15,10 @@ class Center extends FrontendController
    */
   public function completeOrder($orderId)
   {
+    $wechatUtil = new WechatUtil();
+    $openId = $wechatUtil->getOpenId();
+    $unionId = $wechatUtil->getUnionId();
+
     $types = ['cash', 'scan', 'group'];
 
     $params = RequestUtil::postParams();
@@ -38,17 +42,65 @@ class Center extends FrontendController
         ResponseUtil::failure('请输入券号');
       else
         $payContent = $couponCode;
+
+
+      $grouponOrderListId = '';
+      // 检测是否已经有团购订单， 根据手机号判断
+      if (strlen($payContent) === 11 && preg_match('/^1\d{10}$/', $payContent)) {
+        // 查询项目ID
+        // 查询团购订单
+
+        $appointmentOrder = (new CurdUtil(new OrderProjectModel()))->readOne(array(
+          'order_id' => $orderId 
+        ));
+
+        if (!$appointmentOrder)
+          ResponseUtil::failure('订单不存在');
+
+        $appointmentProjectId = $appointmentOrder['project_id'];
+
+        $grouponOrderList = (new GrouponOrderListModel())->orderUseCounts($payContent, $appointmentProjectId);
+        if (!$grouponOrderList)
+          ResponseUtil::failure('券号错误');
+
+        if ($grouponOrderList['use_counts'] >= $grouponOrderList['in_counts'])
+          ResponseUtil::failure('团购使用次数已到最大');
+
+        $grouponOrderListId = $grouponOrderList['groupon_order_list_id'];
+      }
     }
 
+
+    // 处理数据
+    $this->db->trans_start();
+
     $now = DateUtil::now();
-    $where = ['order_id' => $orderId, 'disabled' => 0, 'order_status' => OrderModel::ORDER_APPOINTMENT];
+    $where = ['order_id' => $orderId, 'open_id' => $openId, 'disabled' => 0, 'order_status' => OrderModel::ORDER_APPOINTMENT];
     $data = ['pay_time' => $now, 'pay_type' => $type, 'pay_content' => $payContent, 'order_status' => OrderModel::ORDER_COMPLETE];
 
     $status = (new CurdUtil(new OrderModel()))->update($where, $data);
+    if (!$status)
+      ResponseUtil::failure();
 
-    //var_dump($this->db->last_query());
-    $status ? ResponseUtil::executeSuccess() : ResponseUtil::failure();
+    if ($grouponOrderListId) {
+      $last = (new CurdUtil(new GrouponOrderUseModel()))->create(array(
+        'order_id' => $orderId,
+        'groupon_order_list_id' => $grouponOrderListId,
+        'union_id' => $unionId
+      ));
 
+      if (!$last)
+        ResponseUtil::fail();
+     }
+
+    $this->db->trans_complete();
+    if ($this->db->trans_status() === FALSE) {
+      $this->db->trans_rollback();
+      ResponseUtil::failure();
+    } else {
+      $this->db->trans_commit();
+      ResponseUtil::executeSuccess();
+    }
   }
 
   public function order()

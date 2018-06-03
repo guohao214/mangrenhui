@@ -101,7 +101,7 @@
   <yd-popup v-model="showGroup" position="center" width="6.5rem" height="3.4rem">
     <yd-cell-group title="请输入点评、美团或者口碑券号">
       <yd-cell-item>
-        <yd-input slot="right" v-model="couponCode" placeholder="请输入券号" ref="couponCode"></yd-input>
+        <yd-input slot="right" v-model="couponCode" placeholder="请输入券号, 如是拼团请输入11位手机号码" ref="couponCode"></yd-input>
       </yd-cell-item>
 
       <div class="yd-confirm-ft">
@@ -269,9 +269,11 @@
 
           // 团购
           if (this.payType === 'group') {
-            if (!this.couponCode.match(/^\d{10}$/) && !this.couponCode.match(/^\d{12}$/)) {
+            if (!this.couponCode.match(/^\d{10}$/) 
+              && !this.couponCode.match(/^1\d{10}$/)
+              && !this.couponCode.match(/^\d{12}$/)) {
               self.$dialog.toast({
-                mes: '券号输入错误,券号位数为10位或者12位',
+                mes: '券号输入错误,券号位数为10位或者12位, 如是拼团请输入11位手机号码',
                 timeout: 1500
               })
               return

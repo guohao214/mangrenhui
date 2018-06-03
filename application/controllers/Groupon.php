@@ -14,11 +14,23 @@ class Groupon extends FrontendController
   /**
    * 发送验证码
    */
-  public function sendSmsCode($phone) {
-    if (!$phone)
-    ResponseUtil::failure();
+  public function sendSmsCode($phone, $listNo) {
+    if (!$phone || !$listNo)
+      ResponseUtil::failure();
 
+    $openId = (new WechatUtil())->getOpenId();
     try {
+
+      // 获得订单
+      $findOrder = (new GrouponOrderListModel())->getOrder($openId, $listNo);
+      if (!$findOrder)
+        ResponseUtil::failure('订单不存在');
+      // 判断 手机号是否参与了团
+      $grouponProjectCode = $findOrder['ggroupon_project_code'];
+      $projectId = $findOrder['project_id'];
+      if (!(new GrouponOrderListModel())->phoneNumberIsNotJoin($grouponProjectCode, $projectId, $phone))
+        ResponseUtil::failure('此手机号已经参与了此团');
+
       $status = (new SmsCodeModel())->sendCode($phone, SmsCodeModel::GROUPON_ORDER, '您的拼团手机验证码为:');
       $status ? ResponseUtil::executeSuccess() : ResponseUtil::failure();
     } catch (Exception $e) {
@@ -188,6 +200,9 @@ class Groupon extends FrontendController
       $data['groupon_order_list_no'] = $grouponOrderListNo;
       $data['groupon_order_id'] = $grouponOrderId;
       $data['total_fee'] = $grouponProject['groupon_price'];
+      $data['in_counts'] = $grouponProject['in_counts'];
+      $data['project_id'] = $grouponProject['project_id'];
+      $data['ggroupon_project_code'] = $grouponProject['groupon_project_code'];
       $data['is_first'] = 1;
 
       $grouponOrderList = new GrouponOrderListModel();
@@ -251,6 +266,9 @@ class Groupon extends FrontendController
       $data['groupon_order_list_no'] = $grouponOrderListNo;
       $data['groupon_order_id'] = $findGroupOrder['groupon_order_id'];
       $data['total_fee'] = $grouponProject['groupon_price'];
+      $data['in_counts'] = $grouponProject['in_counts'];
+      $data['project_id'] = $grouponProject['project_id'];
+      $data['ggroupon_project_code'] = $grouponProject['groupon_project_code'];
       $data['is_first'] = 0;
 
       $grouponOrderList = new GrouponOrderListModel();
@@ -281,15 +299,22 @@ class Groupon extends FrontendController
     $openId = $wechatUtil->getOpenId();
     $unionId = $wechatUtil->getUnionId();
 
+    $params = RequestUtil::postParams();
+    $phoneNumber = $params['phone'];
+
     $findOrder = (new GrouponOrderListModel())->getOrder($openId, $listNo);
     if (!$findOrder)
       ResponseUtil::failure('拼团不存在');
 
+      $grouponProjectCode = $findOrder['ggroupon_project_code'];
+      $projectId = $findOrder['project_id'];
+      if (!(new GrouponOrderListModel())->phoneNumberIsNotJoin($grouponProjectCode, $projectId, $phoneNumber))
+        ResponseUtil::failure('此手机号已经参与了此团');
+
     if ($findOrder['order_status'] != 10)
       ResponseUtil::failure('此订单不可操作');
 
-      $params = RequestUtil::postParams();
-      $phoneNumber = $params['phone'];
+ 
       if (!$phoneNumber)
         ResponseUtil::failure('手机号不能为空');
   
@@ -301,8 +326,9 @@ class Groupon extends FrontendController
       // // 验证验证码
       $smsModel = new SmsCodeModel();
       $sms = $smsModel->getOne($phoneNumber, SmsCodeModel::GROUPON_ORDER);
-      if (!$sms)
+      if (!$sms || $sms['code'] !== $params['smsCode'])
         ResponseUtil::failure('验证码错误');
+        
 
     // 修改订单信息
     (new CurdUtil(new GrouponOrderListModel()))

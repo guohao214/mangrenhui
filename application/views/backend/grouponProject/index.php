@@ -49,6 +49,7 @@
       <table class="result-tab" width="100%">
         <tr>
           <!-- <th width="110">封面</th> -->
+          <th>标题</th>
           <th>项目</th>
           <th>门店</th>
           <th width="60">开团数量</th>
@@ -61,6 +62,9 @@
         </tr>
         <?php foreach ($projects as $project): ?>
           <tr>
+            <td>
+              <?php echo $project['groupon_name']; ?>
+            </td>
             <!-- <td>
               <img class="cover"
                    src="<?php echo UploadUtil::buildUploadDocPath($project['project_cover'], '200x200'); ?>">

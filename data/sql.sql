@@ -1,12 +1,8 @@
 select
-    a.groupon_project_code,
-    a.groupon_order_code,
-    b.*
+    *
 from
-    groupon_order as a
-    left join groupon_order_list as b on a.groupon_order_id = b.groupon_order_id
+    groupon_order_list as a
 where
-    a.disabled = 0
-    and b.disabled = 0
-    and b.groupon_order_list_no = '{$listNo}'
-    and b.open_id = '{$openId}'
+    a.groupon_order_list_id != 1
+    and a.project_id != 9
+    and a.phone_number = '13524286564'

@@ -291,7 +291,7 @@ $(document).ready(function() {
         return
       }
 
-      this.$request.get('groupon/sendSmsCode/' + this.phone)
+      this.$request.get('groupon/sendSmsCode/' + this.phone + '/' + listNo)
         .then(function (data) {
           self.$dialog.toast({
             mes: '已发送',

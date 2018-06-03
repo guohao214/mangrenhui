@@ -126,12 +126,21 @@
     white-space: pre-wrap;
     padding: 2px 0;
   }
-  .yd-cell-item {
+  .yd-cell-right {
     /* padding: .2rem .1rem; */
+    font-size: .3rem;
+  }
+
+  .yd-cell-right span {
+    margin: 0 .2rem
   }
 
   .yd-btn-block {
     margin-top: .1rem
+  }
+
+  .countdown {
+    margin-left: .5rem
   }
 </style>
 
@@ -149,6 +158,16 @@
       </div>
       <div class="people">
         <yd-badge shape="square" type="danger">{{ project.in_peoples }}人团</yd-badge>
+      </div>
+
+      <div class="countdown" v-if="endTime">
+        <span>倒计时:</span>
+        <yd-countdown :time="endTime">
+          <span style="color:red;">{%d}<i>天</i></span>
+          <span style="color:gray;">{%h}<i>时</i></span>
+          <span style="color:blue;">{%m}<i>分</i></span>
+          <span style="color:orange;">{%s}<i>秒</i></span>
+        </yd-countdown>
       </div>
     </div>
   </div>
@@ -199,7 +218,11 @@
   <div class="project">
     <yd-cell-group title="活动内容">
       <yd-cell-item>
-        <span slot="left">{{ project.project_name}} x{{ project.in_counts}}</span>
+        <span slot="left">{{ project.project_name}}</span>
+        <span slot="right"> 
+          <span>x{{ project.in_counts}} </span>
+          <span>¥{{project.old_price}}</span>
+        </span>
       </yd-cell-item>
     </yd-cell-group>
   </div> 
@@ -246,7 +269,8 @@
       data: {
         grouponOrderCode,
         project: {},
-        ingProjects: []
+        ingProjects: [],
+        endTime: 0
       },
       mounted: function() {
         this.getIngOrders(grouponProjectCode, grouponOrderCode)
@@ -266,6 +290,7 @@
           this.$request.get('groupon/getGrouponProject/' + grouponProjectCode)
             .then(function(data) {
               self.project = data.content
+              self.endTime = data.content.end_time
             })
             .catch(function (err) {
               self.$dialog.toast({

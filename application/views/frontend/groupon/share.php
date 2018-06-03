@@ -225,6 +225,20 @@
     </yd-cell-item>
   </yd-cell-group>
 
+  <yd-cell-group v-if="endTime">
+    <yd-cell-item>
+      <span slot="left" class="flex"></yd-icon>倒计时:</span>
+      <span slot="right" class="f-3rem">
+        <yd-countdown :time="endTime">
+          <span style="color:red;">{%d}<i>天</i></span>
+          <span style="color:gray;">{%h}<i>时</i></span>
+          <span style="color:blue;">{%m}<i>分</i></span>
+          <span style="color:orange;">{%s}<i>秒</i></span>
+        </yd-countdown>
+      </span>
+    </yd-cell-item>
+  </yd-cell-group>
+
   <div class="footer" id="footer">
     <yd-button-group>
       <yd-button size="large" type="warning" @click.native="share">召集小伙伴参团</yd-button>
@@ -248,6 +262,7 @@ $(document).ready(function() {
       phone: '',
       start: false,
       smsCode: '',
+      endTime: '<?php echo $grouponProject['end_time']; ?>'
     },
     mounted: function() {
       
