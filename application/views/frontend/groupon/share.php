@@ -262,7 +262,7 @@ $(document).ready(function() {
       phone: '',
       start: false,
       smsCode: '',
-      endTime: '<?php echo $grouponProject['end_time']; ?>'
+      endTime: '<?php echo str_replace('-', '/', $grouponProject['end_time']); ?>'
     },
     mounted: function() {
       

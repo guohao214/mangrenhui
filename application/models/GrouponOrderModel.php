@@ -132,7 +132,6 @@ class GrouponOrderModel extends BaseModel
           left join customer as c on b.open_id = c.open_id
       where
           d.groupon_project_code = '{$grouponProjectCode}'
-          and in_counts > 0
           and c.type = 1
           and a.disabled=0
           and b.order_status=20
@@ -144,7 +143,11 @@ class GrouponOrderModel extends BaseModel
           and b.is_first = 1";
 
 
-    return (new CurdUtil($this))->query($sql);
+    $result =  (new CurdUtil($this))->query($sql);
+
+    return array_filter($result, function($item) {
+        return $item['in_counts'] > 0;
+    });
   }
 
 }

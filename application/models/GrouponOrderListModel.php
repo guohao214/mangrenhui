@@ -8,7 +8,8 @@ class GrouponOrderListModel extends BaseModel
   }
 
   public function getOne($openId, $grouponOrderId) {
-    return (new CurdUtil($this))->readOne(array('open_id' => $openId, 'groupon_order_id' => $grouponOrderId, 'disabled' => 0));
+    return (new CurdUtil($this))->readOne(array('open_id' => $openId, 
+      'groupon_order_id' => $grouponOrderId, 'disabled' => 0));
   }
 
   public function phoneNumberIsNotJoin($grouponProjectCode, $projectId, $phoneNumber) {

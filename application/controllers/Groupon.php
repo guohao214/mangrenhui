@@ -247,8 +247,12 @@ class Groupon extends FrontendController
 
     // 判断是否已经参加了团
     $existsJoin = (new GrouponOrderListModel())->getOne($openId, $findGroupOrder['groupon_order_id']);
-    if ($existsJoin)
-      ResponseUtil::failure($existsJoin['groupon_order_list_no'], -10);
+    if ($existsJoin) {
+      if ($existsJoin['order_status'] == 10)
+        ResponseUtil::failure($existsJoin['groupon_order_list_no'], -10);
+      else
+        ResponseUtil::failure('您已经参加了此团');
+    }
 
     // 判断团长是否支付了此订单
     $findOrder = $grouponOrder->getFirstOrderList($grouponProjectCode, '', $grouponOrderCode);
@@ -351,78 +355,6 @@ class Groupon extends FrontendController
       ResponseUtil::QuerySuccess($payParams);
     } catch (Exception $exception) {
       ResponseUtil::failure('获得支付参数失败');
-    }
-  }
-
-  /**
-   * 异步通知
-   */
-  public function callme() {
-    $weixin = new WeixinPayUtil('groupon_weixin');
-    LogUtil::weixinLog('开始接收微信的返回数据', '---');
-    //通知微信
-    $notice = $weixin->notifyData();
-    LogUtil::weixinLog('拼团微信支付后的通知参数', $notice);
-    // 签名成功， 返回数组， 否则返回xml数据
-    if (!is_array($notice) || !isset($notice['transaction_id']))
-      exit($notice);
-
-    //签名成功，处理数据
-
-    /**
-     * 返回的数据
-     * 'appid' => string 'wxf5b5e87a6a0fde94' (length=18)
-     * 'bank_type' => string 'CFT' (length=3)
-     * 'fee_type' => string 'CNY' (length=3)
-     * 'is_subscribe' => string 'N' (length=1)
-     * 'mch_id' => string '10000097' (length=8)
-     * 'nonce_str' => string 'dz8nirk7gmxhhxn38zgib28yx14ul2gf' (length=32)
-     * 'openid' => string 'ozoKAt-MmA74zs7MBafCix6Dg8o0' (length=28)
-     * 'out_trade_no' => string 'wxf5b5e87a6a0fde941409708791' (length=28)
-     * 'result_code' => string 'SUCCESS' (length=7)
-     * 'return_code' => string 'SUCCESS' (length=7)
-     * 'sign' => string 'EDACA525F6C675337B2DAC25B7145028' (length=32)
-     * 'sub_mch_id' => string '10000097' (length=8)
-     * 'time_end' => string '20140903094659' (length=14)
-     * 'total_fee' => string '1' (length=1)
-     * 'trade_type' => string 'NATIVE' (length=6)
-     * 'transaction_id' => string '1004400737201409030005091526' (length=28)  //微信支付单号
-     */
-
-//        $notice  = array(
-//            'out_trade_no' => '201512271710391206225994',
-//            'transaction_id' => '1004400737201409030005091526'
-//        );
-
-    $listNo = $notice['out_trade_no'];
-    $wxOrderNo = $notice['transaction_id'];
-    $openId = $notice['openid'];
-
-    $grouponOrderList = new GrouponOrderListModel();
-    // 获得订单
-    $order = $grouponOrderList->getOrder($openId, $listNo);
-    if (!$order)
-      exit($weixin->notifyFailure());
-
-    // 判断是否已经支付
-    if ($order['order_status'] == 20)
-      exit($weixin->notifyPayed());
-
-    // 更新订单信息
-    $this->db->trans_start();
-
-    (new CurdUtil($grouponOrderList))->update(array('open_id' => $openId, 'groupon_order_list_no' => $listNo), 
-      array('order_status' => 20, 'transaction_id' => $wxOrderNo, 'payment_time' => DateUtil::now()));
-
-    // 事务完成
-    $this->db->trans_complete();
-
-    if ($this->db->trans_status() === FALSE) {
-      $this->db->trans_rollback();
-      exit($weixin->notifyFailure());
-    } else {
-      $this->db->trans_commit();
-      exit($weixin->notifySuccess());
     }
   }
 }

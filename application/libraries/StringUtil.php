@@ -25,7 +25,7 @@ class StringUtil
    */
   public static function generateOrderNo()
   {
-    return date('YmdHismw') . mt_rand(10000, 10000000);
+    return 'P' . date('YmdHismw') . mt_rand(10000, 10000000);
   }
 
   /**

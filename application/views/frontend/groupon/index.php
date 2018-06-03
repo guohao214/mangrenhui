@@ -142,6 +142,10 @@
   .countdown {
     margin-left: .5rem
   }
+
+  .wrap {
+    white-space: pre-wrap
+  }
 </style>
 
 <div id="app_body" v-show="project.groupon_project_code">
@@ -234,7 +238,7 @@
           <div class="use_shop">
             <div>
               <div>{{ project.shop_name}}</div>
-              <div class="f_2">{{ project.address}}</div>
+              <div class="f_2 wrap">{{ project.address}}</div>
             </div>
             <div>
               <a :href="'tel://' + project.contact_number">
@@ -290,7 +294,7 @@
           this.$request.get('groupon/getGrouponProject/' + grouponProjectCode)
             .then(function(data) {
               self.project = data.content
-              self.endTime = data.content.end_time
+              self.endTime = data.content.end_time.replace(/-/g, '/')
             })
             .catch(function (err) {
               self.$dialog.toast({

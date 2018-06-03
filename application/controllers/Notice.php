@@ -53,6 +53,41 @@ class Notice extends BaseController
     $wxOrderNo = $notice['transaction_id'];
     $openId = $notice['openid'];
 
+    // 拼团订单
+    if (preg_match('/^P\w+/', $orderNo)) {
+      LogUtil::weixinLog('开始处理拼团订单', $orderNo);
+      $grouponOrderList = new GrouponOrderListModel();
+      // 获得订单
+      $order = $grouponOrderList->getOrder($openId, $orderNo);
+      if (!$order)
+        exit($weixin->notifyFailure());
+
+      // 判断是否已经支付
+      if ($order['order_status'] == 20)
+        exit($weixin->notifyPayed());
+
+      // 更新订单信息
+      $this->db->trans_start();
+
+      (new CurdUtil($grouponOrderList))->update(array('groupon_order_list_no' => $orderNo),
+        array('order_status' => 20, 'transaction_id' => $wxOrderNo, 'payment_time' => DateUtil::now()));
+
+      // 事务完成
+      $this->db->trans_complete();
+
+      if ($this->db->trans_status() === FALSE) {
+        $this->db->trans_rollback();
+        exit($weixin->notifyFailure());
+      } else {
+        $this->db->trans_commit();
+        exit($weixin->notifySuccess());
+      }
+
+      return;
+
+    }
+
+
     $orderModel = new OrderModel();
     // 获得订单
     $orders = $orderModel->orders(array('order_no' => $orderNo));
