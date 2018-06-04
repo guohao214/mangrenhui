@@ -94,6 +94,12 @@
         </td>
       </tr>
       <tr>
+        <th><i class="require-red">*</i>拼团须知：</th>
+        <td>
+          <textarea name="notice" cols="50" rows="5"> <?php echo set_value('notice'); ?></textarea>
+        </td>
+      </tr>
+      <tr>
         <th></th>
         <td>
           <input class="btn btn-primary btn6 mr10" value="提交" type="submit">

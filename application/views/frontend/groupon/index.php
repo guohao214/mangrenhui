@@ -66,8 +66,12 @@
     align-items: flex-start;
     flex-direction: column;
     padding: 0 .2rem;
+    width: 3rem;
   }
 
+  .groupon .info .user {
+    white-space: initial;
+  }
   .groupon .peoples {
     padding-top: .2rem
   }
@@ -119,7 +123,7 @@
   }
 
   .f_2 {
-    font-size: .22rem
+    font-size: .26rem
   }
 
   .groupon_comment .yd-cell-left {
@@ -140,7 +144,7 @@
   }
 
   .countdown {
-    margin-left: .5rem
+    /*margin-left: .5rem*/
   }
 
   .wrap {
@@ -157,22 +161,22 @@
     <div class="project_name">{{ project.groupon_name }}</div>
     <div class="project_info">
       <div class="price">
-        <div class="groupon_price">¥ {{ project.groupon_price }}</div>
-        <div class="old_price">¥ {{ project.old_price }}</div>
+        <span class="groupon_price">¥ {{ project.groupon_price }}</span>
+        <span class="old_price">¥ {{ project.old_price }}</span>
       </div>
       <div class="people">
         <yd-badge shape="square" type="danger">{{ project.in_peoples }}人团</yd-badge>
       </div>
 
-      <div class="countdown" v-if="endTime">
-        <span>倒计时:</span>
-        <yd-countdown :time="endTime">
-          <span style="color:red;">{%d}<i>天</i></span>
-          <span style="color:gray;">{%h}<i>时</i></span>
-          <span style="color:blue;">{%m}<i>分</i></span>
-          <span style="color:orange;">{%s}<i>秒</i></span>
-        </yd-countdown>
-      </div>
+    </div>
+    <div class="countdown" v-if="endTime">
+      <span>倒计时:</span>
+      <yd-countdown :time="endTime">
+        <span style="color:gray;">{%d}<i>天</i></span>
+        <span style="color:gray;">{%h}<i>时</i></span>
+        <span style="color:gray;">{%m}<i>分</i></span>
+        <span style="color:gray;">{%s}<i>秒</i></span>
+      </yd-countdown>
     </div>
   </div>
 
@@ -196,7 +200,7 @@
             <div class="user">
               {{ item.nick_name }}
             </div>
-            <div class="remain_people">还差 {{ item.in_peoples - (item.in_counts || 0)}}人</div>
+            <div class="remain_people">还差 {{ item.in_peoples - (item.order_list_counts || 0)}}人</div>
           </div>
           <div class="peoples">
             <yd-badge shape="square" type="danger">{{item.in_peoples}}人团</yd-badge>
@@ -229,7 +233,17 @@
         </span>
       </yd-cell-item>
     </yd-cell-group>
-  </div> 
+  </div>
+
+  <div class="project">
+    <yd-cell-group title="拼团须知">
+      <yd-cell-item>
+        <span slot="left">{{ project.notice}}</span>
+      </yd-cell-item>
+    </yd-cell-group>
+  </div>
+
+
 
   <div class="shop">
     <yd-cell-group title="适用门店">
@@ -254,7 +268,7 @@
 
   <div class="footer" id="footer">
     <yd-button-group>
-      <yd-button size="large" type="primary" @click.native="join(grouponOrderCode)" v-if="grouponOrderCode.length">参团 ¥{{ project.groupon_price}}</yd-button>
+<!--      <yd-button size="large" type="primary" @click.native="join(grouponOrderCode)" v-if="grouponOrderCode.length">参团 ¥{{ project.groupon_price}}</yd-button>-->
       <yd-button size="large" type="warning" @click.native="commit" v-if="project.__type==='ing'">我要开团 ¥{{ project.groupon_price}}</yd-button>
       <yd-button size="large"  disabled type="warning" @click.native="commit" v-else-if="project.__type==='wait'">未开始 ¥{{ project.groupon_price}}</yd-button>
       <yd-button size="large" disabled type="warning" @click.native="commit" v-else="project.__type==='end'">已结束 ¥{{ project.groupon_price}}</yd-button>
@@ -271,7 +285,6 @@
     new Vue({
       el: '#app_body',
       data: {
-        grouponOrderCode,
         project: {},
         ingProjects: [],
         endTime: 0

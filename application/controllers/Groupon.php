@@ -45,6 +45,7 @@ class Groupon extends FrontendController
   {
     $grouponProjetModel = new GrouponProjectModel();
     $grouponProject = $grouponProjetModel->readOne($grouponProjectCode);
+
     if (!$grouponProject)
       ResponseUtil::failure('拼团项目不存在');
     else {
@@ -60,6 +61,10 @@ class Groupon extends FrontendController
         $grouponProject['__type'] = 'ing';
       else
         $grouponProject['__type'] = 'end';
+
+
+      $grouponProject['start_time'] = date('Y-m-d', strtotime($grouponProject['start_time']));
+      $grouponProject['end_time'] = date('Y-m-d', strtotime($grouponProject['end_time']));
 
       ResponseUtil::QuerySuccess($grouponProject);
     }
