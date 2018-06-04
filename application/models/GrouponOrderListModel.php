@@ -60,7 +60,7 @@ class GrouponOrderListModel extends BaseModel
       from
           groupon_order_list as a
       where
-          UNIX_TIMESTAMP(a.created_time) + { $ time } < UNIX_TIMESTAMP(now())
+          UNIX_TIMESTAMP(a.created_time) + {$time} < UNIX_TIMESTAMP(now())
           and a.disabled = 0
           and order_status != 20";
 

@@ -80,7 +80,7 @@ class GrouponOrderModel extends BaseModel
   from
       groupon_order as a
       left join groupon_order_list as b on a.groupon_order_id = b.groupon_order_id
-      left join customer as c on b.open_id = c.open_id
+      left join customer_view as c on b.open_id = c.open_id
   where
       a.groupon_project_code = '{$grouponProjectCode}'
       and a.disabled = 0
@@ -104,9 +104,11 @@ class GrouponOrderModel extends BaseModel
     from
         groupon_order as a
         left join groupon_order_list as b on a.groupon_order_id = b.groupon_order_id
-        left join customer as c on b.open_id = c.open_id
+        left join customer_view as c on b.open_id = c.open_id
     where
         a.groupon_order_id = {$grouponOrderId}
+        and a.disabled=0
+        and b.disabled=0
         and c.type = 1";
 
 

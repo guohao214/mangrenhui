@@ -14,7 +14,7 @@ class GrouponProject extends BackendController
     $type = $params['type'];
     // $projectName = $params['projectName'];
 
-    $projects = $this->grouponProjectModel->getList($type, $limit, $projectName);
+    $projects = $this->grouponProjectModel->getList($type, $limit);
 
     $this->view('grouponProject/index', array('projects' => $projects, 'limit' => $limit + 0, 'params' => $params));
   }

@@ -126,6 +126,7 @@ class GrouponProjectModel extends BaseModel
                 j.groupon_project_code = a.groupon_project_code
                 and j.disabled = 0
                 and k.disabled=0
+                and k.is_first=1
         ) as open_counts
     from
         groupon_project as a
