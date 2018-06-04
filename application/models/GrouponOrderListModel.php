@@ -12,6 +12,13 @@ class GrouponOrderListModel extends BaseModel
       'groupon_order_id' => $grouponOrderId, 'disabled' => 0));
   }
 
+  /**
+   * 手机号是否已经参团了
+   * @param $grouponProjectCode
+   * @param $projectId
+   * @param $phoneNumber
+   * @return bool
+   */
   public function phoneNumberIsNotJoin($grouponProjectCode, $projectId, $phoneNumber) {
     $sql = "select
           *
@@ -19,7 +26,9 @@ class GrouponOrderListModel extends BaseModel
           groupon_order_list as a
       where
           a.ggroupon_project_code = '${grouponProjectCode}'
-          and a.project_id = {$projectId}
+          and a.disabled=0
+          and a.order_status=20
+          #and a.project_id = {$projectId}
           and a.phone_number = '${phoneNumber}'";
 
     $result = (new CurdUtil($this))->query($sql);

@@ -118,8 +118,13 @@ class GrouponOrderModel extends BaseModel
   /**
    * 正在进行中的项目
    */
-  public function getIngOrderByGrouponProjectCode($grouponProjectCode, $grouponOrderCode = '', $openId)
+  public function getIngOrderByGrouponProjectCode($grouponProjectCode, $grouponOrderCode = '', $openId = '')
   {
+    if ($grouponOrderCode)
+      $grouponOrderCode = "a.groupon_order_code = '{$grouponOrderCode}'";
+    else
+      $grouponOrderCode = "1=1";
+
     $sql = "select
           a.*,
           b.*,
@@ -146,7 +151,7 @@ class GrouponOrderModel extends BaseModel
           and d.start_time < now()
           and now() < d.end_time
           #and b.open_id != '${openId}'
-          #and a.groupon_order_code != '{$grouponOrderCode}'
+          and {$grouponOrderCode}
           and b.is_first = 1
           order by a.groupon_order_id desc";
 

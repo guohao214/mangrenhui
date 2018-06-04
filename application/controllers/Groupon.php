@@ -80,7 +80,7 @@ class Groupon extends FrontendController
       $openId = $wechat->getOpenId();
       $unionId = $wechat->getUnionId();
 
-      $ingOrders = (new GrouponOrderModel())->getIngOrderByGrouponProjectCode($grouponProjectCode, $grouponOrderCode, $openId);
+      $ingOrders = (new GrouponOrderModel())->getIngOrderByGrouponProjectCode($grouponProjectCode);
       ResponseUtil::QuerySuccess($ingOrders);
     } catch( Exception $e) {
       ResponseUtil::fail();
@@ -175,7 +175,7 @@ class Groupon extends FrontendController
     // 是否还有未拼团完成的
 
     // 是否参加了别人开的团
-    $existsJoin = (new GrouponOrderListModel())->getOne($openId, $findGroupOrder['groupon_order_id']);
+    $existsJoin = (new GrouponOrderListModel())->getOne($openId, $findOrder['groupon_order_id']);
     if ($existsJoin)
       ResponseUtil::failure('您已经参加了此团');
 
@@ -231,11 +231,18 @@ class Groupon extends FrontendController
 
   /**
    * 参团
+   * 判断是否已经拼团
+   * 是否已经预约过项目
    */
   public function join($grouponOrderCode) {
     $wechat = new WechatUtil();
     $openId = $wechat->getOpenId();
     $unionId = $wechat->getUnionId();
+
+    // 判断是否已经预约过了
+    $orders = (new OrderModel())->getOrders($openId, $unionId, OrderModel::ORDER_COMPLETE);
+    if (count($orders) > 0)
+      ResponseUtil::failure('拼团项目只限新客户, 老用户只能开团');
 
     $grouponOrder = new GrouponOrderModel();
     $findGroupOrder = $grouponOrder->getOne($grouponOrderCode);
@@ -265,6 +272,9 @@ class Groupon extends FrontendController
       ResponseUtil::failure('此团不能参加');
 
     // 判断人数是否满了
+    $ingGrouponOrder = (new GrouponOrderModel())->getIngOrderByGrouponProjectCode($grouponProjectCode, $grouponOrderCode);
+    if (count($ingGrouponOrder) === 0)
+      ResponseUtil::failure('参团失败，此团关闭或者人数已满');
 
     $this->db->trans_start();
     try {
