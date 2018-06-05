@@ -6,15 +6,22 @@
 class Groupon extends FrontendController
 {
 
-  public function grouponIndex($grouponProjectCode, $grouponOrderCode = '') 
+  public function grouponIndex($grouponProjectCode, $grouponOrderCode = '')
   {
-    $this->load->view('frontend/groupon/index', array('groupon_project_code' => $grouponProjectCode, 'groupon_order_code' => $grouponOrderCode));
+    $grouponProjetModel = new GrouponProjectModel();
+    $grouponProject = $grouponProjetModel->readOne($grouponProjectCode);
+
+    $sharePage = $this->load->view('frontend/groupon/sharePage', array('grouponProject' => $grouponProject), true);
+
+    $this->load->view('frontend/groupon/index',
+      array('groupon_project_code' => $grouponProjectCode, 'groupon_order_code' => $grouponOrderCode, 'sharePage' => $sharePage));
   }
 
   /**
    * 发送验证码
    */
-  public function sendSmsCode($phone, $listNo) {
+  public function sendSmsCode($phone, $listNo)
+  {
     if (!$phone || !$listNo)
       ResponseUtil::failure();
 
@@ -48,41 +55,39 @@ class Groupon extends FrontendController
 
     if (!$grouponProject)
       ResponseUtil::failure('拼团项目不存在');
-    else {
-      $grouponProject['project_cover'] = UploadUtil::buildUploadDocPath($grouponProject['project_cover'], '600x600');
-      
 
-      // 是否已过期
-      // 未开始
-      $now  = DateUtil::now();
-      if ($now < $grouponProject['start_time'])
-        $grouponProject['__type'] = 'wait';
-      else if ($now > $grouponProject['start_time'] && $now < $grouponProject['end_time'])
-        $grouponProject['__type'] = 'ing';
-      else
-        $grouponProject['__type'] = 'end';
+    // 是否已过期
+    // 未开始
+    $now = DateUtil::now();
+    if ($now < $grouponProject['start_time'])
+      $grouponProject['__type'] = 'wait';
+    else if ($now > $grouponProject['start_time'] && $now < $grouponProject['end_time'])
+      $grouponProject['__type'] = 'ing';
+    else
+      $grouponProject['__type'] = 'end';
 
 
-      $grouponProject['start_time'] = date('Y-m-d', strtotime($grouponProject['start_time']));
-      $grouponProject['end_time'] = date('Y-m-d', strtotime($grouponProject['end_time']));
+    $grouponProject['start_time'] = date('Y-m-d', strtotime($grouponProject['start_time']));
+    $grouponProject['end_time'] = date('Y-m-d', strtotime($grouponProject['end_time']));
+    $grouponProject['notice'] = nl2br($grouponProject['notice']);
 
-      ResponseUtil::QuerySuccess($grouponProject);
-    }
+    ResponseUtil::QuerySuccess($grouponProject);
   }
 
   /**
    * 进行中的团
    * $grouponOrderCode 筛选的拼团订单
    */
-  public function getGrouponIngOrders($grouponProjectCode, $grouponOrderCode = '') {
-    try  {
+  public function getGrouponIngOrders($grouponProjectCode, $grouponOrderCode = '')
+  {
+    try {
       $wechat = new WechatUtil();
       $openId = $wechat->getOpenId();
       $unionId = $wechat->getUnionId();
 
       $ingOrders = (new GrouponOrderModel())->getIngOrderByGrouponProjectCode($grouponProjectCode);
       ResponseUtil::QuerySuccess($ingOrders);
-    } catch( Exception $e) {
+    } catch (Exception $e) {
       ResponseUtil::fail();
     }
   }
@@ -90,7 +95,8 @@ class Groupon extends FrontendController
   /**
    * 支付页面
    */
-  public function pay($listNo) {
+  public function pay($listNo)
+  {
     $wechat = new WechatUtil();
     $openId = $wechat->getOpenId();
     $unionId = $wechat->getUnionId();
@@ -110,15 +116,18 @@ class Groupon extends FrontendController
     if (!$grouponProject)
       show_error('拼团项目不存在');
 
-    $grouponProject['project_cover'] = UploadUtil::buildUploadDocPath($grouponProject['project_cover'], '600x600');
+  $sharePage = $this->load->view('frontend/groupon/sharePage', array('grouponProject' => $grouponProject), true);
+
     // 获取拼团项目信息
-    $this->load->view('frontend/groupon/pay', array('listNo' => $listNo, 'grouponProject' => $grouponProject));
+    $this->load->view('frontend/groupon/pay',
+      array('listNo' => $listNo, 'grouponProject' => $grouponProject, 'sharePage' => $sharePage));
   }
 
   /**
    * 支付成功跳转页面
    */
-  public function success($listNo) {
+  public function success($listNo)
+  {
     $wechat = new WechatUtil();
     $openId = $wechat->getOpenId();
     $unionId = $wechat->getUnionId();
@@ -139,14 +148,20 @@ class Groupon extends FrontendController
       show_error('拼团项目不存在');
 
     $grouponProject['project_cover'] = UploadUtil::buildUploadDocPath($grouponProject['project_cover'], '600x600');
+
+    // 渲染分享页面
+    $sharePage = $this->load->view('frontend/groupon/sharePage', array('grouponProject' => $grouponProject), true);
+
     // 获取拼团项目信息
-    $this->load->view('frontend/groupon/share', array('listNo' => $listNo, 'order' => $order, 'grouponProject' => $grouponProject));
+    $this->load->view('frontend/groupon/share',
+      array('listNo' => $listNo, 'order' => $order, 'grouponProject' => $grouponProject, 'sharePage' => $sharePage));
   }
 
   /**
    * 分享参数
    */
-  public function shareParams() {
+  public function shareParams()
+  {
     $params = RequestUtil::postParams();
     $currentUrl = urldecode($params['url']);
     $shareJsParams = (new WxShareUtil())->getShareParams($currentUrl);
@@ -156,7 +171,8 @@ class Groupon extends FrontendController
   /**
    * 开团
    */
-  public function newGrouponOrder($grouponProjectCode) {
+  public function newGrouponOrder($grouponProjectCode)
+  {
     $wechat = new WechatUtil();
     $openId = $wechat->getOpenId();
     $unionId = $wechat->getUnionId();
@@ -165,7 +181,7 @@ class Groupon extends FrontendController
     $grouponProjetModel = new GrouponProjectModel();
     $grouponProject = $grouponProjetModel->readOne($grouponProjectCode);
 
-      // 判断是否有未支付的，在有效期内的订单
+    // 判断是否有未支付的，在有效期内的订单
     $findOrder = $grouponOrder->getFirstOrderList($grouponProjectCode, $openId);
     if ($findOrder && $findOrder['order_status'] != 20)
       ResponseUtil::failure($findOrder['groupon_order_list_no'], -10);
@@ -183,7 +199,7 @@ class Groupon extends FrontendController
     HelperUtil::verifyGrouponProject($grouponProject);
     if ($grouponProject['groupon_count'] === $grouponProject['created'])
       ResponseUtil::failure('团长总数已达到最大');
-   
+
 
     $params = RequestUtil::postParams();
 
@@ -234,7 +250,8 @@ class Groupon extends FrontendController
    * 判断是否已经拼团
    * 是否已经预约过项目
    */
-  public function join($grouponOrderCode) {
+  public function join($grouponOrderCode)
+  {
     $wechat = new WechatUtil();
     $openId = $wechat->getOpenId();
     $unionId = $wechat->getUnionId();
@@ -242,7 +259,7 @@ class Groupon extends FrontendController
     // 判断是否已经预约过了
     $orders = (new OrderModel())->getOrders($openId, $unionId, OrderModel::ORDER_COMPLETE);
     if (count($orders) > 0)
-      ResponseUtil::failure('拼团项目只限新客户, 老用户只能开团');
+      ResponseUtil::failure('“参团”仅限新顾客，老顾客请选择“我要开团”');
 
     $grouponOrder = new GrouponOrderModel();
     $findGroupOrder = $grouponOrder->getOne($grouponOrderCode);
@@ -325,29 +342,29 @@ class Groupon extends FrontendController
     if (!$findOrder)
       ResponseUtil::failure('拼团不存在');
 
-      $grouponProjectCode = $findOrder['ggroupon_project_code'];
-      $projectId = $findOrder['project_id'];
-      if (!(new GrouponOrderListModel())->phoneNumberIsNotJoin($grouponProjectCode, $projectId, $phoneNumber))
-        ResponseUtil::failure('此手机号已经参与了此团');
+    $grouponProjectCode = $findOrder['ggroupon_project_code'];
+    $projectId = $findOrder['project_id'];
+    if (!(new GrouponOrderListModel())->phoneNumberIsNotJoin($grouponProjectCode, $projectId, $phoneNumber))
+      ResponseUtil::failure('此手机号已经参与了此团');
 
     if ($findOrder['order_status'] != 10)
       ResponseUtil::failure('此订单不可操作');
 
- 
-      if (!$phoneNumber)
-        ResponseUtil::failure('手机号不能为空');
-  
-      $code = $params['smsCode'];
-      if (!$code)
-        ResponseUtil::failure('验证码不能为空');
 
-  
-      // // 验证验证码
-      $smsModel = new SmsCodeModel();
-      $sms = $smsModel->getOne($phoneNumber, SmsCodeModel::GROUPON_ORDER);
-      if (!$sms || $sms['code'] !== $params['smsCode'])
-        ResponseUtil::failure('验证码错误');
-        
+    if (!$phoneNumber)
+      ResponseUtil::failure('手机号不能为空');
+
+    $code = $params['smsCode'];
+    if (!$code)
+      ResponseUtil::failure('验证码不能为空');
+
+
+    // // 验证验证码
+    $smsModel = new SmsCodeModel();
+    $sms = $smsModel->getOne($phoneNumber, SmsCodeModel::GROUPON_ORDER);
+    if (!$sms || $sms['code'] !== $params['smsCode'])
+      ResponseUtil::failure('验证码错误');
+
 
     // 修改订单信息
     (new CurdUtil(new GrouponOrderListModel()))

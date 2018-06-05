@@ -152,7 +152,7 @@
           </div>
           <div class="price">
             <span class="groupon_price">¥ <?php echo $grouponProject['groupon_price']; ?></span>
-            <span>x<?php echo $grouponProject['in_counts']; ?></span>
+            <span><?php echo $grouponProject['in_counts']; ?>次</span>
           </div>
         </div>
     </div>
@@ -314,4 +314,6 @@ $(document).ready(function() {
   })
 })
 </script>
+
+<?php echo $sharePage; ?>
 </html>

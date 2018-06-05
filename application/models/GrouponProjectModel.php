@@ -71,8 +71,11 @@ class GrouponProjectModel extends BaseModel
         and a.groupon_project_code = '{$code}'";
 
     $result = (new CurdUtil($this))->query($sql);
-    if ($result)
-      return array_pop($result);
+    if ($result) {
+      $result = array_pop($result);
+      $result['project_cover'] = UploadUtil::buildUploadDocPath($result['project_cover'], '600x600');
+      return $result;
+    }
 
     return false;
   }
@@ -80,7 +83,7 @@ class GrouponProjectModel extends BaseModel
   /**
    * 拼团项目列表
    */
-  public function getList($type = 'ing', $limit, $projectName) {
+  public function getList($type = 'ing', $limit) {
     $where = '';
 
     switch($type) {

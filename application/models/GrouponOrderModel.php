@@ -12,6 +12,11 @@ class GrouponOrderModel extends BaseModel
     return (new CurdUtil($this))->readOne(array('groupon_order_code' => $grouponOrderCode, 'disabled' => 0));
   }
 
+  public function getOneById($grouponOrderId)
+  {
+    return (new CurdUtil($this))->readOne(array('groupon_order_id' => $grouponOrderId, 'disabled' => 0));
+  }
+
   /**
    * 获得团长的支付订单
    */
@@ -115,10 +120,7 @@ class GrouponOrderModel extends BaseModel
     return (new CurdUtil($this))->query($sql);
   }
 
-  /**
-   * 正在进行中的项目
-   */
-  public function getIngOrderByGrouponProjectCode($grouponProjectCode, $grouponOrderCode = '', $openId = '')
+  public function getNotFilterIngOrderByGrouponProjectCode($grouponProjectCode, $grouponOrderCode = '', $openId = '')
   {
     if ($grouponOrderCode)
       $grouponOrderCode = "a.groupon_order_code = '{$grouponOrderCode}'";
@@ -156,8 +158,16 @@ class GrouponOrderModel extends BaseModel
           order by a.groupon_order_id desc";
 
 
-    $result = (new CurdUtil($this))->query($sql);
+    return (new CurdUtil($this))->query($sql);
+  }
 
+  /**
+   * 正在进行中的项目
+   */
+  public function getIngOrderByGrouponProjectCode($grouponProjectCode, $grouponOrderCode = '', $openId = '')
+  {
+
+    $result = $this->getNotFilterIngOrderByGrouponProjectCode($grouponProjectCode, $grouponOrderCode);
     return array_filter($result, function ($item) {
       // return $item['in_peoples'] > 0;
       return $item['in_peoples'] - $item['order_list_counts'] > 0;

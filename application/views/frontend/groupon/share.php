@@ -1,23 +1,25 @@
 <?php $this->load->view('frontend/header'); ?>
 <style>
   body {
-    background-color: rgb(241,241,241);
-  }
-  .top-header {
-    display:none;
+    background-color: rgb(241, 241, 241);
   }
 
-  #app_body .header_body{
+  .top-header {
+    display: none;
+  }
+
+  #app_body .header_body {
     display: flex;
-    padding:.5rem .3rem;
+    padding: .5rem .3rem;
     background-color: white;
   }
 
   #app_body .header_body .cover {
     width: 2rem;
   }
+
   #app_body .header_body .cover img {
-    display:block;
+    display: block;
     width: 100%;
     height: 100%;
   }
@@ -40,7 +42,7 @@
   }
 
   .groupon_project .project_info .price {
-    display:flex;
+    display: flex;
     align-items: center;
     justify-content: space-between;
     color: red;
@@ -52,7 +54,7 @@
     color: black;
   }
 
- .groupon_project .project_info .old_price {
+  .groupon_project .project_info .old_price {
     color: gray;
     text-decoration: line-through;
   }
@@ -84,7 +86,7 @@
   }
 
   .sms {
-    margin-top:.3rem;
+    margin-top: .3rem;
   }
 
   .yd-badge-danger {
@@ -107,7 +109,6 @@
     bottom: .1rem;
   }
 
-
   div[v-show] {
     display: none;
   }
@@ -118,7 +119,7 @@
 
   .green {
     color: green;
-    margin-right:.1rem
+    margin-right: .1rem
   }
 
   .flex {
@@ -132,10 +133,10 @@
 
   .mask {
     position: fixed;
-    width:100%;
+    width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index:99999;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99999;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -157,15 +158,15 @@
   }
 
   .mask .arrow {
-    width:2rem;
-    color:white;
+    width: 2rem;
+    color: white;
     align-self: flex-end;
     margin-right: 1rem;
   }
 
   .mask .arrow img {
-    width:100%;
-    display:block
+    width: 100%;
+    display: block
   }
 </style>
 
@@ -189,15 +190,15 @@
     </div>
     <div class="groupon_project">
       <div class="project_name"><?php echo $grouponProject['groupon_name']; ?></div>
-        <div class="project_info">
-          <div>
-            <yd-badge shape="square" type="danger"><?php echo $grouponProject['in_peoples']; ?>人团</yd-badge>
-          </div>
-          <div class="price">
-            <span class="groupon_price">¥ <?php echo $grouponProject['groupon_price']; ?></span>
-            <span>x<?php echo $grouponProject['in_counts']; ?></span>
-          </div>
+      <div class="project_info">
+        <div>
+          <yd-badge shape="square" type="danger"><?php echo $grouponProject['in_peoples']; ?>人团</yd-badge>
         </div>
+        <div class="price">
+          <span class="groupon_price">¥ <?php echo $grouponProject['groupon_price']; ?></span>
+          <span><?php echo $grouponProject['in_counts']; ?>次</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -249,120 +250,24 @@
 </body>
 
 <script>
-var listNo = '<?php echo $listNo; ?>'
-var shareTitle = '<?php echo $grouponProject['groupon_name']; ?>'
-var shareImage = '<?php echo $grouponProject['project_cover']; ?>'
-var shareLink = "http://www.mlxiaowu.com/groupon/grouponIndex/<?php echo $grouponProject['groupon_project_code']?>/<?php echo $order['groupon_order_code'] ?>"
-
-$(document).ready(function() {
-  new Vue({
-    el: '#app_body',
-    data: {
-      showMask: false,
-      phone: '',
-      start: false,
-      smsCode: '',
-      endTime: '<?php echo str_replace('-', '/', $grouponProject['end_time']); ?>'
-    },
-    mounted: function() {
-      
-    },
-    methods: {
-      share: function () {
-
-        var url = encodeURIComponent(window.location.href)
-
-        var self = this
-        if (!WeixinJSBridge || !WeixinJSBridge.invoke) {
-          self.$dialog.toast({
-            mes: '您的环境不支持微信支付，请在微信里打开',
-            timeout: 1500
-          })
-          return
-        }
-
-        this.$request.post('groupon/shareParams', { url: url})
-          .then(function (data) {
-            let result = data.content
-
-            wx.config({
-              debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-              appId: result.appId, // 必填，公众号的唯一标识
-              timestamp: result.timestamp, // 必填，生成签名的时间戳
-              nonceStr: result.nonceStr, // 必填，生成签名的随机串
-              signature: result.signature,// 必填，签名，见附录1
-              jsApiList: ['onMenuShareAppMessage', 'onMenuShareTimeline']
-           })
-
-           wx.ready(function() {
-            wx.onMenuShareTimeline({
-              title: shareTitle, // 分享标题
-              link: shareLink, // 分享链接
-              imgUrl: shareImage, // 分享图标
-              success: function () {
-              },
-              cancel: function () {
-              }
-            })
-
-
-            // 分享给朋友
-            wx.onMenuShareAppMessage({
-              title: shareTitle, // 分享标题
-              link: shareLink, // 分享链接
-              imgUrl: shareImage, // 分享图标
-              desc: shareTitle,
-              dataUrl: '', 
-              success: function () {
-              },
-              cancel: function () {
-              }
-             })
-
-             self.showMask = true
-           })
-           
-          })
-          .catch(error => {
-            self.$dialog.toast({
-              mes: error.detail || '支付失败，请重试',
-              timeout: 1500
-            })
-          })
+  $(document).ready(function () {
+    new Vue({
+      el: '#app_body',
+      data: {
+        showMask: false,
+        endTime: '<?php echo str_replace('-', '/', $grouponProject['end_time']); ?>'
       },
-      sendCode: function () {
-      var self = this
-
-      if (!this.phone || !/^1\d{10}$/.test(this.phone)) {
-        this.$dialog.toast({
-          mes: '手机号格式错误',
-          timeout: 1500
-        });
-
-        return
-      }
-
-      this.$request.get('groupon/sendSmsCode/' + this.phone)
-        .then(function (data) {
-          self.$dialog.toast({
-            mes: '已发送',
-            icon: 'success',
-            timeout: 1500
-          });
-
-          self.start = true;
-
-        })
-        .catch(function (err) {
-          self.$dialog.toast({
-            mes: err.detail || '验证码发送失败',
-            timeout: 1500
-          });
-        })
+      mounted: function () {
       },
-    },
+      methods: {
+        share: function () {
+          this.showMask = true
+        },
+      },
 
+    })
   })
-})
 </script>
+
+<?php echo $sharePage; ?>
 </html>

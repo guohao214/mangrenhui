@@ -150,6 +150,10 @@
   .wrap {
     white-space: pre-wrap
   }
+
+  .notice {
+    padding: .2rem 0
+  }
 </style>
 
 <div id="app_body" v-show="project.groupon_project_code">
@@ -228,7 +232,7 @@
       <yd-cell-item>
         <span slot="left">{{ project.project_name}}</span>
         <span slot="right"> 
-          <span>x{{ project.in_counts}} </span>
+          <span> {{ project.in_counts}}次 </span>
           <span>¥{{project.old_price}}</span>
         </span>
       </yd-cell-item>
@@ -238,7 +242,7 @@
   <div class="project">
     <yd-cell-group title="拼团须知">
       <yd-cell-item>
-        <span slot="left">{{ project.notice}}</span>
+        <span slot="left" class="wrap notice" v-html="project.notice"></span>
       </yd-cell-item>
     </yd-cell-group>
   </div>
@@ -372,5 +376,6 @@
   })
 </script>
 
+<?php echo $sharePage; ?>
 
 </html>
