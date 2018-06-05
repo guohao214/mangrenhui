@@ -25,7 +25,11 @@ class StringUtil
    */
   public static function generateOrderNo()
   {
-    return 'P' . date('YmdHismw') . mt_rand(10000, 10000000);
+    return  date('YmdHismw') . mt_rand(10000, 10000000);
+  }
+
+  public static function generateGrouponOrderNo() {
+    return 'P' . self::generateOrderNo();
   }
 
   /**

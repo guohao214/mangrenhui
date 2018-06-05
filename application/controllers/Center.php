@@ -51,7 +51,7 @@ class Center extends FrontendController
         // 查询团购订单
 
         $appointmentOrder = (new CurdUtil(new OrderProjectModel()))->readOne(array(
-          'order_id' => $orderId 
+          'order_id' => $orderId
         ));
 
         if (!$appointmentOrder)
@@ -62,6 +62,22 @@ class Center extends FrontendController
         $grouponOrderList = (new GrouponOrderListModel())->orderUseCounts($payContent, $appointmentProjectId);
         if (!$grouponOrderList)
           ResponseUtil::failure('券号错误');
+
+        // 判断是否开团成功
+        $grouponOrder = (new GrouponOrderModel())->getOneById($grouponOrderList['groupon_order_id']);
+        if (!$grouponOrder)
+          ResponseUtil::failure('拼团订单不存在');
+
+        $grouponProjectCode = $grouponOrder['groupon_project_code'];
+        $grouponOrderCode = $grouponOrder['groupon_order_code'];
+
+        $ingOrder = (new GrouponOrderModel())->getNotFilterIngOrderByGrouponProjectCode($grouponProjectCode, $grouponOrderCode);
+        if (!$ingOrder || count($ingOrder))
+          ResponseUtil::failure('拼团订单不存在');
+
+        $ingOrder = array_pop($ingOrder);
+        if ($ingOrder['order_list_counts'] < $ingOrder['in_peoples'])
+          ResponseUtil::failure('拼团尚未成功!');
 
         if ($grouponOrderList['use_counts'] >= $grouponOrderList['in_counts'])
           ResponseUtil::failure('团购使用次数已到最大');
@@ -91,7 +107,7 @@ class Center extends FrontendController
 
       if (!$last)
         ResponseUtil::fail();
-     }
+    }
 
     $this->db->trans_complete();
     if ($this->db->trans_status() === FALSE) {
@@ -202,7 +218,7 @@ class Center extends FrontendController
         // 发送给前台
         if ($toFront && count($toFront) > 0) {
           foreach ($toFront as $front) {
-            $toOpenId =$front['open_id'];
+            $toOpenId = $front['open_id'];
             LogUtil::weixinLog("给前台：${toOpenId}发通知 ", $accessToken);
             if ($toOpenId)
               $weixinUtil->cancelOrder($to, $now, $appointmentDate, $shop, $beautician,
@@ -220,7 +236,8 @@ class Center extends FrontendController
     $status ? ResponseUtil::executeSuccess('订单取消成功！') : ResponseUtil::failure('取消订单失败!');
   }
 
-  public function getPhone() {
+  public function getPhone()
+  {
     $phone = ConfigUtil::loadConfig('phone');
     ResponseUtil::QuerySuccess($phone);
   }

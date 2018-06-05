@@ -216,7 +216,7 @@ class Groupon extends FrontendController
         throw new Exception('');
 
       // 创建支付订单
-      $grouponOrderListNo = StringUtil::generateOrderNo();
+      $grouponOrderListNo = StringUtil::generateGrouponOrderNo();
       unset($data['groupon_project_code'], $data['groupon_order_code']);
       $data['groupon_order_list_no'] = $grouponOrderListNo;
       $data['groupon_order_id'] = $grouponOrderId;
@@ -295,7 +295,7 @@ class Groupon extends FrontendController
 
     $this->db->trans_start();
     try {
-      $grouponOrderListNo = StringUtil::generateOrderNo();
+      $grouponOrderListNo = StringUtil::generateGrouponOrderNo();
 
       $data['open_id'] = $openId;
       $data['union_id'] = $unionId;
