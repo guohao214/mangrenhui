@@ -64,7 +64,7 @@ class GrouponProjectModel extends BaseModel
         ) as created
     from
         groupon_project as a
-        left join project as b on a.groupon_project_id = b.project_id
+        left join project as b on a.project_id = b.project_id
         left join shop as c on a.shop_id = c.shop_id
     where
         a.disabled = 0
@@ -133,7 +133,7 @@ class GrouponProjectModel extends BaseModel
         ) as open_counts
     from
         groupon_project as a
-        left join project as b on a.groupon_project_id = b.project_id
+        left join project as b on a.project_id = b.project_id
         left join shop as c on a.shop_id = c.shop_id
     where
         a.disabled = 0 and {$where}";
