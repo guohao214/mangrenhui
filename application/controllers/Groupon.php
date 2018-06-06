@@ -116,7 +116,7 @@ class Groupon extends FrontendController
     if (!$grouponProject)
       show_error('拼团项目不存在');
 
-  $sharePage = $this->load->view('frontend/groupon/sharePage', array('grouponProject' => $grouponProject), true);
+    $sharePage = $this->load->view('frontend/groupon/sharePage', array('grouponProject' => $grouponProject), true);
 
     // 获取拼团项目信息
     $this->load->view('frontend/groupon/pay',
@@ -147,7 +147,7 @@ class Groupon extends FrontendController
     if (!$grouponProject)
       show_error('拼团项目不存在');
 
-    $grouponProject['project_cover'] = UploadUtil::buildUploadDocPath($grouponProject['project_cover'], '600x600');
+    //$grouponProject['project_cover'] = UploadUtil::buildUploadDocPath($grouponProject['project_cover'], '600x600');
 
     // 渲染分享页面
     $sharePage = $this->load->view('frontend/groupon/sharePage', array('grouponProject' => $grouponProject), true);
@@ -259,7 +259,7 @@ class Groupon extends FrontendController
     // 判断是否已经预约过了
     $orders = (new OrderModel())->getOrders($openId, $unionId, OrderModel::ORDER_COMPLETE);
     if (count($orders) > 0)
-      ResponseUtil::failure('“参团”仅限新顾客，老顾客请选择“我要开团”');
+      ResponseUtil::failure('“参团”仅限新顾客 <br>老顾客请选择“我要开团”');
 
     $grouponOrder = new GrouponOrderModel();
     $findGroupOrder = $grouponOrder->getOne($grouponOrderCode);

@@ -60,20 +60,23 @@ class Center extends FrontendController
         $appointmentProjectId = $appointmentOrder['project_id'];
 
         $grouponOrderList = (new GrouponOrderListModel())->orderUseCounts($payContent, $appointmentProjectId);
+        //var_dump($this->db->last_query());
         if (!$grouponOrderList)
           ResponseUtil::failure('券号错误');
 
         // 判断是否开团成功
         $grouponOrder = (new GrouponOrderModel())->getOneById($grouponOrderList['groupon_order_id']);
+        
         if (!$grouponOrder)
-          ResponseUtil::failure('拼团订单不存在');
+          ResponseUtil::failure('拼团订单不存在.');
 
         $grouponProjectCode = $grouponOrder['groupon_project_code'];
         $grouponOrderCode = $grouponOrder['groupon_order_code'];
 
         $ingOrder = (new GrouponOrderModel())->getNotFilterIngOrderByGrouponProjectCode($grouponProjectCode, $grouponOrderCode);
-        if (!$ingOrder || count($ingOrder))
-          ResponseUtil::failure('拼团订单不存在');
+        //var_dump($this->db->last_query());
+        if (!$ingOrder || count($ingOrder) == 0)
+          ResponseUtil::failure('拼团订单不存在..');
 
         $ingOrder = array_pop($ingOrder);
         if ($ingOrder['order_list_counts'] < $ingOrder['in_peoples'])

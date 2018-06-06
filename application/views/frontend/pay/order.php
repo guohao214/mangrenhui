@@ -83,6 +83,10 @@
     border-left: 1px solid #d9d9d9;
     border-right: 1px solid #d9d9d9;
   }
+
+  .group-input input {
+    font-size: .25rem !important;
+  }
 </style>
 <div id="order">
 
@@ -101,7 +105,7 @@
   <yd-popup v-model="showGroup" position="center" width="6.5rem" height="3.4rem">
     <yd-cell-group title="请输入点评、美团或者口碑券号">
       <yd-cell-item>
-        <yd-input slot="right" v-model="couponCode" placeholder="请输入券号, 如是拼团请输入11位手机号码" ref="couponCode"></yd-input>
+        <yd-input slot="right" v-model="couponCode" class="group-input" placeholder="请输入券号, 如是拼团请输入11位手机号码" ref="couponCode"></yd-input>
       </yd-cell-item>
 
       <div class="yd-confirm-ft">
@@ -218,7 +222,7 @@
             }
           },
           {
-            text: '团购',
+            text: '团购或拼团',
             click: function () {
               vm.payType = 'group'
               vm.showGroup = true
