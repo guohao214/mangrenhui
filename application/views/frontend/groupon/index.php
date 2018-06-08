@@ -187,7 +187,7 @@
   <div class="groupon_comment">
     <yd-cell-group title="拼团介绍">
       <yd-cell-item>
-        <span slot="left">{{ project.comment }}</span>
+        <span slot="left" class="notice">{{ project.comment }}</span>
       </yd-cell-item>
     </yd-cell-group>
   </div>
@@ -198,7 +198,7 @@
       <span slot="left">
         <div class="groupon">
           <div class="avatar">
-            <img :src="item.avatar" alt="">
+            <img :src="item.avatar ? item.avatar : '/static/default.jpg'" alt="">
           </div>
           <div class="info">
             <div class="user">
