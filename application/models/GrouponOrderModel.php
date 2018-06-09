@@ -168,10 +168,20 @@ class GrouponOrderModel extends BaseModel
   {
 
     $result = $this->getNotFilterIngOrderByGrouponProjectCode($grouponProjectCode, $grouponOrderCode);
-    return array_filter($result, function ($item) {
+    $notEndorders =  array_filter($result, function ($item) {
       // return $item['in_peoples'] > 0;
       return $item['in_peoples'] - $item['order_list_counts'] > 0;
     });
+
+    $endOrders = array_filter($result, function ($item) {
+      // return $item['in_peoples'] > 0;
+      return $item['in_peoples'] - $item['order_list_counts'] == 0;
+    });
+
+    sort($notEndorders);
+    sort($endOrders);
+
+    return [$notEndorders, $endOrders];
   }
 
 }

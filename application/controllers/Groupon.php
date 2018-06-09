@@ -257,7 +257,7 @@ class Groupon extends FrontendController
     $unionId = $wechat->getUnionId();
 
     // 判断是否已经预约过了
-    $orders = (new OrderModel())->getOrders($openId, $unionId, OrderModel::ORDER_COMPLETE);
+    $orders = (new OrderModel())->getOrders($openId, $unionId);
     if (count($orders) > 0)
       ResponseUtil::failure('“参团”仅限新顾客 <br>老顾客请选择“我要开团”');
 
@@ -388,5 +388,10 @@ class Groupon extends FrontendController
     } catch (Exception $exception) {
       ResponseUtil::failure('获得支付参数失败');
     }
+  }
+
+  public function getOrders($orderId) {
+    $orders = (new GrouponOrderModel())->getOrdersByGrouponOrderId($orderId);
+    ResponseUtil::QuerySuccess($orders);
   }
 }

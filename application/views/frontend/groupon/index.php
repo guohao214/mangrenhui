@@ -48,7 +48,7 @@
 
   .groupon {
     display: flex;
-    padding: .27rem .27rem .27rem 0;
+    padding: .2rem .2rem .2rem 0;
   }
 
   .groupon .avatar {
@@ -193,30 +193,53 @@
   </div>
 
   <div class="groupons" v-show="ingProjects.length">
-  <yd-cell-group title="进行中的团">
-    <yd-cell-item  v-for="item in ingProjects">
-      <span slot="left">
-        <div class="groupon">
-          <div class="avatar">
-            <img :src="item.avatar ? item.avatar : '/static/default.jpg'" alt="">
-          </div>
-          <div class="info">
-            <div class="user">
-              {{ item.nick_name }}
+    <yd-cell-group title="进行中的团">
+      <yd-cell-item  v-for="item in ingProjects">
+        <span slot="left">
+          <div class="groupon">
+            <div class="avatar">
+              <img :src="item.avatar ? item.avatar : '/static/default.jpg'" alt="">
             </div>
-            <div class="remain_people">还差 {{ item.in_peoples - (item.order_list_counts || 0)}}人</div>
+            <div class="info">
+              <div class="user">
+                {{ item.nick_name || item.phone_number}}
+              </div>
+              <div class="remain_people">还差 {{ item.in_peoples - (item.order_list_counts || 0)}}人</div>
+            </div>
+            <div class="peoples">
+              <yd-badge shape="square" type="danger">{{item.in_peoples}}人团</yd-badge>
+            </div>
           </div>
-          <div class="peoples">
-            <yd-badge shape="square" type="danger">{{item.in_peoples}}人团</yd-badge>
+        </span>
+        <span slot="right">
+          <yd-button type="danger" @click.native="join(item.groupon_order_code)">参团</yd-button>
+        </span>
+      </yd-cell-item>
+      </yd-cell-group>
+  </div>
+
+    <div class="groupons" v-show="ingProjects.length">
+    <yd-cell-group title="结束的拼团">
+      <yd-cell-item  v-for="item in endProjects">
+        <span slot="left">
+          <div class="groupon">
+            <div class="avatar">
+              <img :src="item.avatar ? item.avatar : '/static/default.jpg'" alt="">
+            </div>
+            <div class="info">
+              <div class="user">
+                {{ item.nick_name || item.phone_number}}
+              </div>
+              <div class="remain_people">拼团成功</div>
+            </div>
+            <div class="peoples">
+              <yd-badge shape="square" type="danger">{{item.in_peoples}}人团</yd-badge>
+            </div>
           </div>
-        </div>
-      </span>
-      <span slot="right">
-        <yd-button type="danger" @click.native="join(item.groupon_order_code)">参团</yd-button>
-      </span>
-    </yd-cell-item>
-    </yd-cell-group>
-  
+        </span>
+        <!-- <span slot="right" @click="getOrders(item.groupon_order_id)"><yd-icon name="more" size=".4rem" color="#ef4f4f"></yd-icon></span> -->
+      </yd-cell-item>
+      </yd-cell-group>
   </div>
 
   <div class="time-range">
@@ -291,6 +314,7 @@
       data: {
         project: {},
         ingProjects: [],
+        endProjects: [],
         endTime: 0
       },
       mounted: function() {
@@ -303,7 +327,8 @@
 
           this.$request.get('groupon/getGrouponIngOrders/' + grouponProjectCode + '/' + grouponOrderCode)
             .then(function(data) {
-              self.ingProjects = data.content
+              self.ingProjects = data.content[0] || []
+              self.endProjects = data.content[1] || []
             })
         },
         getProject: function(getGrouponProject) {
@@ -370,6 +395,19 @@
                   timeout: 1500
                 });
               })
+        },
+        getOrders(orderId) {
+          var self = this
+
+          this.$request.get('groupon/getOrders/' + orderId)
+            .then(function(data) {
+            })
+            .catch(function (err) {
+              self.$dialog.toast({
+                mes: err.detail || '获取失败，请重试.',
+                timeout: 1500
+              });
+            })
         }
       }
     })
